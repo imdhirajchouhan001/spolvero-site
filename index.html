@@ -12,27 +12,38 @@
   <header class="site">
     <div class="wrap">
       <a class="brand" href="/">spolvero<span>.</span>design</a>
-      <nav><a href="/unspend/">Unspend</a></nav>
+      <nav><a href="/#apps">Apps</a></nav>
     </div>
   </header>
 
   <main class="wrap">
     <section class="hero">
       <span class="pill">Coming soon</span>
-      <h1>Small apps that respect your money and your privacy.</h1>
-      <p class="lede">Spolvero Design is an independent studio. Our full site is on its way. In the meantime, here's what's already out.</p>
+      <h1>One studio. A growing family of everyday apps.</h1>
+      <p class="lede">Spolvero Design is the home of every app we make. Our full site is on its way. In the meantime, here's what's already out.</p>
     </section>
 
-    <section>
+    <section class="apps" id="apps">
       <h2>Our apps</h2>
-      <a class="card" href="/unspend/">
-        <img src="/assets/unspend-icon.png" alt="" width="56" height="56">
-        <div>
-          <strong>Unspend: Subscription Tracker</strong>
-          <small>Track every subscription privately. Android.</small>
+      <div class="app-grid">
+        <!--
+          To add an app: copy one <a class="app-box"> block, put its icon in /assets/<slug>-icon.png
+          and create /<slug>/index.html from /unspend/index.html.
+          Status pill: <span class="status live">Live</span> or <span class="status soon">Coming soon</span>
+        -->
+        <a class="app-box" href="/unspend/">
+          <img src="/assets/unspend-icon.png" alt="" width="56" height="56">
+          <strong>Unspend</strong>
+          <small>Track every subscription privately.</small>
+          <span class="meta"><span class="status live">Live</span> Android</span>
+        </a>
+
+        <div class="app-box placeholder">
+          <span class="plus" aria-hidden="true">+</span>
+          <strong>More apps on the way</strong>
+          <small>New apps join the Spolvero family soon.</small>
         </div>
-        <span class="arrow" aria-hidden="true">→</span>
-      </a>
+      </div>
     </section>
   </main>
 
