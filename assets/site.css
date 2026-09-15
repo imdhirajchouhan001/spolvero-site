@@ -1,0 +1,232 @@
+:root {
+  --bg: #f6f7fb;
+  --surface: #ffffff;
+  --text: #0e1220;
+  --muted: #5b6275;
+  --line: #e3e6ee;
+  --accent: #0043ce;
+  --accent-soft: #e6edfc;
+  --radius: 20px;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0e17;
+    --surface: #141926;
+    --text: #eef1f8;
+    --muted: #9aa3b8;
+    --line: #242b3b;
+    --accent: #6d9bff;
+    --accent-soft: #17223d;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); }
+
+.wrap {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  padding-inline: 20px;
+}
+
+header.site {
+  padding-block: 24px;
+}
+
+header.site .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.brand span { color: var(--accent); }
+
+nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+nav a:hover { color: var(--text); }
+
+main { flex: 1; }
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.pill::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill::before { animation: none; }
+}
+
+h1 {
+  font-size: clamp(2.4rem, 7vw, 4.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  margin: 20px 0 16px;
+  text-wrap: balance;
+}
+
+.lede {
+  font-size: clamp(1.05rem, 2.4vw, 1.25rem);
+  color: var(--muted);
+  max-width: 34em;
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.hero { padding-block: clamp(40px, 10vh, 110px) 48px; }
+
+h2 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 0 0 14px;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+a.card:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+.card img {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.card strong { display: block; }
+.card small { color: var(--muted); font-size: 0.92rem; }
+.card .arrow { margin-left: auto; color: var(--muted); font-size: 1.25rem; }
+
+.app-head {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding-block: clamp(32px, 8vh, 80px) 24px;
+}
+
+.app-head img {
+  width: 96px;
+  height: 96px;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgb(0 67 206 / 0.25);
+}
+
+.app-head h1 { font-size: clamp(2rem, 6vw, 3rem); margin: 0; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 20px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn { color: #0b0e17; }
+}
+
+.btn:hover { filter: brightness(1.08); }
+
+.actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin: 28px 0 40px; }
+.actions .link { color: var(--muted); }
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 12px;
+  padding: 0;
+  margin: 0 0 56px;
+  list-style: none;
+}
+
+.features li {
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.features strong { display: block; margin-bottom: 4px; }
+.features span { color: var(--muted); font-size: 0.95rem; }
+
+footer.site {
+  padding-block: 28px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+footer.site .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  justify-content: space-between;
+}
+
+footer.site a { color: var(--muted); }
