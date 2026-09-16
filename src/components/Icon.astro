@@ -1,0 +1,27 @@
+---
+import {
+  Wallet, Bell, Zap, Users, Target, SplitSquareHorizontal, Layers, ShieldCheck, BookOpen, Utensils, Clock,
+  ChartColumn, Camera, NotebookPen, Orbit, Globe, MessageCircle, Quote, Calculator, Percent, Search, History,
+  Gamepad2, Monitor, Wrench, Check, ArrowRight, ArrowUpRight, Palette, Smartphone, PenTool, Lock, EyeOff, Sparkles,
+  Play, Mail,
+} from "lucide-react";
+
+const map = {
+  wallet: Wallet, bell: Bell, zap: Zap, users: Users, target: Target, split: SplitSquareHorizontal, layers: Layers,
+  shield: ShieldCheck, book: BookOpen, utensils: Utensils, clock: Clock, chart: ChartColumn, camera: Camera,
+  notebook: NotebookPen, orbit: Orbit, globe: Globe, message: MessageCircle, quote: Quote, calculator: Calculator,
+  percent: Percent, search: Search, history: History, gamepad: Gamepad2, monitor: Monitor, wrench: Wrench,
+  check: Check, arrow: ArrowRight, external: ArrowUpRight, palette: Palette, phone: Smartphone, pen: PenTool,
+  lock: Lock, eyeoff: EyeOff, sparkles: Sparkles, play: Play, mail: Mail,
+} as const;
+
+interface Props {
+  name: keyof typeof map | string;
+  class?: string;
+  size?: number;
+}
+const { name, class: className, size = 20 } = Astro.props;
+const Cmp = map[name as keyof typeof map] ?? Sparkles;
+---
+
+<Cmp className={className} size={size} strokeWidth={1.75} aria-hidden="true" />

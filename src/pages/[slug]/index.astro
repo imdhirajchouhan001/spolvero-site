@@ -1,0 +1,252 @@
+---
+import Base from "@/layouts/Base.astro";
+import AppIcon from "@/components/AppIcon.astro";
+import Icon from "@/components/Icon.astro";
+import Screen from "@/components/Screen.astro";
+import NotifyForm from "@/components/NotifyForm.astro";
+import SplitText from "@/components/SplitText";
+import Faq from "@/components/Faq";
+import { buttonVariants } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { products, type Product } from "@/data/products";
+
+export function getStaticPaths() {
+  return products.map((product) => ({ params: { slug: product.slug }, props: { product } }));
+}
+
+const { product: p } = Astro.props as { product: Product };
+const isLive = p.status === "live";
+const heroShots = p.screenshots.slice(0, 3);
+const others = products.filter((o) => o.slug !== p.slug);
+const ogImage = p.slug === "unspend" ? "/products/unspend/og.png" : "/assets/brand/og.png";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "MobileApplication",
+  name: p.storeName,
+  operatingSystem: p.platform,
+  applicationCategory: "UtilitiesApplication",
+  url: new URL(`/${p.slug}/`, Astro.site).toString(),
+  ...(p.playUrl ? { installUrl: p.playUrl, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } } : {}),
+  publisher: { "@type": "Organization", name: "Spolvero", url: "https://spolvero.design/" },
+};
+---
+
+<Base
+  title={`${p.name}: ${p.kind} — Spolvero`}
+  description={p.summary}
+  image={ogImage}
+  themeColor={p.accent}
+  headerCta={isLive ? { label: "Download", href: p.playUrl! } : { label: "Get notified", href: "#notify" }}
+>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+
+  <!-- Hero -->
+  <section class="px-3 pt-2 sm:px-4">
+    <div class="mesh rounded-[2rem]" style={`--mesh-tint:${p.tint};--mesh-accent:${p.accent}`}>
+      <div class="page flex flex-col items-center pt-12 text-center sm:pt-20">
+        <nav aria-label="Breadcrumb" class="text-sm text-muted-foreground">
+          <a href="/#apps" class="hover:text-foreground">Apps</a>
+          <span class="mx-1.5">/</span>
+          <span class="text-foreground">{p.name}</span>
+        </nav>
+
+        <div class="mt-8 flex items-center gap-4" data-reveal>
+          <AppIcon product={p} size={72} />
+          <div class="text-left">
+            <p class="text-2xl font-semibold text-brand">{p.name}</p>
+            <p class="text-sm text-muted-foreground">{p.kind} for {p.platform}</p>
+          </div>
+        </div>
+
+        <SplitText
+          client:load
+          tag="h1"
+          text={p.tagline}
+          splitType="words, chars"
+          delay={22}
+          duration={0.9}
+          from={{ opacity: 0, y: 32 }}
+          to={{ opacity: 1, y: 0 }}
+          rootMargin="0px"
+          threshold={0}
+          className="mt-8 max-w-4xl text-5xl font-semibold tracking-tight text-brand sm:text-6xl lg:text-7xl"
+        />
+        <p class="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl" data-reveal>{p.summary}</p>
+
+        <div class="mt-9 flex flex-col items-center gap-3" id="notify" data-reveal>
+          {isLive ? (
+            <>
+              <a href={p.playUrl} class:list={[buttonVariants({ size: "lg" }), "h-12 rounded-full px-6 text-base"]} style={`background:${p.accent}`}>
+                <Icon name="play" size={16} class="fill-current" /> Get it on Google Play
+              </a>
+              <p class="text-sm text-muted-foreground">Free on Google Play</p>
+            </>
+          ) : (
+            <>
+              <Badge variant="outline" className="h-7 rounded-full bg-white/70 px-3 text-brand">Coming soon to Google Play</Badge>
+              <NotifyForm product={p.name} class="mt-2 w-full max-w-md" />
+            </>
+          )}
+        </div>
+
+        <div class="relative mt-14 flex w-full max-w-4xl items-end justify-center gap-3 sm:gap-6" data-hero-shots>
+          {heroShots.length ? heroShots.map((s, i) => (
+            <div
+              class:list={[i === 1 ? "z-10 w-[62%] max-w-[270px] sm:w-[34%]" : "mb-12 hidden w-[28%] max-w-[230px] opacity-95 sm:block"]}
+              data-hero-shot={i - 1}
+            >
+              <Screen product={p} shot={s} eager />
+            </div>
+          )) : (
+            <div class="relative grid w-[70%] max-w-[300px] grid-cols-3 gap-2.5 rounded-t-[2rem] bg-[#1f1f24] p-5 pt-24 shadow-2xl" aria-hidden="true" data-hero-shot="0">
+              <span class="absolute top-8 right-6 text-4xl font-semibold text-white">₹1,180</span>
+              {["7", "8", "9", "4", "5", "6", "1", "2", "3", "5%", "18%", "40%"].map((k) => (
+                <span class:list={["grid h-12 place-items-center rounded-xl font-medium text-white", !k.includes("%") && "bg-white/10"]} style={k.includes("%") ? `background:${p.accent}` : undefined}>{k}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="page py-24 sm:py-28">
+    <div class="grid gap-5 sm:grid-cols-2">
+      {p.features.map((f) => (
+        <div class="rounded-[1.75rem] border bg-card p-8" data-reveal>
+          <span class="grid size-12 place-items-center rounded-2xl text-white" style={`background:${p.accent}`}><Icon name={f.icon} size={22} /></span>
+          <h2 class="mt-6 text-2xl font-semibold text-brand">{f.title}</h2>
+          <p class="mt-2 text-muted-foreground">{f.body}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Screenshots -->
+  {p.screenshots.length > 0 && (
+    <section class="pb-24" aria-labelledby="shots-title">
+      <div class="page" data-reveal>
+        <h2 id="shots-title" class="text-4xl font-semibold text-brand sm:text-5xl">A closer look</h2>
+      </div>
+      <div class="mt-10 overflow-x-auto pb-4 [scrollbar-width:thin]" tabindex="0" aria-label={`${p.name} screenshots, scroll sideways`}>
+        <div class="page flex w-max gap-5" data-rail>
+          {p.screenshots.map((s) => (
+            <figure class="w-[220px] shrink-0 sm:w-[250px]">
+              <Screen product={p} shot={s} />
+              <figcaption class="mt-4 text-sm font-medium text-brand">{s.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Promise -->
+  <section class="px-3 sm:px-4">
+    <div class="rounded-[2rem] bg-brand py-20 text-white sm:py-24">
+      <div class="page grid gap-12 lg:grid-cols-2">
+        <div data-reveal>
+          <h2 class="text-4xl font-semibold sm:text-5xl">{p.promise.title}</h2>
+          <p class="mt-5 max-w-md text-lg text-white/75">{p.promise.body}</p>
+          {p.policy && <a href={`/${p.slug}/privacy/`} class="mt-8 inline-flex items-center gap-2 text-white underline-offset-4 hover:underline">Read the privacy policy <Icon name="arrow" size={16} /></a>}
+        </div>
+        <ul class="grid content-start gap-3">
+          {p.promise.points.map((pt) => (
+            <li class="flex items-start gap-4 rounded-2xl bg-white/[0.06] p-5" data-reveal>
+              <span class="grid size-7 shrink-0 place-items-center rounded-full bg-white text-brand"><Icon name="check" size={16} /></span>
+              <span class="pt-0.5 text-lg">{pt}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  {p.pricing && (
+    <section class="page pt-24 sm:pt-28">
+      <div class="mx-auto max-w-2xl text-center" data-reveal>
+        <h2 class="text-4xl font-semibold text-brand sm:text-5xl">Free, with Pro</h2>
+        <p class="mt-4 text-lg text-muted-foreground">Everything you need is free. Pro is there if you want more.</p>
+      </div>
+      <div class="mt-12 grid gap-5 md:grid-cols-2">
+        <div class="rounded-[1.75rem] border bg-card p-8" data-reveal>
+          <h3 class="text-2xl font-semibold text-brand">Free</h3>
+          <p class="mt-1 text-muted-foreground">Forever</p>
+          <ul class="mt-6 grid gap-3">
+            {p.pricing.free.map((x) => <li class="flex items-center gap-3"><Icon name="check" size={18} class="text-muted-foreground" />{x}</li>)}
+          </ul>
+        </div>
+        <div class="rounded-[1.75rem] p-8 text-white" style={`background:${p.accent}`} data-reveal>
+          <h3 class="text-2xl font-semibold">Pro</h3>
+          <p class="mt-1 text-white/75">{p.pricing.proNote}</p>
+          <ul class="mt-6 grid gap-3">
+            {p.pricing.pro.map((x) => <li class="flex items-center gap-3"><Icon name="check" size={18} />{x}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- FAQ -->
+  <section class="page grid gap-10 py-24 sm:py-28 lg:grid-cols-[0.8fr_1.2fr]">
+    <div data-reveal>
+      <h2 class="text-4xl font-semibold text-brand sm:text-5xl">Questions</h2>
+      <p class="mt-4 text-lg text-muted-foreground">
+        Something else? <a class="text-brand underline underline-offset-4" href={`/contact/?topic=feedback&app=${p.slug}`}>Send us a message</a>.
+      </p>
+    </div>
+    <div data-reveal>
+      <Faq client:visible items={p.faqs} />
+      {p.disclaimer && <p class="mt-8 rounded-2xl bg-muted p-5 text-sm text-muted-foreground">{p.disclaimer}</p>}
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="page pb-24">
+    <div class="mesh rounded-[2rem] px-6 py-14 text-center sm:px-12" style={`--mesh-tint:${p.tint};--mesh-accent:${p.accent}`} data-reveal>
+      <AppIcon product={p} size={64} class="mx-auto" />
+      <h2 class="mt-6 text-3xl font-semibold text-brand sm:text-4xl">{isLive ? `Try ${p.name} today` : `Be first to try ${p.name}`}</h2>
+      {isLive ? (
+        <a href={p.playUrl} class:list={[buttonVariants({ size: "lg" }), "mt-8 h-12 rounded-full px-6 text-base"]} style={`background:${p.accent}`}>
+          <Icon name="play" size={16} class="fill-current" /> Get it on Google Play
+        </a>
+      ) : (
+        <NotifyForm product={p.name} class="mx-auto mt-8 max-w-md" />
+      )}
+      <p class="mt-6 text-sm text-muted-foreground">
+        <a class="underline underline-offset-4" href={`/contact/?topic=bug&app=${p.slug}`}>Report a bug</a>
+        {p.policy && <> · <a class="underline underline-offset-4" href={`/${p.slug}/privacy/`}>Privacy policy</a></>}
+      </p>
+    </div>
+  </section>
+
+  <!-- More apps -->
+  <section class="page pb-24">
+    <h2 class="text-2xl font-semibold text-brand" data-reveal>More from Spolvero</h2>
+    <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      {others.map((o) => (
+        <a href={`/${o.slug}/`} class="flex items-center gap-3 rounded-2xl border bg-card p-4 transition-colors hover:bg-muted" data-reveal>
+          <AppIcon product={o} size={40} />
+          <span>
+            <span class="block font-medium text-brand">{o.name}</span>
+            <span class="block text-xs text-muted-foreground">{o.kind}</span>
+          </span>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { gsap } from "gsap";
+  const shots = gsap.utils.toArray<HTMLElement>("[data-hero-shot]");
+  gsap.matchMedia().add("(prefers-reduced-motion: no-preference)", () => {
+    shots.forEach((el) => {
+      const n = Number(el.dataset.heroShot);
+      gsap.fromTo(el, { y: 120, opacity: 0, rotation: n * 8 }, { y: 0, opacity: 1, rotation: n * 3, duration: 1.2, ease: "expo.out", delay: 0.3 + Math.abs(n) * 0.12 });
+    });
+  });
+</script>

@@ -1,0 +1,28 @@
+---
+import Base from "@/layouts/Base.astro";
+import { buttonVariants } from "@/components/ui/button";
+---
+
+<Base title="Message sent — Spolvero" description="Thanks for getting in touch." noindex>
+  <section class="px-3 pt-2 sm:px-4">
+    <div class="mesh rounded-[2rem]">
+      <div class="page flex min-h-[60vh] flex-col items-center justify-center py-20 text-center">
+        <p class="rounded-full bg-white/80 px-3 py-1 text-sm font-medium text-brand" data-title-badge>Sent</p>
+        <h1 class="mt-6 max-w-2xl text-5xl font-semibold text-brand sm:text-6xl" data-title>Message sent. Thanks for writing.</h1>
+        <p class="mt-5 max-w-lg text-lg text-muted-foreground" data-lede>We'll reply to the email you gave, usually within two working days.</p>
+        <div class="mt-9 flex flex-wrap justify-center gap-3">
+          <a href="/" class:list={[buttonVariants({ size: "lg" }), "h-12 rounded-full px-6 text-base"]}>Back to home</a>
+          <a href="/#apps" class:list={[buttonVariants({ variant: "outline", size: "lg" }), "h-12 rounded-full bg-white/70 px-6 text-base"]}>See our apps</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  if (new URLSearchParams(location.search).get("from") === "updates") {
+    document.querySelector("[data-title]")!.textContent = "You're on the launch list.";
+    document.querySelector("[data-lede]")!.textContent = "We'll email you when something new ships. Nothing else.";
+    document.querySelector("[data-title-badge]")!.textContent = "Subscribed";
+  }
+</script>

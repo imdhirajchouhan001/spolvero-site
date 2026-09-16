@@ -1,0 +1,49 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "@/layouts/Base.astro";
+import AppIcon from "@/components/AppIcon.astro";
+import { products } from "@/data/products";
+
+export async function getStaticPaths() {
+  const policies = await getCollection("policies");
+  return products
+    .filter((p) => p.policy)
+    .map((p) => ({ params: { slug: p.slug }, props: { product: p, entry: policies.find((e) => e.id === p.policy)! } }));
+}
+
+const { product, entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<Base title={`${entry.data.title} — Spolvero`} description={`What ${product.name} collects, why, and the control you have over it.`}>
+  <article class="page max-w-3xl py-16 sm:py-24">
+    <nav aria-label="Breadcrumb" class="text-sm text-muted-foreground">
+      <a href={`/${product.slug}/`} class="hover:text-foreground">{product.name}</a>
+      <span class="mx-1.5">/</span>
+      <span class="text-foreground">Privacy policy</span>
+    </nav>
+    <div class="mt-8 flex items-center gap-4">
+      <AppIcon product={product} size={56} />
+      <div>
+        <h1 class="text-4xl font-semibold text-brand sm:text-5xl">Privacy policy</h1>
+        <p class="mt-1 text-muted-foreground">{product.storeName} · Effective {entry.data.effective}</p>
+      </div>
+    </div>
+    <div class="policy mt-12">
+      <Content />
+    </div>
+  </article>
+</Base>
+
+<style is:global>
+  .policy { color: var(--muted-foreground); line-height: 1.7; }
+  .policy h2 { margin-top: 2.75rem; margin-bottom: 0.75rem; font-size: 1.5rem; font-weight: 600; color: var(--color-brand); letter-spacing: -0.02em; }
+  .policy p + p, .policy p + ul, .policy ul + p { margin-top: 1rem; }
+  .policy strong { color: var(--foreground); font-weight: 600; }
+  .policy a { color: var(--color-brand); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+  .policy ul { list-style: disc; padding-left: 1.25rem; }
+  .policy li + li { margin-top: 0.4rem; }
+  .policy table { width: 100%; margin-top: 1rem; border-collapse: collapse; font-size: 0.95rem; display: block; overflow-x: auto; }
+  .policy th, .policy td { border-bottom: 1px solid var(--border); padding: 0.6rem 0.75rem 0.6rem 0; text-align: left; vertical-align: top; }
+  .policy th { color: var(--foreground); font-weight: 600; }
+</style>

@@ -1,0 +1,46 @@
+---
+import { buttonVariants } from "@/components/ui/button";
+
+interface Props {
+  product?: string;
+  class?: string;
+  dark?: boolean;
+}
+const { product, class: className, dark = false } = Astro.props;
+const list = product ? `${product} launch` : "Spolvero launches";
+---
+
+<form
+  action="https://formsubmit.co/spolvero.design@gmail.com"
+  method="POST"
+  class:list={["flex flex-col gap-2 sm:flex-row", className]}
+>
+  <label class="sr-only" for={`notify-${product ?? "all"}`}>Email address</label>
+  <input
+    id={`notify-${product ?? "all"}`}
+    type="email"
+    name="email"
+    required
+    autocomplete="email"
+    placeholder="you@example.com"
+    class:list={[
+      "h-12 flex-1 rounded-full border px-5 text-base outline-none transition focus-visible:ring-3 focus-visible:ring-ring/40",
+      dark ? "border-white/20 bg-white/10 text-white placeholder:text-white/50" : "border-input bg-background",
+    ]}
+  />
+  <input type="hidden" name="_subject" value={`Launch list: ${list}`} />
+  <input type="hidden" name="list" value={list} />
+  <input type="hidden" name="_next" value="https://spolvero.design/contact/thanks/?from=updates" />
+  <input type="hidden" name="_template" value="table" />
+  <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="absolute -left-[9999px]" />
+  <button
+    type="submit"
+    class:list={[
+      buttonVariants({ size: "lg" }),
+      "h-12 rounded-full px-6 text-base",
+      dark && "bg-white text-brand hover:bg-white/90",
+    ]}
+  >
+    {product ? "Notify me" : "Join the launch list"}
+  </button>
+</form>

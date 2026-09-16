@@ -1,0 +1,35 @@
+---
+import Base from "@/layouts/Base.astro";
+import Icon from "@/components/Icon.astro";
+import ContactForm from "@/components/ContactForm";
+import { products } from "@/data/products";
+
+const apps = products.map((p) => ({ slug: p.slug, name: p.name }));
+const notes = [
+  { icon: "clock", title: "Replies", body: "Usually within two working days." },
+  { icon: "camera", title: "Bugs", body: "A screenshot and your phone model help us fix it faster." },
+  { icon: "pen", title: "Design projects", body: "Tell us what you're building, your timeline and your budget." },
+];
+---
+
+<Base title="Contact and feedback — Spolvero" description="Send feedback on a Spolvero app, report a bug, or tell us about a design project." headerCta={{ label: "Our apps", href: "/#apps" }}>
+  <section class="page grid gap-12 py-16 sm:py-24 lg:grid-cols-[0.8fr_1.2fr]">
+    <div>
+      <h1 class="text-5xl font-semibold text-brand sm:text-6xl">Get in touch</h1>
+      <p class="mt-5 max-w-sm text-lg text-muted-foreground">Feedback on an app, a bug, or a project you'd like designed. We read every message.</p>
+      <ul class="mt-10 grid gap-6">
+        {notes.map((n) => (
+          <li class="flex gap-4">
+            <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand"><Icon name={n.icon} size={18} /></span>
+            <span><span class="block font-medium text-brand">{n.title}</span><span class="text-muted-foreground">{n.body}</span></span>
+          </li>
+        ))}
+        <li class="flex gap-4">
+          <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand"><Icon name="mail" size={18} /></span>
+          <span><span class="block font-medium text-brand">Email instead</span><a class="text-muted-foreground underline underline-offset-4" href="mailto:spolvero.design@gmail.com">spolvero.design@gmail.com</a></span>
+        </li>
+      </ul>
+    </div>
+    <ContactForm client:load apps={apps} />
+  </section>
+</Base>

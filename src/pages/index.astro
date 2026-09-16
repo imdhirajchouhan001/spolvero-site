@@ -1,0 +1,283 @@
+---
+import Base from "@/layouts/Base.astro";
+import AppIcon from "@/components/AppIcon.astro";
+import Icon from "@/components/Icon.astro";
+import Screen from "@/components/Screen.astro";
+import NotifyForm from "@/components/NotifyForm.astro";
+import SplitText from "@/components/SplitText";
+import BlurText from "@/components/BlurText";
+import { buttonVariants } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { products, categories, getProduct } from "@/data/products";
+
+const live = products.filter((p) => p.status === "live");
+const fan = [
+  { p: getProduct("enough")!, i: 0 },
+  { p: getProduct("baseline")!, i: 0 },
+  { p: getProduct("unspend")!, i: 0 },
+  { p: getProduct("exact")!, i: 0 },
+  { p: getProduct("astro")!, i: 2 },
+];
+const [featured, ...rest] = products;
+
+const principles = [
+  { icon: "lock", title: "Private by default", body: "Your data stays on your phone. No bank logins, no gallery access, no account needed to start." },
+  { icon: "eyeoff", title: "Ads that know their place", body: "No ad before your first result, and nothing you type ever reaches an ad network." },
+  { icon: "quote", title: "Numbers you can check", body: "Every figure shows where it came from, and our apps say plainly what they can't prove." },
+];
+
+const services = [
+  { icon: "phone", title: "App design", body: "UI and UX for iOS and Android: flows, screens, prototypes and a design system developers can build from." },
+  { icon: "monitor", title: "Websites", body: "Landing pages and product sites that explain what you make and get people to try it." },
+  { icon: "palette", title: "Branding", body: "Name, logo, colour and type, ready for app stores, social media and the web." },
+];
+---
+
+<Base
+  title="Spolvero — a studio for small, useful apps"
+  description="Spolvero designs and builds apps, games, web tools and software, and takes on UI/UX and branding projects for others."
+>
+  <!-- Hero -->
+  <section class="px-3 pt-2 sm:px-4">
+    <div class="mesh rounded-[2rem]">
+      <div class="page flex flex-col items-center pt-16 text-center sm:pt-24">
+        <a href="#apps" class="inline-flex items-center gap-2 rounded-full border border-brand/10 bg-white/70 py-1 pr-3 pl-1 text-sm text-brand shadow-sm backdrop-blur" data-reveal>
+          <span class="rounded-full bg-brand px-2 py-0.5 text-xs font-medium text-white">{products.length} apps</span>
+          {live.length} live on Google Play, more on the way
+          <Icon name="arrow" size={14} />
+        </a>
+
+        <SplitText
+          client:load
+          tag="h1"
+          text="Small apps, carefully made."
+          splitType="words, chars"
+          delay={28}
+          duration={0.9}
+          from={{ opacity: 0, y: 36 }}
+          to={{ opacity: 1, y: 0 }}
+          rootMargin="0px"
+          threshold={0}
+          className="mt-8 max-w-4xl text-5xl font-semibold tracking-tight text-brand sm:text-7xl lg:text-[5.5rem] lg:leading-[0.95]"
+        />
+
+        <BlurText
+          client:load
+          text="Spolvero is an independent studio. We design and build apps, games, web tools and software, and we design for other people too."
+          delay={40}
+          animateBy="words"
+          direction="bottom"
+          className="mt-6 max-w-2xl justify-center text-lg text-muted-foreground sm:text-xl"
+        />
+
+        <div class="mt-9 flex flex-wrap justify-center gap-3" data-reveal>
+          <a href="#apps" class:list={[buttonVariants({ size: "lg" }), "h-12 rounded-full px-6 text-base"]}>See our apps</a>
+          <a href="/contact/?topic=design" class:list={[buttonVariants({ variant: "outline", size: "lg" }), "h-12 rounded-full bg-white/70 px-6 text-base"]}>Hire us for design</a>
+        </div>
+
+        <div class="relative mt-16 h-[360px] w-full max-w-5xl sm:h-[500px]" data-fan aria-label="Screens from Spolvero apps">
+          {fan.map(({ p, i }, idx) => (
+            <div
+              class:list={[
+                "absolute bottom-0 left-1/2 w-[150px] origin-bottom sm:w-[230px]",
+                (idx === 0 || idx === 4) && "hidden md:block",
+              ]}
+              data-fan-item={idx - 2}
+              style={`z-index:${10 - Math.abs(idx - 2)};transform:translateX(-50%)`}
+            >
+              <Screen product={p} shot={p.screenshots[i]} eager={idx === 2} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Principles -->
+  <section class="page py-20 sm:py-28">
+    <div class="grid gap-10 md:grid-cols-3">
+      {principles.map((x) => (
+        <div data-reveal>
+          <span class="grid size-11 place-items-center rounded-2xl bg-brand-soft text-brand"><Icon name={x.icon} /></span>
+          <h3 class="mt-5 text-xl font-semibold text-brand">{x.title}</h3>
+          <p class="mt-2 text-muted-foreground">{x.body}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Apps -->
+  <section id="apps" class="page pb-24">
+    <div class="mx-auto max-w-2xl text-center" data-reveal>
+      <h2 class="text-4xl font-semibold text-brand sm:text-5xl">Our apps</h2>
+      <p class="mt-4 text-lg text-muted-foreground">Each one does one job well. Tap any app to see how it works.</p>
+    </div>
+
+    <!-- Featured live app -->
+    <a
+      href={`/${featured.slug}/`}
+      class="group mt-14 grid overflow-hidden rounded-[2rem] text-white md:grid-cols-[1.1fr_1fr]"
+      style={`background:${featured.accent}`}
+      data-reveal
+    >
+      <div class="flex flex-col p-8 sm:p-12">
+        <div class="flex items-center gap-4">
+          <AppIcon product={featured} size={60} class="ring-white/30" />
+          <div>
+            <p class="text-2xl font-semibold">{featured.name}</p>
+            <p class="text-sm text-white/70">{featured.kind} · {featured.platform}</p>
+          </div>
+        </div>
+        <p class="mt-8 text-3xl leading-tight font-semibold sm:text-4xl">{featured.tagline}</p>
+        <p class="mt-4 max-w-md text-white/80">{featured.summary}</p>
+        <div class="mt-auto flex flex-wrap items-center gap-3 pt-10">
+          <span class="inline-flex h-11 items-center gap-2 rounded-full bg-white px-5 text-sm font-medium" style={`color:${featured.accent}`}>
+            Learn more <Icon name="arrow" size={16} class="transition-transform group-hover:translate-x-0.5" />
+          </span>
+          <Badge className="h-7 rounded-full bg-white/15 px-3 text-white">Live on Google Play</Badge>
+        </div>
+      </div>
+      <div class="relative flex min-h-[320px] justify-center gap-4 overflow-hidden px-6 pt-10">
+        <Screen product={featured} shot={featured.screenshots[0]} class="w-[46%] max-w-[230px] self-start transition-transform duration-500 group-hover:-translate-y-2" />
+        <Screen product={featured} shot={featured.screenshots[1]} class="mt-16 w-[46%] max-w-[230px] self-start transition-transform duration-500 group-hover:-translate-y-4" />
+      </div>
+    </a>
+
+    <!-- Other apps -->
+    <div class="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {rest.map((p) => (
+        <a href={`/${p.slug}/`} class="group flex flex-col overflow-hidden rounded-[1.75rem] border border-black/[0.04]" style={`background:${p.tint}`} data-reveal>
+          <div class="flex items-start justify-between gap-3 p-6 pb-0">
+            <div class="flex items-center gap-3">
+              <AppIcon product={p} size={48} />
+              <div>
+                <p class="text-lg font-semibold text-brand">{p.name}</p>
+                <p class="text-sm text-muted-foreground">{p.kind}</p>
+              </div>
+            </div>
+            <Badge variant="outline" className="h-6 rounded-full border-black/10 bg-white/70 px-2.5 text-brand">Coming soon</Badge>
+          </div>
+          <p class="px-6 pt-4 text-[15px] leading-snug text-brand/80">{p.tagline}</p>
+          <div class="relative mt-6 flex h-56 justify-center overflow-hidden">
+            {p.screenshots.length ? (
+              <Screen product={p} shot={p.screenshots[0]} class="absolute top-0 w-[58%] max-w-[210px] transition-transform duration-500 group-hover:-translate-y-2" />
+            ) : (
+              <div class="absolute top-2 grid w-[58%] max-w-[210px] grid-cols-3 gap-2 rounded-t-[1.6rem] bg-[#1f1f24] p-4 pt-16 transition-transform duration-500 group-hover:-translate-y-2" aria-hidden="true">
+                <span class="absolute top-5 right-4 text-2xl font-semibold text-white">₹1,180</span>
+                {["7", "8", "9", "4", "5", "6", "1", "2", "3", "5%", "18%", "40%"].map((k) => (
+                  <span class:list={["grid h-9 place-items-center rounded-lg text-sm font-medium", k.includes("%") ? "text-white" : "bg-white/10 text-white"]} style={k.includes("%") ? `background:${p.accent}` : undefined}>{k}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        </a>
+      ))}
+      <a href="/contact/?topic=design" class="group flex flex-col justify-between rounded-[1.75rem] border border-dashed border-brand/25 p-6" data-reveal>
+        <span class="grid size-12 place-items-center rounded-2xl bg-brand-soft text-brand"><Icon name="sparkles" size={22} /></span>
+        <div class="mt-10">
+          <p class="text-2xl font-semibold text-brand">Have an app idea?</p>
+          <p class="mt-2 text-muted-foreground">We design apps for other people too, from the first sketch to the store listing.</p>
+          <span class="mt-6 inline-flex items-center gap-2 font-medium text-brand">Talk to us <Icon name="arrow" size={16} class="transition-transform group-hover:translate-x-0.5" /></span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- On the drawing board -->
+  <section id="next" class="px-3 sm:px-4">
+    <div class="rounded-[2rem] bg-brand-soft/70 py-20 sm:py-24">
+      <div class="page">
+        <div class="grid items-end gap-6 md:grid-cols-2" data-reveal>
+          <h2 class="text-4xl font-semibold text-brand sm:text-5xl">On the drawing board</h2>
+          <p class="text-lg text-muted-foreground md:justify-self-end md:text-right">Beyond apps, this is what we're sketching next. Nothing to download yet.</p>
+        </div>
+        <div class="mt-12 grid gap-5 md:grid-cols-3">
+          {categories.map((c) => (
+            <div class="rounded-[1.75rem] border border-dashed border-brand/25 bg-white/60 p-7" data-reveal>
+              <div class="flex items-center justify-between">
+                <span class="grid size-12 place-items-center rounded-2xl bg-white text-brand shadow-sm"><Icon name={c.icon} size={22} /></span>
+                <Badge variant="secondary" className="h-6 rounded-full bg-white px-2.5 text-brand">Sketching</Badge>
+              </div>
+              <h3 class="mt-10 text-2xl font-semibold text-brand">{c.title}</h3>
+              <p class="mt-2 text-muted-foreground">{c.body}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Studio -->
+  <section id="studio" class="page py-24 sm:py-32">
+    <div class="grid gap-14 lg:grid-cols-[1fr_1.1fr]">
+      <div data-reveal>
+        <h2 class="text-4xl font-semibold text-brand sm:text-5xl">Design studio</h2>
+        <p class="mt-5 max-w-md text-lg text-muted-foreground">The same design work behind our own apps, for yours. We work with founders and teams anywhere in the world.</p>
+        <div class="mt-10 rounded-[1.75rem] bg-brand p-8 text-white">
+          <p class="text-sm text-white/60">Rate</p>
+          <p class="mt-1 text-5xl font-semibold tracking-tight">$20–30<span class="text-2xl text-white/60"> / hour</span></p>
+          <p class="mt-3 text-white/75">Depending on scope. You get a quote before any work starts.</p>
+          <a href="/contact/?topic=design" class:list={[buttonVariants({ variant: "secondary", size: "lg" }), "mt-8 h-12 rounded-full bg-white px-6 text-base text-brand hover:bg-white/90"]}>
+            Tell us about your project <Icon name="arrow" size={16} />
+          </a>
+        </div>
+      </div>
+      <div class="grid content-start gap-4">
+        {services.map((s) => (
+          <div class="flex gap-5 rounded-[1.75rem] border bg-card p-7" data-reveal>
+            <span class="grid size-12 shrink-0 place-items-center rounded-2xl bg-brand-soft text-brand"><Icon name={s.icon} size={22} /></span>
+            <div>
+              <h3 class="text-xl font-semibold text-brand">{s.title}</h3>
+              <p class="mt-1.5 text-muted-foreground">{s.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Updates -->
+  <section id="updates" class="page pb-24">
+    <div class="mx-auto max-w-3xl rounded-[2rem] border bg-card px-6 py-12 text-center sm:px-12" data-reveal>
+      <h2 class="text-3xl font-semibold text-brand sm:text-4xl">Hear when something new ships</h2>
+      <p class="mt-3 text-muted-foreground">One email per launch. No spam, and you can leave anytime.</p>
+      <NotifyForm class="mx-auto mt-8 max-w-md" />
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  gsap.registerPlugin(ScrollTrigger);
+
+  const fan = document.querySelector<HTMLElement>("[data-fan]");
+  const items = gsap.utils.toArray<HTMLElement>("[data-fan-item]");
+  const place = (el: HTMLElement, spread = 1) => {
+    const n = Number(el.dataset.fanItem);
+    const wide = window.innerWidth >= 640;
+    return {
+      xPercent: -50 + n * (wide ? 78 : 62) * spread,
+      y: Math.abs(n) * (wide ? 34 : 22),
+      rotation: n * 6 * spread,
+    };
+  };
+
+  const mm = gsap.matchMedia();
+  mm.add("(prefers-reduced-motion: no-preference)", () => {
+    items.forEach((el) => {
+      gsap.fromTo(
+        el,
+        { xPercent: -50, y: 160, rotation: 0, opacity: 0 },
+        { ...place(el), opacity: 1, duration: 1.3, ease: "expo.out", delay: 0.35 + Math.abs(Number(el.dataset.fanItem)) * 0.08 },
+      );
+    });
+    if (fan) {
+      gsap.timeline({ scrollTrigger: { trigger: fan, start: "top 60%", end: "bottom top", scrub: 0.6 } })
+        .to(items, { y: (_i, el) => place(el as HTMLElement, 1.15).y - 30, rotation: (_i, el) => place(el as HTMLElement, 1.25).rotation, xPercent: (_i, el) => place(el as HTMLElement, 1.12).xPercent, ease: "none" });
+    }
+  });
+  mm.add("(prefers-reduced-motion: reduce)", () => {
+    items.forEach((el) => gsap.set(el, place(el)));
+  });
+</script>

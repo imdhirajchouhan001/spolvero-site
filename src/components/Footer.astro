@@ -1,0 +1,43 @@
+---
+import { products } from "@/data/products";
+---
+
+<footer class="px-3 pb-3 sm:px-4 sm:pb-4">
+  <div class="relative overflow-hidden rounded-[2rem] bg-brand text-white">
+    <div class="page grid gap-10 pt-16 pb-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
+      <div>
+        <p class="max-w-xs text-lg leading-snug text-white/85">An independent studio designing and building apps, games, web tools and software.</p>
+        <a href="mailto:spolvero.design@gmail.com" class="mt-6 inline-block text-sm text-white/70 underline-offset-4 hover:text-white hover:underline">spolvero.design@gmail.com</a>
+      </div>
+      <div>
+        <h2 class="mb-3 text-sm font-medium text-white/50">Apps</h2>
+        <ul class="grid gap-2 text-sm">
+          {products.map((p) => <li><a class="text-white/85 hover:text-white" href={`/${p.slug}/`}>{p.name}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <h2 class="mb-3 text-sm font-medium text-white/50">Studio</h2>
+        <ul class="grid gap-2 text-sm">
+          <li><a class="text-white/85 hover:text-white" href="/#studio">Design services</a></li>
+          <li><a class="text-white/85 hover:text-white" href="/contact/?topic=design">Start a project</a></li>
+          <li><a class="text-white/85 hover:text-white" href="/#next">Coming up</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="mb-3 text-sm font-medium text-white/50">Help</h2>
+        <ul class="grid gap-2 text-sm">
+          <li><a class="text-white/85 hover:text-white" href="/contact/">Contact and feedback</a></li>
+          <li><a class="text-white/85 hover:text-white" href="/unspend/privacy/">Unspend privacy</a></li>
+          <li><a class="text-white/85 hover:text-white" href="/gst-calculator/privacy/">GST Calculator privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="page pb-6">
+      <span class="logo-mark w-full text-white/[0.08]" aria-hidden="true"></span>
+      <div class="mt-6 flex flex-wrap justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/50">
+        <span>© 2026 Spolvero</span>
+        <span>Google Play is a trademark of Google LLC.</span>
+      </div>
+    </div>
+  </div>
+</footer>
