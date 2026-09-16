@@ -3,54 +3,275 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Spolvero Design</title>
-  <meta name="description" content="Spolvero Design is a small studio making calm, private everyday apps. Our new site is coming soon.">
-  <link rel="icon" href="/favicon.png">
+  <title>Spolvero — apps, games and tools, designed first</title>
+  <meta name="description" content="Spolvero is an independent studio that designs and builds apps, games, web tools and software, and takes on UI/UX and branding projects.">
+  <link rel="canonical" href="https://spolvero.design/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Spolvero">
+  <meta property="og:title" content="Spolvero — apps, games and tools, designed first">
+  <meta property="og:description" content="An independent studio that designs and builds apps, games, web tools and software.">
+  <meta property="og:url" content="https://spolvero.design/">
+  <meta property="og:image" content="https://spolvero.design/assets/brand/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#101057">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&display=swap">
   <link rel="stylesheet" href="/assets/site.css">
 </head>
 <body>
-  <header class="site">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
     <div class="wrap">
-      <a class="brand" href="/">spolvero<span>.</span>design</a>
-      <nav><a href="/#apps">Apps</a></nav>
+      <a class="logo" href="/" aria-label="Spolvero home"></a>
+      <nav class="nav" aria-label="Main">
+        <a href="/#apps">Apps</a>
+        <a class="hide-sm" href="/#next">Coming up</a>
+        <a href="/#studio">Studio</a>
+        <a class="nav-cta" href="/contact/">Contact</a>
+      </nav>
     </div>
   </header>
 
-  <main class="wrap">
+  <main id="main">
     <section class="hero">
-      <span class="pill">Coming soon</span>
-      <h1>One studio. A growing family of everyday apps.</h1>
-      <p class="lede">Spolvero Design is the home of every app we make. Our full site is on its way. In the meantime, here's what's already out.</p>
+      <div class="wrap">
+        <div>
+          <h1>We draw it first. Then we build it.</h1>
+          <p class="lede">Spolvero is an independent studio making apps, games, web tools and software, and designing them for other people too.</p>
+          <div class="actions">
+            <a class="btn btn-solid" href="/unspend/">Get our first app, Unspend</a>
+            <a class="btn btn-ghost" href="/#studio">Work with us</a>
+          </div>
+          <p class="meaning"><i>Spolvero</i> is how Renaissance painters moved a drawing onto a wall: prick holes along the lines, dust charcoal through them, and a dotted outline appears. Every product here starts the same way, as a drawing.</p>
+        </div>
+
+        <svg class="drawing" viewBox="0 0 600 500" role="img" aria-labelledby="drawing-title">
+          <title id="drawing-title">A dotted sketch of a phone, a game controller, a browser window and a sparkle. The phone is filled in with the Unspend app.</title>
+
+          <circle class="filled pigment-giallo" cx="566" cy="178" r="44"/>
+          <circle class="filled pigment-rosa" cx="164" cy="344" r="28"/>
+          <circle class="filled pigment-verde" cx="548" cy="410" r="34"/>
+
+          <g class="d1">
+            <mask id="m1" maskUnits="userSpaceOnUse"><path class="reveal" pathLength="1" d="M236,20 H364 A36,36 0 0 1 400,56 V444 A36,36 0 0 1 364,480 H236 A36,36 0 0 1 200,444 V56 A36,36 0 0 1 236,20 Z"/></mask>
+            <path class="dots" mask="url(#m1)" d="M236,20 H364 A36,36 0 0 1 400,56 V444 A36,36 0 0 1 364,480 H236 A36,36 0 0 1 200,444 V56 A36,36 0 0 1 236,20 Z"/>
+          </g>
+
+          <g class="filled">
+            <rect x="212" y="32" width="176" height="436" rx="26" fill="#0043ce"/>
+            <rect x="236" y="66" width="64" height="8" rx="4" fill="#fff" opacity=".6"/>
+            <rect x="236" y="84" width="112" height="22" rx="7" fill="#fff"/>
+            <circle cx="300" cy="200" r="54" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="20"/>
+            <circle cx="300" cy="200" r="54" fill="none" stroke="#ffc83d" stroke-width="20" pathLength="100" stroke-dasharray="38 62" transform="rotate(-90 300 200)"/>
+            <circle cx="300" cy="200" r="54" fill="none" stroke="#23b26d" stroke-width="20" pathLength="100" stroke-dasharray="27 73" stroke-dashoffset="-40" transform="rotate(-90 300 200)"/>
+            <circle cx="300" cy="200" r="54" fill="none" stroke="#ff6fa3" stroke-width="20" pathLength="100" stroke-dasharray="22 78" stroke-dashoffset="-69" transform="rotate(-90 300 200)"/>
+            <g fill="#fff">
+              <rect x="236" y="298" width="28" height="28" rx="8" opacity=".9"/>
+              <rect x="276" y="302" width="60" height="8" rx="4" opacity=".8"/>
+              <rect x="276" y="316" width="36" height="6" rx="3" opacity=".45"/>
+              <rect x="236" y="346" width="28" height="28" rx="8" opacity=".9"/>
+              <rect x="276" y="350" width="72" height="8" rx="4" opacity=".8"/>
+              <rect x="276" y="364" width="30" height="6" rx="3" opacity=".45"/>
+              <rect x="236" y="394" width="28" height="28" rx="8" opacity=".9"/>
+              <rect x="276" y="398" width="52" height="8" rx="4" opacity=".8"/>
+              <rect x="276" y="412" width="40" height="6" rx="3" opacity=".45"/>
+            </g>
+          </g>
+
+          <g class="d2">
+            <mask id="m2" maskUnits="userSpaceOnUse"><path class="reveal" pathLength="1" d="M56,366 H140 A44,44 0 0 1 182,424 L176,444 A22,22 0 0 1 138,448 L126,430 H70 L58,448 A22,22 0 0 1 20,444 L14,424 A44,44 0 0 1 56,366 Z M58,392 V416 M46,404 H70"/></mask>
+            <path class="dots" mask="url(#m2)" d="M56,366 H140 A44,44 0 0 1 182,424 L176,444 A22,22 0 0 1 138,448 L126,430 H70 L58,448 A22,22 0 0 1 20,444 L14,424 A44,44 0 0 1 56,366 Z M58,392 V416 M46,404 H70"/>
+          </g>
+          <circle class="filled pigment-giallo" cx="130" cy="398" r="7"/>
+          <circle class="filled pigment-rosa" cx="146" cy="412" r="7"/>
+
+          <g class="d3">
+            <mask id="m3" maskUnits="userSpaceOnUse"><path class="reveal" pathLength="1" d="M434,60 H582 A14,14 0 0 1 596,74 V186 A14,14 0 0 1 582,200 H434 A14,14 0 0 1 420,186 V74 A14,14 0 0 1 434,60 Z M420,94 H596 M446,124 H540 M446,150 H508"/></mask>
+            <path class="dots" mask="url(#m3)" d="M434,60 H582 A14,14 0 0 1 596,74 V186 A14,14 0 0 1 582,200 H434 A14,14 0 0 1 420,186 V74 A14,14 0 0 1 434,60 Z M420,94 H596 M446,124 H540 M446,150 H508"/>
+          </g>
+
+          <g class="d4">
+            <mask id="m4" maskUnits="userSpaceOnUse"><path class="reveal" pathLength="1" d="M510,286 C516,330 526,340 574,350 C526,360 516,370 510,414 C504,370 494,360 446,350 C494,340 504,330 510,286 Z"/></mask>
+            <path class="dots" mask="url(#m4)" d="M510,286 C516,330 526,340 574,350 C526,360 516,370 510,414 C504,370 494,360 446,350 C494,340 504,330 510,286 Z"/>
+          </g>
+        </svg>
+      </div>
     </section>
 
-    <section class="apps" id="apps">
-      <h2>Our apps</h2>
-      <div class="app-grid">
-        <!--
-          To add an app: copy one <a class="app-box"> block, put its icon in /assets/<slug>-icon.png
-          and create /<slug>/index.html from /unspend/index.html.
-          Status pill: <span class="status live">Live</span> or <span class="status soon">Coming soon</span>
-        -->
-        <a class="app-box" href="/unspend/">
-          <img src="/assets/unspend-icon.png" alt="" width="56" height="56">
-          <strong>Unspend</strong>
-          <small>Track every subscription privately.</small>
-          <span class="meta"><span class="status live">Live</span> Android</span>
+    <section class="section" id="apps" aria-labelledby="apps-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="apps-title">Apps</h2>
+          <p>Small, focused apps that respect your time, your money and your data. Solid ones are out now. Dotted ones are still on the drawing board.</p>
+        </div>
+
+        <a class="product-live" href="/unspend/">
+          <div>
+            <div class="app-id">
+              <img src="/assets/unspend-icon.png" alt="" width="64" height="64">
+              <div>
+                <h3>Unspend</h3>
+                <span class="kind">Subscription tracker for Android</span>
+              </div>
+            </div>
+            <p class="pitch">See every subscription you pay for, get warned before each renewal, and split shared plans with your household. No bank login needed.</p>
+            <ul class="tags">
+              <li>Out now on Google Play</li>
+              <li>Private by design</li>
+              <li>Free, with Pro</li>
+            </ul>
+            <div class="actions">
+              <span class="btn btn-solid">See Unspend</span>
+            </div>
+          </div>
+          <div class="phones" aria-hidden="true">
+            <img src="/assets/unspend/home.webp" alt="" width="700" height="1382" loading="lazy">
+            <img src="/assets/unspend/insights.webp" alt="" width="700" height="1255" loading="lazy">
+          </div>
         </a>
 
-        <div class="app-box placeholder">
-          <span class="plus" aria-hidden="true">+</span>
-          <strong>More apps on the way</strong>
-          <small>New apps join the Spolvero family soon.</small>
+        <div class="planned-grid" style="margin-top:16px">
+          <div class="planned planned-row pounce">
+            <svg class="glyph" viewBox="0 0 64 64" aria-hidden="true"><path class="dots" style="fill:none;stroke-width:3.5;stroke-linecap:round;stroke-dasharray:0 8" d="M20,4 H44 A6,6 0 0 1 50,10 V54 A6,6 0 0 1 44,60 H20 A6,6 0 0 1 14,54 V10 A6,6 0 0 1 20,4 Z"/></svg>
+            <div>
+              <span class="status status-soon">In the works</span>
+              <h3>More apps on the way</h3>
+              <p>Several new apps are in development and testing right now. Join the launch list to hear first.</p>
+            </div>
+            <a class="btn btn-ghost" href="#updates">Get launch news</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section band-ink" id="next" aria-labelledby="next-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="next-title">On the drawing board</h2>
+          <p class="muted">Beyond apps, these are the next things we're sketching out. Nothing to download yet.</p>
+        </div>
+
+        <div class="planned-grid">
+          <article class="planned pounce" id="games">
+            <svg class="glyph" viewBox="0 0 64 64" aria-hidden="true"><path class="dots" style="fill:none;stroke-width:3.5;stroke-linecap:round;stroke-dasharray:0 8" d="M18,18 H46 A14,14 0 0 1 59,36 L57,44 A7,7 0 0 1 45,46 L41,40 H23 L19,46 A7,7 0 0 1 7,44 L5,36 A14,14 0 0 1 18,18 Z"/></svg>
+            <span class="status status-sketch">Sketching</span>
+            <h3>Games</h3>
+            <p>2D games first, with 3D to follow later.</p>
+          </article>
+
+          <article class="planned pounce" id="software">
+            <svg class="glyph" viewBox="0 0 64 64" aria-hidden="true"><path class="dots" style="fill:none;stroke-width:3.5;stroke-linecap:round;stroke-dasharray:0 8" d="M8,10 H56 V46 H8 Z M24,56 H40 M32,46 V56"/></svg>
+            <span class="status status-sketch">Sketching</span>
+            <h3>Software</h3>
+            <p>Online software for small teams and solo businesses.</p>
+          </article>
+
+          <article class="planned pounce" id="tools">
+            <svg class="glyph" viewBox="0 0 64 64" aria-hidden="true"><path class="dots" style="fill:none;stroke-width:3.5;stroke-linecap:round;stroke-dasharray:0 8" d="M10,8 H54 V56 H10 Z M10,20 H54 M22,32 L32,42 L44,30"/></svg>
+            <span class="status status-sketch">Sketching</span>
+            <h3>Web tools</h3>
+            <p>Free tools that run in your browser, like shrinking an image before you send it.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="studio" aria-labelledby="studio-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="studio-title">Design studio</h2>
+          <p>The same design work behind our own products, for yours. We work with founders and teams anywhere in the world.</p>
+        </div>
+
+        <div class="services">
+          <div class="service">
+            <div class="swatch" style="background:var(--giallo)"></div>
+            <h3>App design</h3>
+            <p>UI and UX for iOS and Android: flows, screens, prototypes and a design system your developers can build from.</p>
+          </div>
+          <div class="service">
+            <div class="swatch" style="background:var(--verde)"></div>
+            <h3>Websites</h3>
+            <p>Landing pages and product sites that explain what you make and get people to try it.</p>
+          </div>
+          <div class="service">
+            <div class="swatch" style="background:var(--rosa)"></div>
+            <h3>Branding</h3>
+            <p>Name, logo, colours and type, ready for app stores, social media and the web.</p>
+          </div>
+        </div>
+
+        <div class="rate">
+          <div>
+            <strong>$20–30 an hour</strong>
+            <span>Depending on the scope. You get a quote before any work starts.</span>
+          </div>
+          <a class="btn btn-solid" href="/contact/?topic=design">Tell us about your project</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="updates" aria-labelledby="updates-title" style="padding-top:0">
+      <div class="wrap">
+        <div class="panel signup">
+          <div>
+            <h2 id="updates-title" style="font-size:var(--step-2)">Hear when something new ships</h2>
+            <p class="muted" style="margin-top:10px">One email per launch. No spam, and you can leave anytime.</p>
+          </div>
+          <form class="inline-form" action="https://formsubmit.co/spolvero.design@gmail.com" method="POST">
+            <label class="visually-hidden" for="updates-email">Email address</label>
+            <input id="updates-email" type="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+            <input type="hidden" name="_subject" value="Launch list signup">
+            <input type="hidden" name="list" value="Launch updates">
+            <input type="hidden" name="_next" value="https://spolvero.design/contact/thanks/?from=updates">
+            <input type="hidden" name="_template" value="table">
+            <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button class="btn btn-solid" type="submit">Join the launch list</button>
+          </form>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="site">
+  <footer class="site-footer">
     <div class="wrap">
-      <span>© 2026 Spolvero Design</span>
-      <a href="mailto:spolvero.design@gmail.com">spolvero.design@gmail.com</a>
+      <div class="footer-grid">
+        <div>
+          <a class="logo" href="/" aria-label="Spolvero home"></a>
+          <p>An independent studio designing and building apps, games, web tools and software.</p>
+        </div>
+        <div>
+          <h2>Products</h2>
+          <ul>
+            <li><a href="/unspend/">Unspend</a></li>
+            <li><a href="/#next">Coming up</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Studio</h2>
+          <ul>
+            <li><a href="/#studio">Design services</a></li>
+            <li><a href="/contact/?topic=design">Start a project</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Help</h2>
+          <ul>
+            <li><a href="/contact/">Contact and feedback</a></li>
+            <li><a href="/unspend/privacy/">Unspend privacy policy</a></li>
+            <li><a href="mailto:spolvero.design@gmail.com">spolvero.design@gmail.com</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-base">
+        <span>© 2026 Spolvero</span>
+        <span>spolvero.design</span>
+      </div>
     </div>
   </footer>
 </body>

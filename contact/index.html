@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact and feedback — Spolvero</title>
+  <meta name="description" content="Send feedback on a Spolvero app, report a bug, or tell us about a design project.">
+  <link rel="canonical" href="https://spolvero.design/contact/">
+  <meta name="theme-color" content="#101057">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&display=swap">
+  <link rel="stylesheet" href="/assets/site.css">
+  <style>
+    .contact-layout { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(32px, 5vw, 72px); align-items: start; }
+    @media (max-width: 860px) { .contact-layout { grid-template-columns: 1fr; } }
+    .contact-layout h1 { font-size: var(--step-3); }
+    .contact-aside .lede { margin-top: 16px; color: var(--ink-soft); font-size: var(--step-1); line-height: 1.45; }
+    .contact-aside ul { margin: 32px 0 0; padding: 0; list-style: none; display: grid; gap: 16px; }
+    .contact-aside li { padding-left: 16px; border-left: 4px dotted var(--rosa); }
+    .contact-aside li strong { display: block; }
+    .form-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="logo" href="/" aria-label="Spolvero home"></a>
+      <nav class="nav" aria-label="Main">
+        <a href="/#apps">Apps</a>
+        <a class="hide-sm" href="/#next">Coming up</a>
+        <a href="/#studio">Studio</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="section">
+    <div class="wrap contact-layout">
+      <div class="contact-aside">
+        <h1>Get in touch</h1>
+        <p class="lede">Feedback on an app, a bug, or a project you'd like designed. We read every message.</p>
+        <ul>
+          <li><strong>Replies</strong><span class="muted">Usually within two working days.</span></li>
+          <li><strong>Bugs</strong><span class="muted">A screenshot and your phone model help us fix it faster.</span></li>
+          <li><strong>Design projects</strong><span class="muted">Tell us what you're building, your timeline and your budget.</span></li>
+          <li><strong>Email instead</strong><a href="mailto:spolvero.design@gmail.com">spolvero.design@gmail.com</a></li>
+        </ul>
+      </div>
+
+      <form class="panel" id="contact-form" action="https://formsubmit.co/spolvero.design@gmail.com" method="POST" enctype="multipart/form-data" novalidate>
+        <fieldset>
+          <legend>What's this about?</legend>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="topic" value="App feedback" data-key="feedback" checked><span>App feedback</span></label>
+            <label class="choice"><input type="radio" name="topic" value="Bug report" data-key="bug"><span>Bug report</span></label>
+            <label class="choice"><input type="radio" name="topic" value="Design project" data-key="design"><span>Design project</span></label>
+            <label class="choice"><input type="radio" name="topic" value="Something else" data-key="other"><span>Something else</span></label>
+          </div>
+        </fieldset>
+
+        <div class="field" id="app-field" style="margin-top:24px">
+          <label for="app">Which app?</label>
+          <select id="app" name="app">
+            <option value="Unspend" data-key="unspend">Unspend</option>
+            <option value="Other">Another app</option>
+          </select>
+        </div>
+
+        <div class="field" id="device-field">
+          <label for="device">Phone model and Android version <span class="hint">(optional)</span></label>
+          <input id="device" type="text" name="device" placeholder="For example, Samsung Galaxy S24, Android 15" autocomplete="off">
+        </div>
+
+        <div class="field" id="budget-field" hidden>
+          <label for="budget">Rough budget and timeline <span class="hint">(optional)</span></label>
+          <input id="budget" type="text" name="budget" placeholder="For example, $1,500 over 4 weeks" autocomplete="off">
+        </div>
+
+        <div class="field">
+          <label for="name">Your name</label>
+          <input id="name" type="text" name="name" autocomplete="name" required>
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" name="email" autocomplete="email" required>
+          <span class="hint">We only use it to reply.</span>
+        </div>
+
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" required></textarea>
+        </div>
+
+        <div class="field">
+          <label for="attachment">Screenshot or file <span class="hint">(optional, up to 5 MB)</span></label>
+          <input id="attachment" type="file" name="attachment" accept="image/*,.pdf">
+        </div>
+
+        <input type="hidden" name="_subject" id="subject" value="New message from spolvero.design">
+        <input type="hidden" name="_next" value="https://spolvero.design/contact/thanks/">
+        <input type="hidden" name="_template" value="table">
+        <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <p class="form-error" id="form-error" role="alert" hidden></p>
+
+        <div class="form-actions">
+          <button class="btn btn-solid" type="submit">Send message</button>
+          <span class="hint">By sending, you agree we can reply to you by email.</span>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-base" style="margin-top:0;border-top:0;padding-top:0">
+        <span>© 2026 Spolvero</span>
+        <span><a href="/">Home</a> · <a href="/unspend/privacy/">Unspend privacy policy</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var form = document.getElementById("contact-form");
+      var topics = form.querySelectorAll('input[name="topic"]');
+      var appField = document.getElementById("app-field");
+      var deviceField = document.getElementById("device-field");
+      var budgetField = document.getElementById("budget-field");
+      var subject = document.getElementById("subject");
+      var error = document.getElementById("form-error");
+      var file = document.getElementById("attachment");
+      var params = new URLSearchParams(location.search);
+
+      topics.forEach(function (t) {
+        if (t.dataset.key === params.get("topic")) t.checked = true;
+      });
+      var app = params.get("app");
+      if (app) {
+        var opt = form.querySelector('option[data-key="' + app + '"]');
+        if (opt) opt.selected = true;
+      }
+
+      function sync() {
+        var key = form.querySelector('input[name="topic"]:checked').dataset.key;
+        var aboutApp = key === "feedback" || key === "bug";
+        appField.hidden = !aboutApp;
+        deviceField.hidden = key !== "bug";
+        budgetField.hidden = key !== "design";
+        [appField, deviceField, budgetField].forEach(function (f) {
+          f.querySelectorAll("input, select").forEach(function (i) { i.disabled = f.hidden; });
+        });
+        var topic = form.querySelector('input[name="topic"]:checked').value;
+        subject.value = topic + (aboutApp ? " — " + document.getElementById("app").value : "") + " (spolvero.design)";
+      }
+      topics.forEach(function (t) { t.addEventListener("change", sync); });
+      document.getElementById("app").addEventListener("change", sync);
+      sync();
+
+      form.addEventListener("submit", function (e) {
+        error.hidden = true;
+        var problem = "";
+        if (!form.elements.namedItem("name").value.trim()) problem = "Add your name so we know who to reply to.";
+        else if (!form.elements.namedItem("email").value.trim() || !form.elements.namedItem("email").checkValidity()) problem = "Enter an email address like name@example.com.";
+        else if (!form.elements.namedItem("message").value.trim()) problem = "Write a message before sending.";
+        else if (file.files[0] && file.files[0].size > 5 * 1024 * 1024) problem = "That file is over 5 MB. Choose a smaller one or leave it out.";
+        if (problem) {
+          e.preventDefault();
+          error.textContent = problem;
+          error.hidden = false;
+          error.scrollIntoView({ block: "center" });
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
