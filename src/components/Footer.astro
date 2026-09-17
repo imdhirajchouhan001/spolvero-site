@@ -1,43 +1,53 @@
 ---
 import { products } from "@/data/products";
+
+const columns = [
+  { title: "Apps", links: products.map((p) => ({ label: p.name, href: `/${p.slug}/` })) },
+  {
+    title: "Studio",
+    links: [
+      { label: "Design services", href: "/#studio" },
+      { label: "Start a project", href: "/contact/?topic=design" },
+      { label: "Coming up", href: "/#next" },
+    ],
+  },
+  {
+    title: "Help",
+    links: [
+      { label: "Contact and feedback", href: "/contact/" },
+      { label: "Unspend privacy", href: "/unspend/privacy/" },
+      { label: "GST Calculator privacy", href: "/gst-calculator/privacy/" },
+    ],
+  },
+];
 ---
 
-<footer class="px-3 pb-3 sm:px-4 sm:pb-4">
-  <div class="relative overflow-hidden rounded-[2rem] bg-brand text-white">
-    <div class="page grid gap-10 pt-16 pb-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
-      <div>
-        <p class="max-w-xs text-lg leading-snug text-white/85">An independent studio designing and building apps, games, web tools and software.</p>
-        <a href="mailto:spolvero.design@gmail.com" class="mt-6 inline-block text-sm text-white/70 underline-offset-4 hover:text-white hover:underline">spolvero.design@gmail.com</a>
+<footer class="bg-brand-section pt-12 pb-12 md:pt-16">
+  <div class="container-page">
+    <div class="flex flex-col gap-12 md:flex-row md:justify-between">
+      <div class="flex flex-col gap-6 md:w-80">
+        <a href="/" aria-label="Spolvero home" class="text-white">
+          <span class="logo-mark w-[140px]"></span>
+        </a>
+        <p class="text-md text-tertiary_on-brand">An independent studio designing and building apps, games, web tools and software.</p>
+        <a href="mailto:spolvero.design@gmail.com" class="text-md font-semibold text-secondary_on-brand hover:text-white">spolvero.design@gmail.com</a>
       </div>
-      <div>
-        <h2 class="mb-3 text-sm font-medium text-white/50">Apps</h2>
-        <ul class="grid gap-2 text-sm">
-          {products.map((p) => <li><a class="text-white/85 hover:text-white" href={`/${p.slug}/`}>{p.name}</a></li>)}
-        </ul>
-      </div>
-      <div>
-        <h2 class="mb-3 text-sm font-medium text-white/50">Studio</h2>
-        <ul class="grid gap-2 text-sm">
-          <li><a class="text-white/85 hover:text-white" href="/#studio">Design services</a></li>
-          <li><a class="text-white/85 hover:text-white" href="/contact/?topic=design">Start a project</a></li>
-          <li><a class="text-white/85 hover:text-white" href="/#next">Coming up</a></li>
-        </ul>
-      </div>
-      <div>
-        <h2 class="mb-3 text-sm font-medium text-white/50">Help</h2>
-        <ul class="grid gap-2 text-sm">
-          <li><a class="text-white/85 hover:text-white" href="/contact/">Contact and feedback</a></li>
-          <li><a class="text-white/85 hover:text-white" href="/unspend/privacy/">Unspend privacy</a></li>
-          <li><a class="text-white/85 hover:text-white" href="/gst-calculator/privacy/">GST Calculator privacy</a></li>
-        </ul>
+      <div class="grid grid-cols-2 gap-8 sm:grid-cols-3">
+        {columns.map((c) => (
+          <div>
+            <h2 class="text-sm font-semibold text-quaternary_on-brand">{c.title}</h2>
+            <ul class="mt-4 flex flex-col gap-3">
+              {c.links.map((l) => (
+                <li><a href={l.href} class="text-md font-semibold text-footer-button-fg hover:text-white">{l.label}</a></li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
     </div>
-    <div class="page pb-6">
-      <span class="logo-mark w-full text-white/[0.08]" aria-hidden="true"></span>
-      <div class="mt-6 flex flex-wrap justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/50">
-        <span>© 2026 Spolvero</span>
-        <span>Google Play is a trademark of Google LLC.</span>
-      </div>
+    <div class="mt-12 flex flex-col-reverse justify-between gap-4 border-t border-brand-700 pt-8 md:mt-16 md:flex-row">
+      <p class="text-md text-quaternary_on-brand">© 2026 Spolvero. All rights reserved.</p>
+      <p class="text-md text-quaternary_on-brand">Google Play is a trademark of Google LLC.</p>
     </div>
   </div>
 </footer>

@@ -1,36 +1,67 @@
 ---
-import { buttonVariants } from "@/components/ui/button";
+import Icon from "@/components/Icon.astro";
+import { Button } from "@/components/base/buttons/button";
 
 interface Props {
   cta?: { label: string; href: string };
 }
-const { cta = { label: "Contact", href: "/contact/" } } = Astro.props;
+const { cta = { label: "Contact us", href: "/contact/" } } = Astro.props;
 const links = [
   { label: "Apps", href: "/#apps" },
-  { label: "Studio", href: "/#studio" },
   { label: "Coming up", href: "/#next" },
+  { label: "Design studio", href: "/#studio" },
+  { label: "Contact", href: "/contact/" },
 ];
 ---
 
-<header class="sticky top-0 z-40 border-b border-transparent bg-background/75 backdrop-blur-xl transition-colors" data-header>
-  <div class="page flex h-16 items-center justify-between gap-6">
-    <a href="/" aria-label="Spolvero home" class="text-brand">
-      <span class="logo-mark w-[112px] sm:w-[124px]"></span>
-    </a>
-    <nav aria-label="Main" class="flex items-center gap-1 text-sm">
-      {links.map((l, i) => (
-        <a href={l.href} class:list={["rounded-full px-2.5 py-2 text-muted-foreground transition-colors hover:text-foreground sm:px-3", i === 1 && "hidden sm:block", i === 2 && "hidden md:block"]}>
-          {l.label}
-        </a>
+<header class="sticky top-0 z-40 border-b border-transparent bg-primary/85 backdrop-blur-lg transition-colors" data-header>
+  <nav aria-label="Main" class="container-page flex h-18 items-center justify-between gap-6">
+    <div class="flex items-center gap-10">
+      <a href="/" aria-label="Spolvero home" class="text-brand-800">
+        <span class="logo-mark w-[112px]"></span>
+      </a>
+      <ul class="hidden items-center gap-1 md:flex">
+        {links.map((l) => (
+          <li><a href={l.href} class="rounded-md px-2 py-1 text-md font-semibold text-secondary transition hover:text-secondary_hover">{l.label}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <div class="hidden md:block">
+        <Button href={cta.href} size="lg" color="primary">{cta.label}</Button>
+      </div>
+      <button
+        type="button"
+        class="grid size-10 place-items-center rounded-lg text-fg-secondary hover:bg-primary_hover md:hidden"
+        data-collapse-toggle="mobile-menu"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        aria-label="Open menu"
+      >
+        <Icon name="menu" class="size-6" />
+      </button>
+    </div>
+  </nav>
+
+  <!-- Flowbite collapse -->
+  <div id="mobile-menu" class="hidden border-t border-secondary bg-primary md:hidden">
+    <ul class="container-page flex flex-col gap-1 py-4">
+      {links.map((l) => (
+        <li><a href={l.href} class="block rounded-md px-2 py-3 text-md font-semibold text-primary hover:bg-primary_hover">{l.label}</a></li>
       ))}
-      <a href={cta.href} class:list={[buttonVariants({ size: "lg" }), "ml-1 rounded-full px-4 sm:ml-2"]}>{cta.label}</a>
-    </nav>
+      <li class="pt-2"><Button href={cta.href} size="lg" color="primary" className="w-full">{cta.label}</Button></li>
+    </ul>
   </div>
 </header>
 
 <script>
   const header = document.querySelector<HTMLElement>("[data-header]");
-  const onScroll = () => header?.classList.toggle("border-border", window.scrollY > 8);
+  const onScroll = () => header?.classList.toggle("border-secondary", window.scrollY > 8);
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
+  // Close the mobile menu after picking a link.
+  document.querySelectorAll<HTMLAnchorElement>("#mobile-menu a").forEach((a) =>
+    a.addEventListener("click", () => document.querySelector<HTMLButtonElement>("[data-collapse-toggle=mobile-menu]")?.click()),
+  );
 </script>

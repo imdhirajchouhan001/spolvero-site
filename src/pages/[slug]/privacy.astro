@@ -16,34 +16,21 @@ const { Content } = await render(entry);
 ---
 
 <Base title={`${entry.data.title} — Spolvero`} description={`What ${product.name} collects, why, and the control you have over it.`}>
-  <article class="page max-w-3xl py-16 sm:py-24">
-    <nav aria-label="Breadcrumb" class="text-sm text-muted-foreground">
-      <a href={`/${product.slug}/`} class="hover:text-foreground">{product.name}</a>
-      <span class="mx-1.5">/</span>
-      <span class="text-foreground">Privacy policy</span>
-    </nav>
-    <div class="mt-8 flex items-center gap-4">
-      <AppIcon product={product} size={56} />
-      <div>
-        <h1 class="text-4xl font-semibold text-brand sm:text-5xl">Privacy policy</h1>
-        <p class="mt-1 text-muted-foreground">{product.storeName} · Effective {entry.data.effective}</p>
+  <section class="bg-primary py-16 md:py-24">
+    <div class="container-page">
+      <div class="mx-auto flex max-w-3xl flex-col items-center text-center">
+        <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm font-semibold text-tertiary">
+          <a href={`/${product.slug}/`} class="hover:text-tertiary_hover">{product.name}</a>
+          <span aria-hidden="true">/</span>
+          <span class="text-brand-secondary">Privacy policy</span>
+        </nav>
+        <AppIcon product={product} size={56} class="mt-8" />
+        <h1 class="mt-5 text-display-md font-semibold text-primary md:text-display-lg">Privacy policy</h1>
+        <p class="mt-4 text-lg text-tertiary md:text-xl">{product.storeName} · Effective {entry.data.effective}</p>
       </div>
+      <article class="prose mx-auto mt-12 max-w-3xl md:prose-lg md:mt-16 [&_a]:break-words [&_table]:block [&_table]:overflow-x-auto">
+        <Content />
+      </article>
     </div>
-    <div class="policy mt-12">
-      <Content />
-    </div>
-  </article>
+  </section>
 </Base>
-
-<style is:global>
-  .policy { color: var(--muted-foreground); line-height: 1.7; }
-  .policy h2 { margin-top: 2.75rem; margin-bottom: 0.75rem; font-size: 1.5rem; font-weight: 600; color: var(--color-brand); letter-spacing: -0.02em; }
-  .policy p + p, .policy p + ul, .policy ul + p { margin-top: 1rem; }
-  .policy strong { color: var(--foreground); font-weight: 600; }
-  .policy a { color: var(--color-brand); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
-  .policy ul { list-style: disc; padding-left: 1.25rem; }
-  .policy li + li { margin-top: 0.4rem; }
-  .policy table { width: 100%; margin-top: 1rem; border-collapse: collapse; font-size: 0.95rem; display: block; overflow-x: auto; }
-  .policy th, .policy td { border-bottom: 1px solid var(--border); padding: 0.6rem 0.75rem 0.6rem 0; text-align: left; vertical-align: top; }
-  .policy th { color: var(--foreground); font-weight: 600; }
-</style>

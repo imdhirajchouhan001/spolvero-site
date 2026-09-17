@@ -1,0 +1,18 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  align?: "left" | "center";
+  onBrand?: boolean;
+  id?: string;
+  class?: string;
+}
+const { eyebrow, title, lede, align = "center", onBrand = false, id, class: className } = Astro.props;
+---
+
+<div class:list={["flex max-w-3xl flex-col", align === "center" && "mx-auto items-center text-center", className]} data-reveal>
+  {eyebrow && <span class:list={["text-sm font-semibold md:text-md", onBrand ? "text-secondary_on-brand" : "text-brand-secondary"]}>{eyebrow}</span>}
+  <h2 id={id} class:list={["mt-3 text-display-sm font-semibold md:text-display-md", onBrand ? "text-primary_on-brand" : "text-primary"]}>{title}</h2>
+  {lede && <p class:list={["mt-4 text-lg md:mt-5 md:text-xl", onBrand ? "text-tertiary_on-brand" : "text-tertiary"]}>{lede}</p>}
+</div>

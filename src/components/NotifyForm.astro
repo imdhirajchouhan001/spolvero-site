@@ -1,46 +1,42 @@
 ---
-import { buttonVariants } from "@/components/ui/button";
-
 interface Props {
   product?: string;
   class?: string;
-  dark?: boolean;
+  onBrand?: boolean;
 }
-const { product, class: className, dark = false } = Astro.props;
+const { product, class: className, onBrand = false } = Astro.props;
 const list = product ? `${product} launch` : "Spolvero launches";
+const id = `notify-${(product ?? "all").toLowerCase().replace(/\W+/g, "-")}`;
 ---
 
-<form
-  action="https://formsubmit.co/spolvero.design@gmail.com"
-  method="POST"
-  class:list={["flex flex-col gap-2 sm:flex-row", className]}
->
-  <label class="sr-only" for={`notify-${product ?? "all"}`}>Email address</label>
-  <input
-    id={`notify-${product ?? "all"}`}
-    type="email"
-    name="email"
-    required
-    autocomplete="email"
-    placeholder="you@example.com"
-    class:list={[
-      "h-12 flex-1 rounded-full border px-5 text-base outline-none transition focus-visible:ring-3 focus-visible:ring-ring/40",
-      dark ? "border-white/20 bg-white/10 text-white placeholder:text-white/50" : "border-input bg-background",
-    ]}
-  />
+<form action="https://formsubmit.co/spolvero.design@gmail.com" method="POST" class:list={["w-full", className]}>
+  <div class="flex flex-col gap-3 sm:flex-row">
+    <div class="flex-1">
+      <label class="sr-only" for={id}>Email address</label>
+      <input
+        id={id}
+        type="email"
+        name="email"
+        required
+        autocomplete="email"
+        placeholder="Enter your email"
+        class="w-full rounded-lg bg-primary px-3.5 py-3 text-md text-primary shadow-xs ring-1 ring-primary outline-hidden ring-inset placeholder:text-placeholder focus:ring-2 focus:ring-brand"
+      />
+      <p class:list={["mt-1.5 text-left text-sm", onBrand ? "text-tertiary_on-brand" : "text-tertiary"]}>We care about your data. One email per launch, nothing else.</p>
+    </div>
+    <button
+      type="submit"
+      class:list={[
+        "relative h-12 shrink-0 rounded-lg px-5 text-md font-semibold shadow-xs-skeuomorphic transition",
+        onBrand ? "bg-primary text-secondary ring-1 ring-primary ring-inset hover:bg-primary_hover" : "bg-brand-solid text-white hover:bg-brand-solid_hover",
+      ]}
+    >
+      {product ? "Notify me" : "Subscribe"}
+    </button>
+  </div>
   <input type="hidden" name="_subject" value={`Launch list: ${list}`} />
   <input type="hidden" name="list" value={list} />
   <input type="hidden" name="_next" value="https://spolvero.design/contact/thanks/?from=updates" />
   <input type="hidden" name="_template" value="table" />
   <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="absolute -left-[9999px]" />
-  <button
-    type="submit"
-    class:list={[
-      buttonVariants({ size: "lg" }),
-      "h-12 rounded-full px-6 text-base",
-      dark && "bg-white text-brand hover:bg-white/90",
-    ]}
-  >
-    {product ? "Notify me" : "Join the launch list"}
-  </button>
 </form>

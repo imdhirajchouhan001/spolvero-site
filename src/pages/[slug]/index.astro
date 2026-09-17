@@ -4,10 +4,15 @@ import AppIcon from "@/components/AppIcon.astro";
 import Icon from "@/components/Icon.astro";
 import Screen from "@/components/Screen.astro";
 import NotifyForm from "@/components/NotifyForm.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Faq from "@/components/Faq.astro";
 import SplitText from "@/components/SplitText";
-import Faq from "@/components/Faq";
-import { buttonVariants } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/base/buttons/button";
+import { GooglePlayButton } from "@/components/base/buttons/app-store-buttons";
+import { Badge } from "@/components/base/badges/badges";
+import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
+import { BackgroundPattern } from "@/components/shared-assets/background-patterns";
+import { getIcon } from "@/lib/icons";
 import { products, type Product } from "@/data/products";
 
 export function getStaticPaths() {
@@ -42,121 +47,127 @@ const jsonLd = {
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
 
   <!-- Hero -->
-  <section class="px-3 pt-2 sm:px-4">
-    <div class="mesh rounded-[2rem]" style={`--mesh-tint:${p.tint};--mesh-accent:${p.accent}`}>
-      <div class="page flex flex-col items-center pt-12 text-center sm:pt-20">
-        <nav aria-label="Breadcrumb" class="text-sm text-muted-foreground">
-          <a href="/#apps" class="hover:text-foreground">Apps</a>
-          <span class="mx-1.5">/</span>
-          <span class="text-foreground">{p.name}</span>
-        </nav>
+  <section class="relative overflow-hidden pt-12 md:pt-20" style={`background:linear-gradient(180deg, ${p.tint}, #fff 85%)`}>
+    <BackgroundPattern pattern="circle" size="lg" className="absolute top-0 left-1/2 hidden -translate-x-1/2 text-black/[0.06] md:block" />
+    <div class="relative container-page flex flex-col items-center text-center">
+      <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm font-semibold text-tertiary">
+        <a href="/#apps" class="hover:text-tertiary_hover">Apps</a>
+        <span aria-hidden="true">/</span>
+        <span class="text-brand-secondary">{p.name}</span>
+      </nav>
 
-        <div class="mt-8 flex items-center gap-4" data-reveal>
-          <AppIcon product={p} size={72} />
-          <div class="text-left">
-            <p class="text-2xl font-semibold text-brand">{p.name}</p>
-            <p class="text-sm text-muted-foreground">{p.kind} for {p.platform}</p>
-          </div>
-        </div>
-
-        <SplitText
-          client:load
-          tag="h1"
-          text={p.tagline}
-          splitType="words, chars"
-          delay={22}
-          duration={0.9}
-          from={{ opacity: 0, y: 32 }}
-          to={{ opacity: 1, y: 0 }}
-          rootMargin="0px"
-          threshold={0}
-          className="mt-8 max-w-4xl text-5xl font-semibold tracking-tight text-brand sm:text-6xl lg:text-7xl"
-        />
-        <p class="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl" data-reveal>{p.summary}</p>
-
-        <div class="mt-9 flex flex-col items-center gap-3" id="notify" data-reveal>
-          {isLive ? (
-            <>
-              <a href={p.playUrl} class:list={[buttonVariants({ size: "lg" }), "h-12 rounded-full px-6 text-base"]} style={`background:${p.accent}`}>
-                <Icon name="play" size={16} class="fill-current" /> Get it on Google Play
-              </a>
-              <p class="text-sm text-muted-foreground">Free on Google Play</p>
-            </>
-          ) : (
-            <>
-              <Badge variant="outline" className="h-7 rounded-full bg-white/70 px-3 text-brand">Coming soon to Google Play</Badge>
-              <NotifyForm product={p.name} class="mt-2 w-full max-w-md" />
-            </>
-          )}
-        </div>
-
-        <div class="relative mt-14 flex w-full max-w-4xl items-end justify-center gap-3 sm:gap-6" data-hero-shots>
-          {heroShots.length ? heroShots.map((s, i) => (
-            <div
-              class:list={[i === 1 ? "z-10 w-[62%] max-w-[270px] sm:w-[34%]" : "mb-12 hidden w-[28%] max-w-[230px] opacity-95 sm:block"]}
-              data-hero-shot={i - 1}
-            >
-              <Screen product={p} shot={s} eager />
-            </div>
-          )) : (
-            <div class="relative grid w-[70%] max-w-[300px] grid-cols-3 gap-2.5 rounded-t-[2rem] bg-[#1f1f24] p-5 pt-24 shadow-2xl" aria-hidden="true" data-hero-shot="0">
-              <span class="absolute top-8 right-6 text-4xl font-semibold text-white">₹1,180</span>
-              {["7", "8", "9", "4", "5", "6", "1", "2", "3", "5%", "18%", "40%"].map((k) => (
-                <span class:list={["grid h-12 place-items-center rounded-xl font-medium text-white", !k.includes("%") && "bg-white/10"]} style={k.includes("%") ? `background:${p.accent}` : undefined}>{k}</span>
-              ))}
-            </div>
-          )}
+      <div class="mt-8 flex items-center gap-4" data-reveal>
+        <AppIcon product={p} size={64} />
+        <div class="text-left">
+          <p class="text-xl font-semibold text-primary">{p.name}</p>
+          <p class="text-md text-tertiary">{p.kind} for {p.platform}</p>
         </div>
       </div>
+
+      <div class="mt-6" data-reveal>
+        {isLive
+          ? <Badge type="pill-color" color="success" size="lg">Live on Google Play</Badge>
+          : <Badge type="pill-color" color="gray" size="lg">Coming soon to Google Play</Badge>}
+      </div>
+
+      <SplitText
+        client:load
+        tag="h1"
+        text={p.tagline}
+        splitType="words, chars"
+        delay={20}
+        duration={0.9}
+        from={{ opacity: 0, y: 30 }}
+        to={{ opacity: 1, y: 0 }}
+        rootMargin="0px"
+        threshold={0}
+        className="mt-4 max-w-4xl text-display-md font-semibold text-primary md:text-display-xl"
+      />
+      <p class="mt-4 max-w-3xl text-lg text-tertiary md:mt-6 md:text-xl" data-reveal>{p.summary}</p>
+
+      <div id="notify" class="mt-8 flex w-full max-w-lg flex-col items-center gap-3 md:mt-10" data-reveal>
+        {isLive ? (
+          <div class="flex flex-wrap items-center justify-center gap-3">
+            <GooglePlayButton href={p.playUrl} size="lg" />
+            <Button href="#features" color="secondary" size="xl">See what it does</Button>
+          </div>
+        ) : (
+          <NotifyForm product={p.name} />
+        )}
+      </div>
+
+      <div class="relative mt-14 flex w-full max-w-4xl items-end justify-center gap-4 md:mt-16 md:gap-8">
+        {heroShots.length ? heroShots.map((s, i) => (
+          <div class:list={[i === 1 ? "z-10 w-[60%] max-w-[280px] md:w-[32%]" : "mb-12 hidden w-[28%] max-w-[240px] md:block"]} data-hero-shot={i - 1}>
+            <Screen product={p} shot={s} />
+          </div>
+        )) : (
+          <div class="relative grid w-[70%] max-w-[300px] grid-cols-3 gap-2.5 rounded-t-[2rem] bg-[#1f1f24] p-5 pt-24 shadow-3xl" aria-hidden="true" data-hero-shot="0">
+            <span class="absolute top-8 right-6 text-display-xs font-semibold text-white">₹1,180</span>
+            {["7", "8", "9", "4", "5", "6", "1", "2", "3", "5%", "18%", "40%"].map((k) => (
+              <span class:list={["grid h-12 place-items-center rounded-xl font-medium text-white", !k.includes("%") && "bg-white/10"]} style={k.includes("%") ? `background:${p.accent}` : undefined}>{k}</span>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
+    <div class="relative h-px bg-border-secondary"></div>
   </section>
 
   <!-- Features -->
-  <section class="page py-24 sm:py-28">
-    <div class="grid gap-5 sm:grid-cols-2">
-      {p.features.map((f) => (
-        <div class="rounded-[1.75rem] border bg-card p-8" data-reveal>
-          <span class="grid size-12 place-items-center rounded-2xl text-white" style={`background:${p.accent}`}><Icon name={f.icon} size={22} /></span>
-          <h2 class="mt-6 text-2xl font-semibold text-brand">{f.title}</h2>
-          <p class="mt-2 text-muted-foreground">{f.body}</p>
-        </div>
-      ))}
+  <section id="features" class="bg-primary py-16 md:py-24">
+    <div class="container-page">
+      <SectionHeader eyebrow="Features" title={`What ${p.name} does`} lede={p.summary} />
+      <ul class="mt-12 grid gap-x-8 gap-y-10 md:mt-16 md:grid-cols-2 lg:gap-y-16">
+        {p.features.map((f) => (
+          <li class="flex gap-4" data-reveal>
+            <FeaturedIcon icon={getIcon(f.icon)} size="lg" color="brand" theme="modern" />
+            <div>
+              <h3 class="text-lg font-semibold text-primary md:text-xl">{f.title}</h3>
+              <p class="mt-1 text-md text-tertiary md:mt-2">{f.body}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 
   <!-- Screenshots -->
   {p.screenshots.length > 0 && (
-    <section class="pb-24" aria-labelledby="shots-title">
-      <div class="page" data-reveal>
-        <h2 id="shots-title" class="text-4xl font-semibold text-brand sm:text-5xl">A closer look</h2>
+    <section class="bg-secondary py-16 md:py-24" aria-labelledby="shots-title">
+      <div class="container-page">
+        <SectionHeader id="shots-title" align="left" eyebrow="Screenshots" title="A closer look" />
       </div>
-      <div class="mt-10 overflow-x-auto pb-4 [scrollbar-width:thin]" tabindex="0" aria-label={`${p.name} screenshots, scroll sideways`}>
-        <div class="page flex w-max gap-5" data-rail>
+      <div class="mt-10 overflow-x-auto pb-6 scrollbar-hide" tabindex="0" aria-label={`${p.name} screenshots, scroll sideways`}>
+        <ul class="container-page flex w-max gap-6">
           {p.screenshots.map((s) => (
-            <figure class="w-[220px] shrink-0 sm:w-[250px]">
+            <li class="w-[220px] shrink-0 md:w-[260px] [&_.shot_img]:aspect-[700/1255] [&_.shot_img]:object-cover [&_.shot_img]:object-top">
               <Screen product={p} shot={s} />
-              <figcaption class="mt-4 text-sm font-medium text-brand">{s.caption}</figcaption>
-            </figure>
+              <p class="mt-5 text-md font-semibold text-primary">{s.caption}</p>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   )}
 
   <!-- Promise -->
-  <section class="px-3 sm:px-4">
-    <div class="rounded-[2rem] bg-brand py-20 text-white sm:py-24">
-      <div class="page grid gap-12 lg:grid-cols-2">
-        <div data-reveal>
-          <h2 class="text-4xl font-semibold sm:text-5xl">{p.promise.title}</h2>
-          <p class="mt-5 max-w-md text-lg text-white/75">{p.promise.body}</p>
-          {p.policy && <a href={`/${p.slug}/privacy/`} class="mt-8 inline-flex items-center gap-2 text-white underline-offset-4 hover:underline">Read the privacy policy <Icon name="arrow" size={16} /></a>}
+  <section class="bg-primary py-16 md:py-24">
+    <div class="container-page">
+      <div class="grid gap-12 rounded-2xl bg-brand-section px-6 py-10 md:px-16 md:py-16 lg:grid-cols-2" data-reveal>
+        <div>
+          <SectionHeader align="left" onBrand eyebrow="Our promise" title={p.promise.title} lede={p.promise.body} />
+          {p.policy && (
+            <a href={`/${p.slug}/privacy/`} class="mt-8 inline-flex items-center gap-1.5 text-md font-semibold text-secondary_on-brand hover:text-white">
+              Read the privacy policy <Icon name="arrow" class="size-5" />
+            </a>
+          )}
         </div>
-        <ul class="grid content-start gap-3">
+        <ul class="flex flex-col gap-5 self-center">
           {p.promise.points.map((pt) => (
-            <li class="flex items-start gap-4 rounded-2xl bg-white/[0.06] p-5" data-reveal>
-              <span class="grid size-7 shrink-0 place-items-center rounded-full bg-white text-brand"><Icon name="check" size={16} /></span>
-              <span class="pt-0.5 text-lg">{pt}</span>
+            <li class="flex gap-3">
+              <span class="grid size-7 shrink-0 place-items-center rounded-full bg-brand-700 text-white"><Icon name="check" class="size-4" /></span>
+              <span class="pt-0.5 text-lg text-primary_on-brand">{pt}</span>
             </li>
           ))}
         </ul>
@@ -166,76 +177,83 @@ const jsonLd = {
 
   <!-- Pricing -->
   {p.pricing && (
-    <section class="page pt-24 sm:pt-28">
-      <div class="mx-auto max-w-2xl text-center" data-reveal>
-        <h2 class="text-4xl font-semibold text-brand sm:text-5xl">Free, with Pro</h2>
-        <p class="mt-4 text-lg text-muted-foreground">Everything you need is free. Pro is there if you want more.</p>
-      </div>
-      <div class="mt-12 grid gap-5 md:grid-cols-2">
-        <div class="rounded-[1.75rem] border bg-card p-8" data-reveal>
-          <h3 class="text-2xl font-semibold text-brand">Free</h3>
-          <p class="mt-1 text-muted-foreground">Forever</p>
-          <ul class="mt-6 grid gap-3">
-            {p.pricing.free.map((x) => <li class="flex items-center gap-3"><Icon name="check" size={18} class="text-muted-foreground" />{x}</li>)}
-          </ul>
-        </div>
-        <div class="rounded-[1.75rem] p-8 text-white" style={`background:${p.accent}`} data-reveal>
-          <h3 class="text-2xl font-semibold">Pro</h3>
-          <p class="mt-1 text-white/75">{p.pricing.proNote}</p>
-          <ul class="mt-6 grid gap-3">
-            {p.pricing.pro.map((x) => <li class="flex items-center gap-3"><Icon name="check" size={18} />{x}</li>)}
-          </ul>
+    <section class="bg-primary pb-16 md:pb-24">
+      <div class="container-page">
+        <SectionHeader eyebrow="Pricing" title="Free, with Pro" lede="Everything you need is free. Pro is there if you want more." />
+        <div class="mt-12 grid gap-8 md:mt-16 md:grid-cols-2">
+          {[{ name: "Free", note: "Forever", items: p.pricing.free, pro: false }, { name: "Pro", note: p.pricing.proNote, items: p.pricing.pro, pro: true }].map((plan) => (
+            <div class:list={["flex flex-col rounded-2xl p-6 shadow-lg md:p-8", plan.pro ? "bg-brand-section" : "bg-primary ring-1 ring-secondary"]} data-reveal>
+              <div class="flex items-center justify-between">
+                <p class:list={["text-display-xs font-semibold", plan.pro ? "text-primary_on-brand" : "text-primary"]}>{plan.name}</p>
+                {plan.pro && <Badge type="pill-color" color="brand" size="md">No ads</Badge>}
+              </div>
+              <p class:list={["mt-2 text-md", plan.pro ? "text-tertiary_on-brand" : "text-tertiary"]}>{plan.note}</p>
+              <ul class:list={["mt-8 flex flex-col gap-4 border-t pt-8", plan.pro ? "border-brand-700" : "border-secondary"]}>
+                {plan.items.map((x) => (
+                  <li class="flex gap-3">
+                    <FeaturedIcon icon={getIcon("check")} size="sm" color={plan.pro ? "brand" : "success"} theme="light" />
+                    <span class:list={["pt-1 text-md", plan.pro ? "text-primary_on-brand" : "text-tertiary"]}>{x}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </div>
     </section>
   )}
 
   <!-- FAQ -->
-  <section class="page grid gap-10 py-24 sm:py-28 lg:grid-cols-[0.8fr_1.2fr]">
-    <div data-reveal>
-      <h2 class="text-4xl font-semibold text-brand sm:text-5xl">Questions</h2>
-      <p class="mt-4 text-lg text-muted-foreground">
-        Something else? <a class="text-brand underline underline-offset-4" href={`/contact/?topic=feedback&app=${p.slug}`}>Send us a message</a>.
-      </p>
-    </div>
-    <div data-reveal>
-      <Faq client:visible items={p.faqs} />
-      {p.disclaimer && <p class="mt-8 rounded-2xl bg-muted p-5 text-sm text-muted-foreground">{p.disclaimer}</p>}
+  <section class="bg-secondary py-16 md:py-24">
+    <div class="container-page grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-16">
+      <div>
+        <SectionHeader align="left" eyebrow="Support" title="Questions" lede="Can't find the answer you're looking for?" />
+        <div class="mt-6" data-reveal>
+          <Button href={`/contact/?topic=feedback&app=${p.slug}`} color="secondary" size="lg">Send us a message</Button>
+        </div>
+      </div>
+      <div data-reveal>
+        <Faq id={`faq-${p.slug}`} items={p.faqs} />
+        {p.disclaimer && <p class="mt-8 rounded-xl bg-primary p-5 text-sm text-tertiary ring-1 ring-secondary">{p.disclaimer}</p>}
+      </div>
     </div>
   </section>
 
   <!-- CTA -->
-  <section class="page pb-24">
-    <div class="mesh rounded-[2rem] px-6 py-14 text-center sm:px-12" style={`--mesh-tint:${p.tint};--mesh-accent:${p.accent}`} data-reveal>
-      <AppIcon product={p} size={64} class="mx-auto" />
-      <h2 class="mt-6 text-3xl font-semibold text-brand sm:text-4xl">{isLive ? `Try ${p.name} today` : `Be first to try ${p.name}`}</h2>
-      {isLive ? (
-        <a href={p.playUrl} class:list={[buttonVariants({ size: "lg" }), "mt-8 h-12 rounded-full px-6 text-base"]} style={`background:${p.accent}`}>
-          <Icon name="play" size={16} class="fill-current" /> Get it on Google Play
-        </a>
-      ) : (
-        <NotifyForm product={p.name} class="mx-auto mt-8 max-w-md" />
-      )}
-      <p class="mt-6 text-sm text-muted-foreground">
-        <a class="underline underline-offset-4" href={`/contact/?topic=bug&app=${p.slug}`}>Report a bug</a>
-        {p.policy && <> · <a class="underline underline-offset-4" href={`/${p.slug}/privacy/`}>Privacy policy</a></>}
-      </p>
+  <section class="bg-primary py-16 md:py-24">
+    <div class="container-page">
+      <div class="flex flex-col items-center rounded-2xl bg-secondary px-6 py-10 text-center md:py-16" data-reveal>
+        <AppIcon product={p} size={64} />
+        <h2 class="mt-6 text-display-xs font-semibold text-primary md:text-display-sm">{isLive ? `Try ${p.name} today` : `Be first to try ${p.name}`}</h2>
+        <p class="mt-3 text-lg text-tertiary md:text-xl">{isLive ? "Free on Google Play." : "We'll email you the day it's out."}</p>
+        <div class="mt-8 w-full max-w-lg">
+          {isLive ? <div class="flex justify-center"><GooglePlayButton href={p.playUrl} size="lg" /></div> : <NotifyForm product={p.name} />}
+        </div>
+        <p class="mt-6 text-sm text-tertiary">
+          <a class="font-semibold text-brand-secondary hover:underline" href={`/contact/?topic=bug&app=${p.slug}`}>Report a bug</a>
+          {p.policy && <> · <a class="font-semibold text-brand-secondary hover:underline" href={`/${p.slug}/privacy/`}>Privacy policy</a></>}
+        </p>
+      </div>
     </div>
   </section>
 
   <!-- More apps -->
-  <section class="page pb-24">
-    <h2 class="text-2xl font-semibold text-brand" data-reveal>More from Spolvero</h2>
-    <div class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-      {others.map((o) => (
-        <a href={`/${o.slug}/`} class="flex items-center gap-3 rounded-2xl border bg-card p-4 transition-colors hover:bg-muted" data-reveal>
-          <AppIcon product={o} size={40} />
-          <span>
-            <span class="block font-medium text-brand">{o.name}</span>
-            <span class="block text-xs text-muted-foreground">{o.kind}</span>
-          </span>
-        </a>
-      ))}
+  <section class="bg-primary pb-16 md:pb-24">
+    <div class="container-page">
+      <h2 class="text-display-xs font-semibold text-primary" data-reveal>More from Spolvero</h2>
+      <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        {others.map((o) => (
+          <li data-reveal>
+            <a href={`/${o.slug}/`} class="flex items-center gap-3 rounded-xl bg-primary p-4 shadow-xs ring-1 ring-secondary transition hover:bg-primary_hover">
+              <AppIcon product={o} size={40} />
+              <span>
+                <span class="block text-md font-semibold text-primary">{o.name}</span>
+                <span class="block text-sm text-tertiary">{o.kind}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 </Base>

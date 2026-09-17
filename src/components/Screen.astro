@@ -1,21 +1,21 @@
 ---
 import type { Product, Screenshot } from "@/data/products";
+import { IPhoneMockup } from "@/components/shared-assets/iphone-mockup";
 
 interface Props {
   product: Product;
   shot: Screenshot;
   class?: string;
-  eager?: boolean;
 }
-const { product, shot, class: className, eager = false } = Astro.props;
+const { product, shot, class: className } = Astro.props;
 ---
 
-<div class:list={[product.framed ? "shot" : "phone", className]}>
-  <img
-    src={shot.src}
-    alt={shot.alt}
-    class="block h-auto w-full"
-    loading={eager ? "eager" : "lazy"}
-    decoding="async"
-  />
-</div>
+{product.framed ? (
+  <div class:list={["shot", className]}>
+    <img src={shot.src} alt={shot.alt} class="block h-auto w-full" loading="lazy" decoding="async" />
+  </div>
+) : (
+  <div class:list={["drop-shadow-2xl", className]} role="img" aria-label={shot.alt}>
+    <IPhoneMockup image={shot.src} theme="light" className="h-auto w-full" aria-hidden="true" />
+  </div>
+)}

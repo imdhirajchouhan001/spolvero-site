@@ -1,18 +1,19 @@
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { Key } from "react-aria-components";
+import { Button } from "@/components/base/buttons/button";
+import { Input } from "@/components/base/input/input";
+import { Label } from "@/components/base/input/label";
+import { RadioButton, RadioGroup } from "@/components/base/radio-buttons/radio-buttons";
+import { Select } from "@/components/base/select/select";
+import { TextArea } from "@/components/base/textarea/textarea";
 
 type Topic = "feedback" | "bug" | "design" | "other";
 
-const TOPICS: { value: Topic; label: string }[] = [
-  { value: "feedback", label: "App feedback" },
-  { value: "bug", label: "Bug report" },
-  { value: "design", label: "Design project" },
-  { value: "other", label: "Something else" },
+const TOPICS: { value: Topic; label: string; hint: string }[] = [
+  { value: "feedback", label: "App feedback", hint: "Ideas or thoughts on an app" },
+  { value: "bug", label: "Bug report", hint: "Something isn't working" },
+  { value: "design", label: "Design project", hint: "Hire us for app, web or brand design" },
+  { value: "other", label: "Something else", hint: "Anything else" },
 ];
 
 type Props = { apps: { slug: string; name: string }[] };
@@ -21,7 +22,7 @@ const MAX_BYTES = 5 * 1024 * 1024;
 
 export default function ContactForm({ apps }: Props) {
   const [topic, setTopic] = useState<Topic>("feedback");
-  const [app, setApp] = useState(apps[0]?.slug ?? "");
+  const [app, setApp] = useState<string>(apps[0]?.slug ?? "");
   const [error, setError] = useState("");
   const errorRef = useRef<HTMLParagraphElement>(null);
 
@@ -35,17 +36,19 @@ export default function ContactForm({ apps }: Props) {
 
   const aboutApp = topic === "feedback" || topic === "bug";
   const topicLabel = TOPICS.find((t) => t.value === topic)!.label;
-  const appName = apps.find((a) => a.slug === app)?.name ?? "Other";
+  const appName = apps.find((a) => a.slug === app)?.name ?? "Another app";
   const subject = `${topicLabel}${aboutApp ? ` — ${appName}` : ""} (spolvero.design)`;
+  const appItems = [...apps.map((a) => ({ id: a.slug, label: a.name })), { id: "other", label: "Another app" }];
 
   function onSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     const f = e.currentTarget;
-    const get = (n: string) => (f.elements.namedItem(n) as HTMLInputElement | null);
-    const file = get("attachment")?.files?.[0];
+    const val = (n: string) => ((f.elements.namedItem(n) as HTMLInputElement | null)?.value ?? "").trim();
+    const email = f.elements.namedItem("email") as HTMLInputElement | null;
+    const file = (f.elements.namedItem("attachment") as HTMLInputElement | null)?.files?.[0];
     let problem = "";
-    if (!get("name")?.value.trim()) problem = "Add your name so we know who to reply to.";
-    else if (!get("email")?.value.trim() || !get("email")!.checkValidity()) problem = "Enter an email address like name@example.com.";
-    else if (!(f.elements.namedItem("message") as HTMLTextAreaElement).value.trim()) problem = "Write a message before sending.";
+    if (!val("name")) problem = "Add your name so we know who to reply to.";
+    else if (!val("email") || (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()))) problem = "Enter an email address like name@example.com.";
+    else if (!val("message")) problem = "Write a message before sending.";
     else if (file && file.size > MAX_BYTES) problem = "That file is over 5 MB. Choose a smaller one or leave it out.";
     if (problem) {
       e.preventDefault();
@@ -61,76 +64,68 @@ export default function ContactForm({ apps }: Props) {
       encType="multipart/form-data"
       noValidate
       onSubmit={onSubmit}
-      className="grid gap-6 rounded-[1.75rem] border bg-card p-6 sm:p-9"
+      className="flex flex-col gap-6"
     >
-      <fieldset className="grid gap-3">
-        <legend className="mb-3 text-sm font-medium">What's this about?</legend>
-        <RadioGroup name="topic_key" value={topic} onValueChange={(v) => setTopic(v as Topic)} className="grid grid-cols-2 gap-2">
-          {TOPICS.map((t) => (
-            <Label
-              key={t.value}
-              htmlFor={`topic-${t.value}`}
-              className="flex h-12 cursor-pointer items-center gap-2.5 rounded-xl border px-3 text-sm font-medium has-data-checked:border-brand has-data-checked:bg-brand-soft"
-            >
-              <RadioGroupItem id={`topic-${t.value}`} value={t.value} />
-              {t.label}
-            </Label>
-          ))}
-        </RadioGroup>
-        <input type="hidden" name="topic" value={topicLabel} />
-      </fieldset>
+      <RadioGroup
+        aria-label="What's this about?"
+        value={topic}
+        onChange={(v) => setTopic(v as Topic)}
+        className="grid gap-3 sm:grid-cols-2"
+      >
+        {TOPICS.map((t) => (
+          <RadioButton
+            key={t.value}
+            value={t.value}
+            label={t.label}
+            hint={t.hint}
+            size="md"
+            className="rounded-xl p-4 ring-1 ring-secondary ring-inset selected:ring-2 selected:ring-brand"
+          />
+        ))}
+      </RadioGroup>
+      <input type="hidden" name="topic" value={topicLabel} />
 
       {aboutApp && (
-        <div className="grid gap-2">
-          <Label htmlFor="app">Which app?</Label>
-          <Select value={app} onValueChange={(v) => { if (v) setApp(v); }}>
-            <SelectTrigger id="app" className="h-11 w-full rounded-xl">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {apps.map((a) => (
-                <SelectItem key={a.slug} value={a.slug}>{a.name}</SelectItem>
-              ))}
-              <SelectItem value="other">Another app</SelectItem>
-            </SelectContent>
+        <>
+          <Select
+            label="Which app?"
+            items={appItems}
+            selectedKey={app}
+            onSelectionChange={(k: Key | null) => { if (k) setApp(String(k)); }}
+            size="md"
+          >
+            {(item) => <Select.Item id={item.id}>{item.label}</Select.Item>}
           </Select>
           <input type="hidden" name="app" value={appName} />
-        </div>
+        </>
       )}
 
       {topic === "bug" && (
-        <div className="grid gap-2">
-          <Label htmlFor="device">Phone model and Android version <span className="font-normal text-muted-foreground">(optional)</span></Label>
-          <Input id="device" name="device" className="h-11 rounded-xl" placeholder="For example, Samsung Galaxy S24, Android 15" autoComplete="off" />
-        </div>
+        <Input name="device" label="Phone model and Android version" hint="Optional" placeholder="For example, Samsung Galaxy S24, Android 15" />
       )}
 
       {topic === "design" && (
-        <div className="grid gap-2">
-          <Label htmlFor="budget">Rough budget and timeline <span className="font-normal text-muted-foreground">(optional)</span></Label>
-          <Input id="budget" name="budget" className="h-11 rounded-xl" placeholder="For example, $1,500 over 4 weeks" autoComplete="off" />
-        </div>
+        <Input name="budget" label="Rough budget and timeline" hint="Optional" placeholder="For example, $1,500 over 4 weeks" />
       )}
 
       <div className="grid gap-6 sm:grid-cols-2">
-        <div className="grid gap-2">
-          <Label htmlFor="name">Your name</Label>
-          <Input id="name" name="name" className="h-11 rounded-xl" autoComplete="name" required />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" className="h-11 rounded-xl" autoComplete="email" required />
-        </div>
+        <Input name="name" label="Your name" placeholder="Your name" autoComplete="name" isRequired />
+        <Input name="email" type="email" label="Email" placeholder="you@example.com" autoComplete="email" isRequired />
       </div>
 
-      <div className="grid gap-2">
-        <Label htmlFor="message">Message</Label>
-        <Textarea id="message" name="message" className="min-h-40 rounded-xl" required />
-      </div>
+      <TextArea name="message" label="Message" placeholder="Leave us a message..." rows={6} isRequired />
 
-      <div className="grid gap-2">
-        <Label htmlFor="attachment">Screenshot or file <span className="font-normal text-muted-foreground">(optional, up to 5 MB)</span></Label>
-        <Input id="attachment" name="attachment" type="file" accept="image/*,.pdf" className="h-11 rounded-xl pt-2.5" />
+      <div className="flex flex-col gap-1.5">
+        <Label>Screenshot or file</Label>
+        <input
+          id="attachment"
+          name="attachment"
+          type="file"
+          accept="image/*,.pdf"
+          aria-describedby="attachment-hint"
+          className="w-full rounded-lg bg-primary px-3.5 py-2.5 text-md text-primary shadow-xs ring-1 ring-primary ring-inset file:mr-3 file:rounded-md file:border-0 file:bg-secondary file:px-3 file:py-1 file:text-sm file:font-semibold file:text-secondary"
+        />
+        <p id="attachment-hint" className="text-sm text-tertiary">Optional. Images or PDF, up to 5 MB.</p>
       </div>
 
       <input type="hidden" name="_subject" value={subject} />
@@ -139,15 +134,13 @@ export default function ContactForm({ apps }: Props) {
       <input type="text" name="_honey" tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute -left-[9999px]" />
 
       {error && (
-        <p ref={errorRef} role="alert" className="rounded-xl bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive">
+        <p ref={errorRef} role="alert" className="rounded-lg bg-error-primary px-4 py-3 text-sm font-semibold text-error-primary ring-1 ring-error_subtle ring-inset">
           {error}
         </p>
       )}
 
-      <div className="flex flex-wrap items-center gap-4">
-        <Button type="submit" size="lg" className="h-12 rounded-full px-7 text-base">Send message</Button>
-        <p className="text-sm text-muted-foreground">We only use your email to reply.</p>
-      </div>
+      <Button type="submit" size="xl" color="primary" className="w-full">Send message</Button>
+      <p className="-mt-2 text-center text-sm text-tertiary">We only use your email to reply.</p>
     </form>
   );
 }
