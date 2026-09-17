@@ -11,7 +11,7 @@ const articles = (await getCollection("articles")).sort(
 );
 const [featured, ...rest] = articles;
 
-const title = "Camera and video call guides — Spolvero";
+const title = "Camera and Video Call Guides — Fixes That Actually Work";
 const description =
   "Plain guides to the problems people have with webcams and video calls: cameras that will not start, grainy pictures, and what resolution you need.";
 
@@ -44,7 +44,9 @@ const readable = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 ---
 
-<Base title={title} description={description} headerCta={{ label: "All tools", href: "/tools/" }}>
+<Base title={title} description={description} headerCta={{ label: "All tools", href: "/tools/" }}
+  headerLabel="Guides"
+  headerLabelHref="/articles/">
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
 
   <section class="relative overflow-hidden bg-secondary pt-12 pb-12 md:pt-16 md:pb-16">

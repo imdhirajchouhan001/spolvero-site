@@ -11,7 +11,7 @@ import { tools, webcamVariants } from "@/data/tools";
 const live = tools.filter((t) => t.status === "live");
 const soon = tools.filter((t) => t.status === "soon");
 
-const title = "Free device tests — webcam, mic, speaker and more | Spolvero";
+const title = "Free Device Tests — Check Webcam, Mic, Speaker and Screen";
 const description =
   "Browser tools that check your camera, microphone, speakers, keyboard and screen. No sign-up, no downloads, and nothing you test is uploaded.";
 
@@ -41,7 +41,9 @@ const jsonLd = [{
 }];
 ---
 
-<Base title={title} description={description} headerCta={{ label: "Contact us", href: "/contact/" }}>
+<Base title={title} description={description} headerCta={{ label: "Contact us", href: "/contact/" }}
+  headerLabel="Tools"
+  headerLabelHref="/tools/">
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
 
   <section class="relative overflow-hidden bg-secondary pt-14 pb-14 md:pt-20 md:pb-20">

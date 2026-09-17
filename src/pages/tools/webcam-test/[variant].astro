@@ -15,7 +15,9 @@ const highlights: Record<string, string> = { zoom: "Zoom", teams: "Microsoft Tea
 const jsonLd = webcamJsonLd({ url, name: `Spolvero Webcam Test — ${v.label}`, description: v.description, faqs: v.faqs, site: Astro.site!.toString(), crumb: v.label });
 ---
 
-<Base title={v.title} description={v.description} headerCta={{ label: "All tools", href: "/tools/" }}>
+<Base title={v.title} description={v.description} headerCta={{ label: "All webcam tests", href: "/tools/webcam-test/" }}
+  headerLabel={`Webcam Test · ${v.label}`}
+  headerLabelHref={`/tools/webcam-test/${v.slug}/`}>
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
   <WebcamPage
     h1={v.h1}

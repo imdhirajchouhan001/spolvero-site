@@ -1,6 +1,6 @@
 ---
 title: "Camera not working in Chrome? 7 fixes, in the order that works"
-seoTitle: "Camera Not Working in Chrome? 7 Fixes"
+seoTitle: "Camera Not Working in Chrome? 7 Fixes That Work"
 description: "Chrome can't find your camera, shows a black screen, or says it's blocked. Here are the seven fixes, ordered by how often each one is the answer."
 published: "2026-09-17"
 updated: "2026-09-17"

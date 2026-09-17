@@ -32,6 +32,21 @@ export type Product = {
   faqs: { q: string; a: string }[];
   policy?: string;
   disclaimer?: string;
+  /** Who reaches for this app, and when. Answers the "is this for me" question
+   *  that a feature list never does, and carries the long-tail phrasing people
+   *  actually search. */
+  useCases?: { who: string; when: string }[];
+  /** What the usual alternative does, and what this does instead. */
+  versus?: { title: string; rows: { them: string; us: string }[] };
+  /** First run, in three steps. Feeds HowTo schema. */
+  gettingStarted?: { name: string; text: string }[];
+  /** Smaller features, listed rather than explained. */
+  alsoDoes?: string[];
+  /** Article tags to pull "related reading" from. */
+  readingTags?: string[];
+  /** Page <title>. Written to fill the 55–60 characters Google shows, and to lead
+   *  with the term people search rather than with the brand. */
+  seoTitle?: string;
   /** Kept in this file but left off the site: no card, no page, no footer link. */
   hidden?: boolean;
 };
@@ -39,6 +54,7 @@ export type Product = {
 const allProducts: Product[] = [
   {
     slug: "unspend",
+    seoTitle: "Unspend — Subscription Tracker With No Bank Login Needed",
     name: "Unspend",
     storeName: "Unspend: Subscription Tracker",
     kind: "Subscription tracker",
@@ -83,6 +99,36 @@ const allProducts: Product[] = [
       pro: ["No ads", "Splitting and settle-up", "Share the list with family", "Cloud backup and sync to your own account", "A reminder schedule per subscription", "Requires signing in"],
       proNote: "See the price for your country in the app",
     },
+    useCases: [
+      { who: "Someone who lost track", when: "You know there are subscriptions you have forgotten, and you want the real monthly figure before deciding what to cut." },
+      { who: "A household sharing plans", when: "One Netflix, one Spotify family plan, four people — and no clear record of who owes what." },
+      { who: "Anyone burned by a free trial", when: "A trial converted quietly and you only noticed on the statement. Trial alerts fire the day before." },
+      { who: "People who will not connect a bank", when: "Every other tracker starts by asking for your bank login. This one never does." },
+    ],
+    versus: {
+      title: "How this differs from bank-connected trackers",
+      rows: [
+        { them: "Asks for your bank or card login to find subscriptions", us: "You add them, or it reads your email receipts on your phone" },
+        { them: "Sends your full transaction history to a server", us: "Your list never leaves your phone" },
+        { them: "Needs an account before you can see anything", us: "Open it and start — no sign-up" },
+        { them: "Free tier hides the totals behind an upgrade", us: "Totals and alerts are free; Pro adds household splitting" },
+        { them: "Keeps working on your data after you delete the app", us: "Delete the app and the data goes with it" },
+      ],
+    },
+    gettingStarted: [
+      { name: "Add your first subscription", text: "Pick a service from the catalogue and the price is filled in, or add anything custom with your own amount and billing cycle." },
+      { name: "Set the alerts you want", text: "Two days before a renewal by default, and one day before a trial converts. Change the lead time, or hold alerts until 8am." },
+      { name: "Check the real total", text: "The home screen shows your true monthly and yearly spend, split by category, by person and by rolling versus locked-in." },
+    ],
+    alsoDoes: [
+      "Monthly, yearly, weekly and custom billing cycles",
+      "Multiple currencies, with each subscription in its own",
+      "Categories you can rename",
+      "A yearly view that shows which months are expensive",
+      "Backup to a file you keep",
+      "Works fully offline",
+    ],
+    readingTags: ["Privacy"],
     faqs: [
       { q: "Does Unspend connect to my bank?", a: "No. Unspend never asks for bank details, card numbers or banking logins, and it can't move money. You add subscriptions yourself, which takes about ten seconds each, or let it read your email receipts if you turn that on." },
       { q: "Do I need an account?", a: "No. Open the app and start adding subscriptions. Signing in with your email is optional, and needed for Pro." },
@@ -98,6 +144,7 @@ const allProducts: Product[] = [
   },
   {
     slug: "exact",
+    seoTitle: "Exact Photo — Compress Images to an Exact File Size, Free",
     name: "Exact",
     storeName: "Exact",
     kind: "Photo compressor",
@@ -132,6 +179,36 @@ const allProducts: Product[] = [
         "Can't see your gallery, only the photos you pick",
       ],
     },
+    useCases: [
+      { who: "Anyone hitting an upload limit", when: "A form wants under 2MB and your photo is 8MB. Set the target and it meets it." },
+      { who: "People uploading documents", when: "Passport, ID and certificate uploads that must stay readable at a small file size." },
+      { who: "Someone emailing a batch of photos", when: "Twenty images that together will not send. Compress them all at once." },
+      { who: "Privacy-minded people", when: "A photo of an ID is not something to upload to a stranger's website to shrink." },
+    ],
+    versus: {
+      title: "How this differs from online compressors",
+      rows: [
+        { them: "Uploads your photo to their server to compress it", us: "Compresses on your phone; the photo never leaves it" },
+        { them: "Keeps a copy, sometimes indefinitely", us: "Nothing is stored anywhere but your device" },
+        { them: "Guesses a quality level and hopes", us: "You set the target size and it hits it" },
+        { them: "One photo at a time on the free tier", us: "Batches are free" },
+        { them: "Needs a connection", us: "Works offline" },
+      ],
+    },
+    gettingStarted: [
+      { name: "Pick your photos", text: "Choose one or several. Exact only sees what you select — it never asks for your whole gallery." },
+      { name: "Set the target", text: "Enter the size the form is asking for, or pick a preset. Exact works out the quality needed to land under it." },
+      { name: "Save or share", text: "Compare before and after, then save the result or send it straight to the app that wanted it." },
+    ],
+    alsoDoes: [
+      "Resize by dimensions as well as by file size",
+      "JPEG, PNG and WebP",
+      "Strips location data from photos unless you keep it",
+      "Shows the before and after side by side",
+      "Batch compression",
+      "Works offline",
+    ],
+    readingTags: ["Privacy"],
     faqs: [
       { q: "Does it really hit the size I ask for?", a: "Exact aims just under your limit and measures the finished file before it reports success." },
       { q: "Will my original photo be changed?", a: "Not by default. Exact writes the new file and leaves your original alone." },
@@ -141,6 +218,7 @@ const allProducts: Product[] = [
   },
   {
     slug: "enough",
+    seoTitle: "Enough — A Private Water Tracker With No Account Needed",
     name: "Enough",
     storeName: "Enough",
     kind: "Water tracker",
@@ -177,6 +255,36 @@ const allProducts: Product[] = [
         "Not a medical device, and it says so",
       ],
     },
+    useCases: [
+      { who: "Someone who forgets to drink", when: "You reach the afternoon having had one coffee and nothing else." },
+      { who: "People in hot climates or hard training", when: "Days when the usual amount is clearly not enough and you want to see the gap." },
+      { who: "Anyone tired of nagging apps", when: "Reminders that respect your hours, rather than buzzing through a meeting or at midnight." },
+      { who: "People who dislike accounts", when: "A water tracker has no business knowing who you are." },
+    ],
+    versus: {
+      title: "How this differs from most water trackers",
+      rows: [
+        { them: "Sign in before you can log a glass", us: "Open it and tap — no account" },
+        { them: "One fixed target for everyone", us: "A target you set, with a note on why any number is only a guide" },
+        { them: "Reminders every hour regardless", us: "Reminders in the hours you choose, quiet the rest of the time" },
+        { them: "Streaks designed to make you feel bad", us: "A record you can read without being scolded" },
+        { them: "Syncs your intake to a server", us: "Stays on your phone" },
+      ],
+    },
+    gettingStarted: [
+      { name: "Set your target", text: "Pick a daily amount. There is no universal correct number, so the app says plainly that this is a personal setting rather than medical advice." },
+      { name: "Add your cup sizes", text: "Set the glasses and bottles you actually use, so logging is one tap rather than arithmetic." },
+      { name: "Choose your hours", text: "Tell it when you are awake and it will only remind you then." },
+    ],
+    alsoDoes: [
+      "Custom cup and bottle sizes",
+      "Millilitres or fluid ounces",
+      "A weekly and monthly view",
+      "Reminder hours you control",
+      "No account, no sync, no analytics",
+      "Works offline",
+    ],
+    readingTags: [],
     faqs: [
       { q: "Why is my target lower than other apps?", a: "The EFSA and US IOM figures count water from all sources, including food, so Enough subtracts the share that comes from food and what's left is what you actually need to drink. ICMR-NIN is published as drinks only, so that one is used as it stands." },
       { q: "Which standard does it use?", a: "You can choose EFSA (2010), US IOM, or ICMR-NIN. India defaults to ICMR-NIN." },
@@ -186,6 +294,7 @@ const allProducts: Product[] = [
   },
   {
     slug: "baseline",
+    seoTitle: "Baseline — Spolvero",
     name: "Baseline",
     storeName: "Baseline",
     kind: "Skincare progress",
@@ -232,6 +341,7 @@ const allProducts: Product[] = [
   },
   {
     slug: "astro",
+    seoTitle: "Astro — Spolvero",
     name: "Astro",
     storeName: "Astro",
     kind: "Astrology",
@@ -278,6 +388,7 @@ const allProducts: Product[] = [
   },
   {
     slug: "gst-calculator",
+    seoTitle: "GST Calculator — Offline Indian GST Calculator With HSN",
     name: "GST Calculator",
     storeName: "GST Calculator by Spolvero",
     kind: "GST calculator",
@@ -307,6 +418,36 @@ const allProducts: Product[] = [
         "Rates reproduced from official GST notifications",
       ],
     },
+    useCases: [
+      { who: "Shopkeepers and small traders", when: "Working out the GST on a sale, or pulling it back out of a rounded total." },
+      { who: "Freelancers raising invoices", when: "Adding the right rate and splitting CGST and SGST correctly for an in-state client." },
+      { who: "Anyone checking a bill", when: "A restaurant or hotel bill where the tax line looks wrong and you want to check it." },
+      { who: "Students and new accountants", when: "Learning which slab applies, with the HSN lookup to check rather than guess." },
+    ],
+    versus: {
+      title: "How this differs from a web GST calculator",
+      rows: [
+        { them: "Needs a connection every time", us: "Works offline, which matters at a counter" },
+        { them: "Shows a rate with no source or date", us: "Shows the date the rates came from" },
+        { them: "One calculation, then start again", us: "A running bill for multi-item totals, plus your last 20 calculations" },
+        { them: "Covered in ads around the numbers", us: "One banner below the keypad, never over it" },
+        { them: "Claims to be official", us: "States plainly that it is independent, and points at the official source" },
+      ],
+    },
+    gettingStarted: [
+      { name: "Enter the amount", text: "Type the price. Choose whether GST should be added to it or extracted from it." },
+      { name: "Pick the rate", text: "Tap a slab, or search a product name or HSN code to find the rate that applies." },
+      { name: "Read the split", text: "See the tax amount and the final total, with CGST and SGST split within a state or IGST across state lines." },
+    ],
+    alsoDoes: [
+      "0%, 5%, 18% and 40%, plus 3%, 0.25% and composition rates",
+      "Four rate keys you set once",
+      "HSN and SAC code search",
+      "Reverse calculation from a total",
+      "Markup and memory keys",
+      "Your last 20 calculations",
+    ],
+    readingTags: [],
     faqs: [
       { q: "Is this a government app?", a: "No. It's an independent app, not affiliated with, endorsed by, or representing the Government of India, the GST Council, or CBIC." },
       { q: "Are the rates current?", a: "The app carries the GST 2.0 structure from September 2025 and shows the date its rates came from. Always confirm a rate at the official source before it goes on an invoice." },

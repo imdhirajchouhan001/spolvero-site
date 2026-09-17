@@ -1,4 +1,11 @@
 ---
+// The header stays deliberately quiet.
+//
+// Every page here is meant to win on its own — a teacher looking for a classroom
+// timer should land on a page about classroom timers, not on one advertising a
+// catalogue. So the header carries the logo, the name of whatever you are
+// currently looking at, and that page's own call to action. Everything else lives
+// behind one menu that drops down over the page when asked for.
 import Icon from "@/components/Icon.astro";
 import Button from "@/components/ui/Button.astro";
 import Badge from "@/components/ui/Badge.astro";
@@ -6,132 +13,92 @@ import { navGroups, navLinks } from "@/data/nav";
 
 interface Props {
   cta?: { label: string; href: string };
+  /** The thing this page is about, shown beside the logo. */
+  label?: string;
+  labelHref?: string;
 }
-const { cta = { label: "Contact us", href: "/contact/" } } = Astro.props;
+const { cta = { label: "Contact us", href: "/contact/" }, label, labelHref } = Astro.props;
 ---
 
 <header class="sticky top-0 z-40 border-b border-transparent bg-secondary/85 backdrop-blur-lg transition-colors" data-header>
-  <nav aria-label="Main" class="container-page flex h-18 items-center justify-between gap-6">
-    <div class="flex items-center gap-8">
-      <a href="/" aria-label="Spolvero home" class="text-brand-800">
-        <span class="logo-mark w-[112px]"></span>
+  <nav aria-label="Main" class="container-page flex h-18 items-center justify-between gap-4">
+    <div class="flex min-w-0 items-center gap-3">
+      <a href="/" aria-label="Spolvero home" class="shrink-0 text-brand-800">
+        <span class="logo-mark w-[104px]"></span>
       </a>
-
-      <ul class="hidden items-center gap-1 md:flex">
-        {navGroups.map((g) => (
-          <li class="relative" data-menu>
-            <button
-              type="button"
-              id={`nav-${g.label.toLowerCase()}-button`}
-              class="flex items-center gap-1 rounded-md px-2 py-1 text-md font-semibold text-secondary transition hover:text-secondary_hover aria-expanded:text-brand-secondary"
-              aria-expanded="false"
-              aria-controls={`nav-${g.label.toLowerCase()}`}
-              data-menu-button
-            >
-              {g.label}
-              <svg class="size-4 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true" data-menu-chevron><path d="M6 9l6 6 6-6" /></svg>
-            </button>
-
-            <div
-              id={`nav-${g.label.toLowerCase()}`}
-              class="invisible absolute top-full left-0 z-50 w-80 translate-y-1 pt-3 opacity-0 transition duration-150"
-              data-menu-panel
-            >
-              <div class="overflow-hidden rounded-3xl bg-primary shadow-lg ring-1 ring-secondary">
-                <div class="border-b border-secondary px-4 py-3">
-                  <p class="text-sm text-tertiary">{g.blurb}</p>
-                </div>
-                <ul class="flex flex-col p-2">
-                  {g.items.map((it) => (
-                    <li>
-                      <a href={it.href} class="flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 transition hover:bg-primary_hover">
-                        <span class="min-w-0">
-                          <span class="block truncate text-md font-semibold text-primary">{it.label}</span>
-                          {it.note && <span class="block truncate text-sm text-tertiary">{it.note}</span>}
-                        </span>
-                        {it.status === "live"
-                          ? <Badge variant="success" size="sm">Live</Badge>
-                          : <Badge variant="secondary" size="sm">Soon</Badge>}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-                {g.footer && (
-                  <a href={g.footer.href} class="flex items-center justify-between gap-2 border-t border-secondary bg-secondary px-4 py-3 text-md font-semibold text-brand-secondary transition hover:bg-primary_hover">
-                    {g.footer.label}
-                    <Icon name="arrow" class="size-4" />
-                  </a>
-                )}
-              </div>
-            </div>
-          </li>
-        ))}
-        {navLinks.map((l) => (
-          <li><a href={l.href} class="rounded-md px-2 py-1 text-md font-semibold text-secondary transition hover:text-secondary_hover">{l.label}</a></li>
-        ))}
-      </ul>
+      {label && (
+        <>
+          <span class="text-border-primary" aria-hidden="true">/</span>
+          <a
+            href={labelHref ?? "#"}
+            class="truncate text-md font-semibold text-primary transition hover:text-brand-secondary"
+          >{label}</a>
+        </>
+      )}
     </div>
 
-    <div class="flex items-center gap-2">
-      <div class="hidden md:block">
-        <Button href={cta.href} size="lg" variant="default">{cta.label}</Button>
+    <div class="flex shrink-0 items-center gap-2">
+      <div class="hidden sm:block">
+        <Button href={cta.href} variant="default" size="md">{cta.label}</Button>
       </div>
       <button
         type="button"
-        class="grid size-10 place-items-center rounded-lg text-fg-secondary hover:bg-primary_hover md:hidden"
-        data-collapse-toggle="mobile-menu"
-        aria-controls="mobile-menu"
+        class="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--border)] px-3.5 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--muted)] focus-visible:ring-[3px] focus-visible:ring-[var(--ring)]/50 focus-visible:outline-none"
+        data-menu-button
         aria-expanded="false"
-        aria-label="Open menu"
+        aria-controls="site-menu"
       >
-        <Icon name="menu" class="size-6" />
+        <Icon name="menu" class="size-5" />
+        <span>Menu</span>
       </button>
     </div>
   </nav>
 
-  <!-- Mobile: groups are listed open, so everything is one tap away. -->
-  <div id="mobile-menu" class="hidden max-h-[calc(100vh-4.5rem)] overflow-y-auto border-t border-secondary bg-secondary md:hidden">
-    <div class="container-page flex flex-col gap-6 py-5">
+  <!-- Drops down over the page. Everything Spolvero makes, one level deep. -->
+  <div
+    id="site-menu"
+    class="invisible fixed inset-x-0 top-18 z-40 max-h-[calc(100vh-4.5rem)] -translate-y-3 overflow-y-auto border-b border-secondary bg-secondary opacity-0 shadow-lg transition duration-200"
+    data-menu-panel
+  >
+    <div class="container-page grid gap-8 py-8 md:grid-cols-2 lg:grid-cols-4 lg:py-10">
       {navGroups.map((g) => (
         <div>
-          <p class="text-sm font-semibold text-quaternary">{g.label}</p>
-          <ul class="mt-2 flex flex-col">
+          <div class="flex items-baseline justify-between gap-2 border-b border-secondary pb-3">
+            <a href={g.href} class="text-md font-semibold text-primary hover:text-brand-secondary">{g.label}</a>
+            <a href={g.footer?.href ?? g.href} class="text-sm font-semibold text-brand-secondary hover:underline">All</a>
+          </div>
+          <p class="mt-3 text-sm text-tertiary">{g.blurb}</p>
+          <ul class="mt-3 flex flex-col">
             {g.items.map((it) => (
               <li>
-                <a href={it.href} class="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 hover:bg-primary_hover">
-                  <span class="text-md font-semibold text-primary">{it.label}</span>
+                <a href={it.href} class="flex items-center justify-between gap-3 rounded-xl px-2 py-2.5 transition hover:bg-primary">
+                  <span class="min-w-0">
+                    <span class="block truncate text-md font-semibold text-primary">{it.label}</span>
+                    {it.note && <span class="block truncate text-sm text-tertiary">{it.note}</span>}
+                  </span>
                   {it.status === "live"
                     ? <Badge variant="success" size="sm">Live</Badge>
                     : <Badge variant="secondary" size="sm">Soon</Badge>}
                 </a>
               </li>
             ))}
-            {g.footer && (
-              <li>
-                <a href={g.footer.href} class="flex items-center gap-1.5 rounded-lg px-2 py-2.5 text-md font-semibold text-brand-secondary hover:bg-primary_hover">
-                  {g.footer.label} <Icon name="arrow" class="size-4" />
-                </a>
-              </li>
-            )}
           </ul>
         </div>
       ))}
-      <ul class="flex flex-col border-t border-secondary pt-4">
-        {navLinks.map((l) => (
-          <li><a href={l.href} class="block rounded-lg px-2 py-2.5 text-md font-semibold text-primary hover:bg-primary_hover">{l.label}</a></li>
-        ))}
-      </ul>
-      <Button href={cta.href} size="lg" variant="default" class="w-full">{cta.label}</Button>
+
+      <div class="lg:col-span-4">
+        <ul class="flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-secondary pt-6">
+          {navLinks.map((l) => (
+            <li><a href={l.href} class="text-md font-semibold text-primary hover:text-brand-secondary">{l.label}</a></li>
+          ))}
+          <li class="sm:hidden"><a href={cta.href} class="text-md font-semibold text-brand-secondary">{cta.label}</a></li>
+        </ul>
+      </div>
     </div>
   </div>
-</header>
 
-<style>
-  /* The panel's open/closed classes are toggled in script — Tailwind utilities would
-     otherwise outrank a scoped rule here. Only the chevron, which has no utility of
-     its own, is styled from CSS. */
-  [data-menu-button][aria-expanded="true"] [data-menu-chevron] { transform: rotate(180deg); }
-</style>
+  <div class="invisible fixed inset-0 top-18 z-30 bg-neutral-950/30 opacity-0 transition duration-200" data-menu-backdrop></div>
+</header>
 
 <script>
   const header = document.querySelector<HTMLElement>("[data-header]");
@@ -139,63 +106,42 @@ const { cta = { label: "Contact us", href: "/contact/" } } = Astro.props;
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
 
-  // Close the mobile menu after picking a link.
-  document.querySelectorAll<HTMLAnchorElement>("#mobile-menu a").forEach((a) =>
-    a.addEventListener("click", () => document.querySelector<HTMLButtonElement>("[data-collapse-toggle=mobile-menu]")?.click()),
-  );
+  const button = document.querySelector<HTMLButtonElement>("[data-menu-button]");
+  const panel = document.querySelector<HTMLElement>("[data-menu-panel]");
+  const backdrop = document.querySelector<HTMLElement>("[data-menu-backdrop]");
 
-  const menus = Array.from(document.querySelectorAll<HTMLElement>("[data-menu]"));
-  const canHover = window.matchMedia("(hover: hover)").matches;
+  if (button && panel && backdrop) {
+    // Classes rather than a scoped stylesheet: Tailwind utilities on the element
+    // would otherwise win the cascade over anything declared here.
+    const shown = ["visible", "opacity-100", "translate-y-0"];
+    const hidden = ["invisible", "opacity-0", "-translate-y-3"];
 
-  const setOpen = (menu: HTMLElement, open: boolean) => {
-    const button = menu.querySelector<HTMLButtonElement>("[data-menu-button]")!;
-    const panel = menu.querySelector<HTMLElement>("[data-menu-panel]")!;
-    button.setAttribute("aria-expanded", String(open));
-    panel.classList.toggle("invisible", !open);
-    panel.classList.toggle("opacity-0", !open);
-    panel.classList.toggle("translate-y-1", !open);
-  };
-  const closeAll = (except?: HTMLElement) => menus.forEach((m) => m !== except && setOpen(m, false));
+    const setOpen = (open: boolean) => {
+      button.setAttribute("aria-expanded", String(open));
+      panel.classList.toggle("invisible", !open);
+      panel.classList.toggle("opacity-0", !open);
+      panel.classList.toggle("-translate-y-3", !open);
+      backdrop.classList.toggle("invisible", !open);
+      backdrop.classList.toggle("opacity-0", !open);
+      // Stop the page behind scrolling while the menu is over it.
+      document.body.style.overflow = open ? "hidden" : "";
+      if (open) panel.querySelector<HTMLAnchorElement>("a")?.focus();
+    };
 
-  menus.forEach((menu) => {
-    const button = menu.querySelector<HTMLButtonElement>("[data-menu-button]")!;
-    let closeTimer: number | undefined;
+    button.addEventListener("click", () => setOpen(button.getAttribute("aria-expanded") !== "true"));
+    backdrop.addEventListener("click", () => setOpen(false));
+    panel.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setOpen(false)));
 
-    button.addEventListener("click", () => {
-      const open = button.getAttribute("aria-expanded") === "true";
-      closeAll(menu);
-      setOpen(menu, !open);
-    });
-
-    if (canHover) {
-      menu.addEventListener("pointerenter", () => {
-        window.clearTimeout(closeTimer);
-        closeAll(menu);
-        setOpen(menu, true);
-      });
-      // A small delay so the pointer can cross the gap to the panel.
-      menu.addEventListener("pointerleave", () => {
-        closeTimer = window.setTimeout(() => setOpen(menu, false), 120);
-      });
-    }
-
-    // Keyboard: the panel closes once focus leaves the whole group.
-    menu.addEventListener("focusout", (e) => {
-      if (!menu.contains(e.relatedTarget as Node)) setOpen(menu, false);
-    });
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      const open = menus.find((m) => m.querySelector("[data-menu-button]")?.getAttribute("aria-expanded") === "true");
-      if (open) {
-        setOpen(open, false);
-        open.querySelector<HTMLButtonElement>("[data-menu-button]")?.focus();
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && button.getAttribute("aria-expanded") === "true") {
+        setOpen(false);
+        button.focus();
       }
-    }
-  });
+    });
 
-  document.addEventListener("click", (e) => {
-    if (!(e.target as Element)?.closest("[data-menu]")) closeAll();
-  });
+    // Focus leaving the panel closes it, so keyboard users are not trapped.
+    panel.addEventListener("focusout", (e) => {
+      if (!panel.contains(e.relatedTarget as Node) && e.relatedTarget !== button) setOpen(false);
+    });
+  }
 </script>

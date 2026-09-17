@@ -5,13 +5,15 @@ import { webcamJsonLd } from "@/components/tools/schema";
 import { webcamFaqs } from "@/data/tools";
 
 const url = new URL("/tools/webcam-test/", Astro.site).toString();
-const title = "Webcam Test — Check Your Camera Online (Free, Private)";
+const title = "Webcam Test — Check Your Camera Online, Free and Private";
 const description =
   "Test your webcam in 3 seconds. Get a readiness score plus resolution, frame rate and lighting checks. Nothing is uploaded — the video stays in your browser.";
 const jsonLd = webcamJsonLd({ url, name: "Spolvero Webcam Test", description, faqs: webcamFaqs, site: Astro.site!.toString() });
 ---
 
-<Base title={title} description={description} headerCta={{ label: "All tools", href: "/tools/" }}>
+<Base title={title} description={description} headerCta={{ label: "Test my camera", href: "#timer-heading" }}
+  headerLabel="Webcam Test"
+  headerLabelHref="/tools/webcam-test/">
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
   <WebcamPage
     h1="Webcam test: check your camera in 3 seconds"

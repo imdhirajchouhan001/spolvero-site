@@ -18,7 +18,9 @@ const jsonLd = timerJsonLd({
 });
 ---
 
-<Base title={p.title} description={p.description} headerCta={{ label: "All timers", href: "/tools/timers/" }}>
+<Base title={p.title} description={p.description} headerCta={{ label: "All timers", href: "/tools/timers/" }}
+  headerLabel={timer.name}
+  headerLabelHref={`/tools/timers/${timer.slug}/`}>
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
 
   <TimerPage timer={timer}>

@@ -1,6 +1,6 @@
 ---
 title: "Is my laptop camera hacked? How to actually check"
-seoTitle: "Is My Laptop Camera Hacked? How to Check"
+seoTitle: "Is My Laptop Camera Hacked? How to Check Properly"
 description: "Camera hijacking is rarer than the headlines suggest, but not impossible. How to check properly on Windows and Mac, and what the light tells you."
 published: "2026-09-17"
 updated: "2026-09-17"

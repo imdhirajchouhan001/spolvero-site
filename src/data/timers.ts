@@ -63,7 +63,7 @@ export const timers: Timer[] = [
       "A visual countdown built to be projected: huge digits, a shrinking ring, and a calm chime. Fullscreen carries no ads at all, so nothing unexpected appears in front of a class.",
     page: {
       h1: "Classroom timer: big, calm, and ad-free on screen",
-      title: "Classroom Timer — Big Visual Countdown, Free",
+      title: "Free Classroom Timer — Big Visual Countdown for Schools",
       description:
         "A free visual classroom timer for smartboards. Huge digits, a shrinking ring, a calm chime, and no ads at all in fullscreen. Works offline.",
       intro:
@@ -139,7 +139,7 @@ export const timers: Timer[] = [
       "Timing lights for Toastmasters meetings, presentations and contests. Pick the speech type and the green, amber and red points are set for you.",
     page: {
       h1: "Speech timer with green, amber and red lights",
-      title: "Toastmasters Speech Timer — Timing Lights",
+      title: "Toastmasters Speech Timer — Green, Amber and Red Lights",
       description:
         "A free speech timer with Toastmasters timing lights. Pick the speech type and green, amber and red are set automatically. Fullscreen, ad-free on screen, no sign-up.",
       intro:
@@ -215,7 +215,7 @@ export const timers: Timer[] = [
       "A projected exam clock showing start and finish times alongside the time remaining, with an optional reading period. Nothing on screen but the clock.",
     page: {
       h1: "Exam clock for invigilators and projectors",
-      title: "Exam Clock — Projected Timer With Finish Time",
+      title: "Exam Clock — Projected Timer With Start and Finish Times",
       description:
         "A free exam clock for invigilators. Shows start time, finish time and time remaining, with an optional reading period. Ad-free in fullscreen.",
       intro:

@@ -8,13 +8,14 @@ import SectionHeader from "@/components/SectionHeader.astro";
 import AdSlot from "@/components/AdSlot.astro";
 import Faq from "@/components/Faq.astro";
 import SplitText from "@/components/SplitText";
-import { Button } from "@/components/base/buttons/button";
+import Button from "@/components/ui/Button.astro";
 import { GooglePlayButton } from "@/components/base/buttons/app-store-buttons";
-import { Badge } from "@/components/base/badges/badges";
 import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
 import { BackgroundPattern } from "@/components/shared-assets/background-patterns";
 import { getIcon } from "@/lib/icons";
 import { products, type Product } from "@/data/products";
+import Badge from "@/components/ui/Badge.astro";
+import { getCollection } from "astro:content";
 
 export function getStaticPaths() {
   return products.map((product) => ({ params: { slug: product.slug }, props: { product } }));
@@ -27,6 +28,13 @@ const metaDescription = p.summary.length > 160 ? `${p.summary.slice(0, 157).repl
 const isLive = p.status === "live";
 const heroShots = p.screenshots.slice(0, 3);
 const others = products.filter((o) => o.slug !== p.slug);
+
+// Guides that share a tag with this app, so every app page feeds the cluster.
+const allArticles = await getCollection("articles");
+const related = (p.readingTags?.length
+  ? allArticles.filter((a) => a.data.tags.some((t) => p.readingTags!.includes(t)))
+  : []
+).slice(0, 3);
 const ogImage = p.slug === "unspend" ? "/products/unspend/og.png" : "/assets/brand/og.png";
 
 const jsonLd = {
@@ -39,16 +47,51 @@ const jsonLd = {
   ...(p.playUrl ? { installUrl: p.playUrl, offers: { "@type": "Offer", price: "0", priceCurrency: "USD" } } : {}),
   publisher: { "@type": "Organization", name: "Spolvero", url: "https://spolvero.design/" },
 };
+
+const site = Astro.site!.toString();
+const pageJsonLd = [
+  jsonLd,
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site },
+      { "@type": "ListItem", position: 2, name: "Apps", item: new URL("/#apps", site).toString() },
+      { "@type": "ListItem", position: 3, name: p.name, item: new URL(`/${p.slug}/`, site).toString() },
+    ],
+  },
+  ...(p.faqs.length
+    ? [{
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: p.faqs.map((f) => ({
+          "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+      }]
+    : []),
+  ...(p.gettingStarted?.length
+    ? [{
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        name: `How to get started with ${p.name}`,
+        step: p.gettingStarted.map((g, i) => ({
+          "@type": "HowToStep", position: i + 1, name: g.name, text: g.text,
+        })),
+      }]
+    : []),
+];
 ---
 
 <Base
-  title={`${p.name}: ${p.kind} — Spolvero`}
+  title={p.seoTitle ?? `${p.name}: ${p.kind} — Spolvero`}
   description={metaDescription}
   image={ogImage}
   themeColor={p.accent}
   headerCta={isLive ? { label: "Download", href: p.playUrl! } : { label: "Get notified", href: "#notify" }}
+  headerLabel={p.name}
+  headerLabelHref={`/${p.slug}/`}
 >
-  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(pageJsonLd)} />
 
   <!-- Hero -->
   <section class="relative overflow-hidden pt-12 md:pt-20" style={`background:linear-gradient(180deg, ${p.tint}, #fff 85%)`}>
@@ -70,8 +113,8 @@ const jsonLd = {
 
       <div class="mt-6" data-reveal>
         {isLive
-          ? <Badge type="pill-color" color="success" size="lg">Live on Google Play</Badge>
-          : <Badge type="pill-color" color="gray" size="lg">Coming soon to Google Play</Badge>}
+          ? <Badge variant="success" size="lg">Live on Google Play</Badge>
+          : <Badge variant="secondary" size="lg">Coming soon to Google Play</Badge>}
       </div>
 
       <SplitText
@@ -93,7 +136,7 @@ const jsonLd = {
         {isLive ? (
           <div class="flex flex-wrap items-center justify-center gap-3">
             <GooglePlayButton href={p.playUrl} size="lg" />
-            <Button href="#features" color="secondary" size="xl">See what it does</Button>
+            <Button href="#features" variant="outline" size="xl">See what it does</Button>
           </div>
         ) : (
           <NotifyForm product={p.name} />
@@ -179,6 +222,93 @@ const jsonLd = {
     </div>
   </section>
 
+  <!-- Who it's for: answers "is this me", and carries the long-tail phrasing -->
+  {p.useCases && (
+    <section class="bg-primary py-16 md:py-24">
+      <div class="container-page">
+        <SectionHeader eyebrow="Who it's for" title={`When people reach for ${p.name}`} />
+        <ul class="mx-auto mt-12 grid max-w-5xl gap-6 md:mt-16 md:grid-cols-2">
+          {p.useCases.map((u) => (
+            <li class="rounded-3xl bg-secondary p-6 md:p-8" data-reveal>
+              <h3 class="text-lg font-semibold text-primary">{u.who}</h3>
+              <p class="mt-2 text-md text-tertiary">{u.when}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <!-- Versus the usual alternative -->
+  {p.versus && (
+    <section class="bg-secondary py-16 md:py-24">
+      <div class="container-page">
+        <SectionHeader eyebrow="The difference" title={p.versus.title} />
+        <div class="mx-auto mt-12 max-w-5xl overflow-hidden rounded-3xl ring-1 ring-secondary md:mt-16" data-reveal>
+          <table class="w-full border-collapse text-left">
+            <caption class="sr-only">{p.versus.title}</caption>
+            <thead>
+              <tr class="bg-primary">
+                <th scope="col" class="w-1/2 px-4 py-4 text-sm font-semibold text-tertiary md:px-6">Most apps</th>
+                <th scope="col" class="w-1/2 bg-brand-section px-4 py-4 text-sm font-semibold text-primary_on-brand md:px-6">{p.name}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {p.versus.rows.map((row) => (
+                <tr class="border-t border-secondary">
+                  <td class="bg-primary px-4 py-5 align-top md:px-6">
+                    <span class="flex gap-3 text-md text-tertiary">
+                      <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-error-secondary text-fg-error-primary"><Icon name="close" class="size-3.5" /></span>
+                      {row.them}
+                    </span>
+                  </td>
+                  <td class="bg-brand-primary px-4 py-5 align-top md:px-6">
+                    <span class="flex gap-3 text-md font-medium text-primary">
+                      <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-success-secondary text-fg-success-primary"><Icon name="check" class="size-3.5" /></span>
+                      {row.us}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Getting started, which also feeds HowTo schema -->
+  {p.gettingStarted && (
+    <section class="bg-primary py-16 md:py-24">
+      <div class="container-page">
+        <SectionHeader eyebrow="Getting started" title="Useful within a minute" />
+        <ol class="mx-auto mt-12 grid max-w-5xl gap-6 md:mt-16 md:grid-cols-3">
+          {p.gettingStarted.map((g, i) => (
+            <li class="flex flex-col rounded-3xl bg-secondary p-6 md:p-8" data-reveal>
+              <span class="grid size-11 place-items-center rounded-full text-md font-semibold text-neutral-900" style={`background:${p.tint}`} aria-hidden="true">{i + 1}</span>
+              <h3 class="mt-5 text-lg font-semibold text-primary"><span class="sr-only">Step {i + 1}: </span>{g.name}</h3>
+              <p class="mt-2 text-md text-tertiary">{g.text}</p>
+            </li>
+          ))}
+        </ol>
+
+        {p.alsoDoes && (
+          <div class="mx-auto mt-14 max-w-5xl" data-reveal>
+            <h3 class="text-lg font-semibold text-primary">And it also does</h3>
+            <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {p.alsoDoes.map((x) => (
+                <li class="flex gap-2.5 text-md text-tertiary">
+                  <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-success-secondary text-fg-success-primary"><Icon name="check" class="size-3" /></span>
+                  {x}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
   <!-- Pricing -->
   {p.pricing && (
     <section class="bg-primary pb-16 md:pb-24">
@@ -189,7 +319,7 @@ const jsonLd = {
             <div class:list={["flex flex-col rounded-3xl p-6 shadow-lg md:p-8", plan.pro ? "bg-brand-section" : "bg-primary ring-1 ring-secondary"]} data-reveal>
               <div class="flex items-center justify-between">
                 <p class:list={["text-display-xs font-semibold", plan.pro ? "text-primary_on-brand" : "text-primary"]}>{plan.name}</p>
-                {plan.pro && <Badge type="pill-color" color="brand" size="md">No ads</Badge>}
+                {plan.pro && <Badge variant="default" size="md">No ads</Badge>}
               </div>
               <p class:list={["mt-2 text-md", plan.pro ? "text-tertiary_on-brand" : "text-tertiary"]}>{plan.note}</p>
               <ul class:list={["mt-8 flex flex-col gap-4 border-t pt-8", plan.pro ? "border-brand-700" : "border-secondary"]}>
@@ -213,7 +343,7 @@ const jsonLd = {
       <div>
         <SectionHeader align="left" eyebrow="Support" title="Questions" lede="Can't find the answer you're looking for?" />
         <div class="mt-6" data-reveal>
-          <Button href={`/contact/?topic=feedback&app=${p.slug}`} color="secondary" size="lg">Send us a message</Button>
+          <Button href={`/contact/?topic=feedback&app=${p.slug}`} variant="outline" size="lg">Send us a message</Button>
         </div>
       </div>
       <div data-reveal>
@@ -246,6 +376,28 @@ const jsonLd = {
       </div>
     </div>
   </section>
+
+  {related.length > 0 && (
+    <section class="bg-secondary py-16 md:py-24">
+      <div class="container-page">
+        <SectionHeader eyebrow="Related reading" title="Guides worth a look" />
+        <ul class="mx-auto mt-12 grid max-w-5xl gap-6 md:mt-16 md:grid-cols-3">
+          {related.map((a) => (
+            <li data-reveal>
+              <a href={`/articles/${a.id}/`} class="group flex h-full flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
+                <Badge variant="secondary" size="sm">{a.data.tags[0]}</Badge>
+                <h3 class="mt-3 text-lg font-semibold text-primary">{a.data.title}</h3>
+                <p class="mt-2 text-md text-tertiary">{a.data.description}</p>
+                <span class="mt-auto inline-flex items-center gap-1.5 pt-5 text-md font-semibold text-brand-secondary">
+                  Read <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
 
   <!-- More apps -->
   <section class="bg-primary pb-16 md:pb-24">

@@ -10,7 +10,7 @@ import { timers } from "@/data/timers";
 const live = timers.filter((t) => t.status === "live");
 const soon = timers.filter((t) => t.status === "soon");
 
-const title = "Free Online Timers for Classrooms and Speeches";
+const title = "Free Online Timers — Classroom, Speech and Exam Clocks, Free";
 const description =
   "Big, calm timers built to be projected. Classroom countdown, Toastmasters speech lights and an exam clock. No ads in fullscreen, no sign-up.";
 const site = Astro.site!.toString();
@@ -43,7 +43,9 @@ const jsonLd = [
 ];
 ---
 
-<Base title={title} description={description} headerCta={{ label: "All tools", href: "/tools/" }}>
+<Base title={title} description={description} headerCta={{ label: "All tools", href: "/tools/" }}
+  headerLabel="Timers"
+  headerLabelHref="/tools/timers/">
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
 
   <section class="bg-secondary pt-12 pb-12 md:pt-16 md:pb-16">

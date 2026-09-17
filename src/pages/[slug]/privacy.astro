@@ -13,9 +13,17 @@ export async function getStaticPaths() {
 
 const { product, entry } = Astro.props;
 const { Content } = await render(entry);
+// "Unspend" and "GST Calculator" differ by eight characters, so a single fixed
+// phrase pushes one title short and the other past the 60 Google shows. Pick the
+// tail that lands in band for this name.
+const privacyTitle = (() => {
+  const long = `${product.name} Privacy Policy — What the App Collects, and Why`;
+  const short = `${product.name} Privacy Policy — What It Collects, and Why`;
+  return long.length <= 60 ? long : short;
+})();
 ---
 
-<Base title={`${entry.data.title} — Spolvero`} description={`What ${product.name} collects, why, and the control you have over it.`}>
+<Base title={privacyTitle} description={`What ${product.name} collects, what it never collects, why each piece exists, and the control you have over all of it. Written in plain language.`}>
   <section class="bg-primary py-16 md:py-24">
     <div class="container-page">
       <div class="mx-auto flex max-w-3xl flex-col items-center text-center">

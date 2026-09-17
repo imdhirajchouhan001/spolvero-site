@@ -55,7 +55,9 @@ const readable = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 ---
 
-<Base title={`${a.seoTitle ?? a.title} — Spolvero`} description={a.description} headerCta={{ label: "All tools", href: "/tools/" }}>
+<Base title={`${a.seoTitle ?? a.title} — Spolvero`} description={a.description} headerCta={{ label: a.toolCta, href: a.tool }}
+  headerLabel="Guides"
+  headerLabelHref="/articles/">
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
 
   <article>

@@ -14,9 +14,12 @@ interface Props {
   themeColor?: string;
   noindex?: boolean;
   headerCta?: { label: string; href: string };
+  /** Names the thing this page is about, shown beside the logo. */
+  headerLabel?: string;
+  headerLabelHref?: string;
 }
 
-const { title, description, image = "/assets/brand/og.png", themeColor = "#101057", noindex = false, headerCta } = Astro.props;
+const { title, description, image = "/assets/brand/og.png", themeColor = "#101057", noindex = false, headerCta, headerLabel, headerLabelHref } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
 const site = Astro.site!.toString();
@@ -167,7 +170,7 @@ const siteJsonLd = [
   <body class="min-h-screen bg-secondary text-primary">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:shadow-lg">Skip to content</a>
     <Announcement />
-    <Header cta={headerCta} />
+    <Header cta={headerCta} label={headerLabel} labelHref={headerLabelHref} />
     <main id="main">
       <slot />
     </main>
