@@ -39,6 +39,19 @@ const ogImage = new URL(image, Astro.site);
     <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <script is:inline>document.documentElement.classList.add("js");</script>
+    <!-- Google Analytics 4 with Consent Mode v2: no ad cookies anywhere; no analytics cookies in the EEA, UK and Switzerland without consent. -->
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag("consent", "default", { ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", analytics_storage: "granted" });
+      gtag("consent", "default", {
+        ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", analytics_storage: "denied",
+        region: ["AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU","IS","IE","IT","LV","LI","LT","LU","MT","NL","NO","PL","PT","RO","SK","SI","ES","SE","GB","CH"],
+      });
+      gtag("js", new Date());
+      gtag("config", "G-WS3JP0LJ3M");
+    </script>
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-WS3JP0LJ3M"></script>
     <slot name="head" />
   </head>
   <body class="min-h-screen bg-primary text-primary">

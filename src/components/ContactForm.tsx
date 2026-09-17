@@ -140,7 +140,7 @@ export default function ContactForm({ apps }: Props) {
       )}
 
       <Button type="submit" size="xl" color="primary" className="w-full">Send message</Button>
-      <p className="-mt-2 text-center text-sm text-tertiary">We only use your email to reply.</p>
+      <p className="-mt-2 text-center text-sm text-tertiary">We only use your email to reply. <a href="/privacy/" className="underline">Website privacy</a></p>
     </form>
   );
 }

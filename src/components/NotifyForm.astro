@@ -22,7 +22,7 @@ const id = `notify-${(product ?? "all").toLowerCase().replace(/\W+/g, "-")}`;
         placeholder="Enter your email"
         class="w-full rounded-lg bg-primary px-3.5 py-3 text-md text-primary shadow-xs ring-1 ring-primary outline-hidden ring-inset placeholder:text-placeholder focus:ring-2 focus:ring-brand"
       />
-      <p class:list={["mt-1.5 text-left text-sm", onBrand ? "text-tertiary_on-brand" : "text-tertiary"]}>We care about your data. One email per launch, nothing else.</p>
+      <p class:list={["mt-1.5 text-left text-sm", onBrand ? "text-tertiary_on-brand" : "text-tertiary"]}>One email per launch, nothing else. <a href="/privacy/" class="underline">Privacy</a></p>
     </div>
     <button
       type="submit"
