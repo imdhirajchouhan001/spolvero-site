@@ -52,6 +52,16 @@ const ogImage = new URL(image, Astro.site);
       gtag("config", "G-WS3JP0LJ3M");
     </script>
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-WS3JP0LJ3M"></script>
+    <!-- Microsoft Clarity. Visitors whose timezone is in Europe get no Clarity cookies (Consent API v2); typed text is masked by Clarity by default. -->
+    <script is:inline>
+      (function (c, l, a, r, i, t, y) {
+        c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+        var eu = /^(Europe|Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe))\//.test(Intl.DateTimeFormat().resolvedOptions().timeZone || "");
+        c[a]("consentv2", { ad_Storage: "denied", analytics_Storage: eu ? "denied" : "granted" });
+        t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+        y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+      })(window, document, "clarity", "script", "yjjrmtb5mx");
+    </script>
     <slot name="head" />
   </head>
   <body class="min-h-screen bg-primary text-primary">
