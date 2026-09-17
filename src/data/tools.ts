@@ -33,6 +33,18 @@ export type Tool = {
   tint: string;
   tagline: string;
   summary: string;
+  /** Which engine the page mounts. Absent means the tool has its own page file. */
+  engine?: "mic" | "speaker" | "keyboard" | "dead-pixel";
+  /** Page copy. Present once the tool is built. */
+  page?: {
+    h1: string;
+    title: string;
+    description: string;
+    intro: string;
+    answer: string;
+    tips: Tip[];
+    faqs: Faq[];
+  };
 };
 
 export const tools: Tool[] = [
@@ -48,10 +60,113 @@ export const tools: Tool[] = [
     summary:
       "See your webcam, get a readiness score, and find out if your resolution, frame rate and lighting are good enough for a call. Nothing is uploaded — the video never leaves your browser.",
   },
-  { slug: "mic-test", name: "Mic Test", kind: "Microphone check", status: "soon", icon: "message", accent: "#23b26d", tint: "#dff5ea", tagline: "Hear yourself before they do.", summary: "Check your microphone level, pick the right input and see if you're too quiet — in your browser, with nothing recorded." },
-  { slug: "speaker-test", name: "Speaker Test", kind: "Audio output check", status: "soon", icon: "play", accent: "#ff6fa3", tint: "#ffe6ef", tagline: "Left, right, and is it loud enough?", summary: "Play a test tone through each channel and confirm the right output device is selected before your call starts." },
-  { slug: "keyboard-test", name: "Keyboard Test", kind: "Key check", status: "soon", icon: "monitor", accent: "#2e9bff", tint: "#e2f0ff", tagline: "Find the key that stopped working.", summary: "Press every key and watch it light up, so you know whether it's the keyboard or the software." },
-  { slug: "dead-pixel-test", name: "Dead Pixel Test", kind: "Screen check", status: "soon", icon: "browser", accent: "#ffc83d", tint: "#fff4d9", tagline: "Check a new screen before the return window closes.", summary: "Full-screen colour fields that make dead pixels, stuck pixels and backlight bleed easy to spot." },
+  {
+    slug: "mic-test", name: "Mic Test", kind: "Microphone check", status: "live", engine: "mic", icon: "message", accent: "#23b26d", tint: "#dff5ea",
+    tagline: "Hear yourself before they do.",
+    summary: "Check your microphone level, pick the right input, and see whether you are too quiet — in your browser, with nothing recorded.",
+    page: {
+      h1: "Microphone test: see your level before the call",
+      title: "Microphone Test — Check Your Mic Online, Free and Private",
+      description: "Test your microphone in the browser. Watch a live level meter, pick the right input, and find out if you are too quiet or clipping. Nothing is recorded or uploaded.",
+      intro: "Allow the microphone and talk normally. The meter shows what the other end would hear, and tells you whether your level is actually usable.",
+      answer: "To test a microphone, select Start below and allow access, then speak at your normal volume. A healthy speaking level peaks between roughly −18 dB and −6 dB on the meter. Constant silence means the wrong input is selected; a meter pinned at the top means you are clipping and should move further from the mic.",
+      tips: [
+        { title: "Speak at the distance you actually will", body: "A microphone tested at 10cm and used at 60cm gives completely different levels. Sit the way you will sit on the call before reading the meter." },
+        { title: "Aim for the green, not the top", body: "Peaks in the upper-middle of the meter are right. A meter constantly at maximum is clipping, which sounds harsh and distorted, and no amount of volume on their end fixes it." },
+        { title: "Wired beats wireless for reliability", body: "Bluetooth headsets switch to a low-quality call mode when the mic is used, which is why your music sounds worse the moment you join. Wired earbuds avoid it entirely." },
+        { title: "Pick the input by name", body: "Browsers often default to the wrong device when a headset is plugged in. If the meter is flat while you are talking, switch the input in the picker rather than assuming the mic is broken." },
+      ],
+      faqs: [
+        { q: "Is my voice recorded?", a: "No. The audio is analysed in your browser to draw the meter and is never written to disk or sent anywhere. There is no upload code and no server that could receive it." },
+        { q: "The meter does not move when I speak.", a: "Usually the wrong input. Switch device in the picker. If nothing works, check your operating system's sound settings for a muted input or an input volume set to zero, and look for a physical mute switch on the headset itself." },
+        { q: "What level should I aim for?", a: "Peaks between about −18 dB and −6 dB while speaking normally. Below −30 dB you will sound distant and the far end will raise their volume and then hear your room. Pinned at 0 dB you are clipping." },
+        { q: "Why do I sound muffled on calls but fine here?", a: "Almost always Bluetooth. When a wireless headset's microphone is active, the connection drops to a narrowband call profile. This page uses the same profile, so if it sounds thin here too, that is the cause." },
+        { q: "Does it work on a phone?", a: "Yes, in mobile Chrome and Safari. Note that phones apply their own noise suppression, so the meter may look calmer than the room actually is." },
+        { q: "Can I test my mic without anyone hearing?", a: "That is exactly what this is. Nothing is transmitted — the meter is drawn from audio that never leaves the tab." },
+      ],
+    },
+  },
+  {
+    slug: "speaker-test", name: "Speaker Test", kind: "Audio output check", status: "live",
+    engine: "speaker", icon: "play", accent: "#ff6fa3", tint: "#ffe6ef",
+    tagline: "Left, right, and is it loud enough?",
+    summary: "Play a test tone through each channel and confirm the right output device is selected before your call starts.",
+    page: {
+      h1: "Speaker test: check left, right and the output device",
+      title: "Speaker Test — Check Left and Right Audio Channels Free",
+      description: "Test your speakers or headphones in the browser. Play a tone through the left and right channels separately, check a frequency sweep, and confirm the right output.",
+      intro: "Play a tone through each side. If you hear the left tone on the right, your channels are swapped — and if you hear nothing, the output device is the first thing to check.",
+      answer: "To test speakers, play the left tone and then the right tone below and confirm each comes from the correct side. Silence on both usually means the browser or system is sending audio to a different output, not that the speakers are broken. Swapped sides point at a cable or a channel-balance setting.",
+      tips: [
+        { title: "Test with the volume you will actually use", body: "A tone at full volume proves the speakers work but tells you nothing about whether a call will be audible. Set a normal listening level first." },
+        { title: "The browser and the system can disagree", body: "Your operating system may be sending sound to the headphones while a meeting app targets the laptop speakers. If the tone plays here but not in a call, check that app's own output setting." },
+        { title: "Swapped channels are usually the cable", body: "If left plays on the right, check a reversed 3.5mm extension or a channel balance slider that has been dragged. It is rarely the speakers themselves." },
+        { title: "Use the sweep to hear what is missing", body: "The frequency sweep runs low to high. A speaker that goes silent partway through, or buzzes at one pitch, has a real fault worth knowing about before a presentation." },
+      ],
+      faqs: [
+        { q: "I cannot hear anything at all.", a: "Check three things in order: the system volume and mute, the selected output device, and whether the browser tab itself is muted — most browsers show a small speaker icon on the tab and allow muting a single site." },
+        { q: "Can I choose which speakers to use?", a: "Browsers do not let a page choose your output device in most cases; that choice belongs to your operating system. Change it there and the tone follows." },
+        { q: "Why does one side sound quieter?", a: "Either a balance setting shifted away from centre, or a failing driver. Play each side in turn at the same volume — a clear difference points at hardware." },
+        { q: "What does the sweep test tell me?", a: "It plays rising frequencies so you can hear the range your speakers cover. Small laptop speakers legitimately produce little below about 200Hz; a rattle or a dropout in the middle of the range is a fault." },
+        { q: "Is anything played through my microphone?", a: "No. This page only produces sound. It never requests microphone access, so nothing is captured." },
+        { q: "Will this damage my speakers?", a: "No. The tones are generated at a moderate level, and you control the volume. As always, start low rather than high, especially with headphones on." },
+      ],
+    },
+  },
+  {
+    slug: "keyboard-test", name: "Keyboard Test", kind: "Key check", status: "live",
+    engine: "keyboard", icon: "monitor", accent: "#2e9bff", tint: "#e2f0ff",
+    tagline: "Find the key that stopped working.",
+    summary: "Press every key and watch it light up, so you know whether the problem is the keyboard or the software.",
+    page: {
+      h1: "Keyboard test: find the key that stopped working",
+      title: "Keyboard Test — Check Every Key Online, Free and Instant",
+      description: "Test your keyboard in the browser. Press any key and watch it light up, spot keys that never register, and check for stuck or repeating keys. Nothing is logged.",
+      intro: "Press keys and watch them light up. Anything that stays dark is not reaching the browser, which narrows the problem down fast.",
+      answer: "To test a keyboard, press each key and watch the on-screen layout. A key that never lights is not reaching the browser at all, which points at the hardware, the connection or a driver rather than at the app you were using. A key that lights without being pressed is stuck.",
+      tips: [
+        { title: "Test the modifiers by holding them", body: "Shift, Control, Alt and Command stay lit while held. A modifier that flickers or drops is a common cause of shortcuts that only work sometimes." },
+        { title: "A dark key is not always broken", body: "Some keys never reach the browser: media keys, screen brightness, and the Fn key itself are handled by the hardware or the OS. Those staying dark is normal." },
+        { title: "Check for repeats", body: "A worn switch can send a keypress several times from one press. The counter beside each key shows how many times it fired, which makes a doubling key obvious." },
+        { title: "Try the same key in another app", body: "If a key lights here but does nothing in one program, the keyboard is fine and that program has a shortcut conflict or a stuck modifier." },
+      ],
+      faqs: [
+        { q: "Are my keystrokes recorded?", a: "No. Keys are read to draw the layout and nothing is stored or sent. Do not type passwords into any keyboard tester, including this one — not because this page saves them, but because it is a habit worth keeping." },
+        { q: "Some keys never light up. Is the keyboard broken?", a: "Not necessarily. Media keys, brightness keys and Fn are usually intercepted before the browser sees them. A letter, number or modifier that stays dark is a genuine problem." },
+        { q: "How do I test for a stuck key?", a: "Stop touching the keyboard and watch. A key that stays lit, or fires repeatedly on its own, is stuck — often from debris under the cap." },
+        { q: "My layout does not match the keys shown.", a: "The on-screen layout is a standard one. If you use a different physical layout, the key that lights may sit elsewhere on your board, but the test still tells you whether the press registered." },
+        { q: "Can I test a mechanical keyboard's rollover?", a: "Partly. Hold several keys at once and see how many register together. Browsers and operating systems impose their own limits, so this shows a floor rather than the keyboard's true maximum." },
+        { q: "The whole keyboard is dead.", a: "If nothing registers, the browser is not receiving anything. Check the cable or battery, try another USB port, and test the keyboard on another machine before replacing it." },
+      ],
+    },
+  },
+  {
+    slug: "dead-pixel-test", name: "Dead Pixel Test", kind: "Screen check", status: "live",
+    engine: "dead-pixel", icon: "browser", accent: "#ffc83d", tint: "#fff4d9",
+    tagline: "Check a new screen before the return window closes.",
+    summary: "Full-screen colour fields that make dead pixels, stuck pixels and backlight bleed easy to spot.",
+    page: {
+      h1: "Dead pixel test: check a screen properly",
+      title: "Dead Pixel Test — Check Your Screen Free and Fullscreen",
+      description: "Test a monitor, laptop or phone screen for dead pixels, stuck pixels and backlight bleed. Full-screen colour fields, no sign-up, and nothing to install.",
+      intro: "Go fullscreen and step through the colours. A dead pixel stays black on every colour; a stuck pixel shows the wrong one. Do it now if the screen is new.",
+      answer: "To check for dead pixels, go fullscreen and cycle through solid red, green, blue, white and black. A pixel that stays black on every colour is dead; one that stays lit on a single colour is stuck. Black reveals stuck pixels and backlight bleed best, white reveals dust and dead pixels.",
+      tips: [
+        { title: "Do it the day the screen arrives", body: "Manufacturer policies often allow a return for a small number of faulty pixels only within the return window. Finding one in month four is a very different conversation." },
+        { title: "Clean the screen first", body: "Most of what looks like a stuck pixel is dust or a speck of dried spray. Wipe with a dry microfibre cloth before concluding anything." },
+        { title: "Look from straight on, in a dark room", body: "Backlight bleed and clouding only show properly on a black field with the lights off. Off-angle viewing exaggerates both and will worry you unnecessarily." },
+        { title: "A stuck pixel sometimes recovers", body: "Dead pixels do not come back, but stuck ones occasionally do. Rapid colour cycling over the area for a few minutes is the usual trick — worth trying before you start a return." },
+      ],
+      faqs: [
+        { q: "What is the difference between a dead and a stuck pixel?", a: "A dead pixel receives no power and stays black on every colour. A stuck pixel is permanently on in one colour, so it shows as a bright red, green or blue dot and disappears on a field of its own colour." },
+        { q: "How many faulty pixels can I return a screen for?", a: "It depends on the manufacturer and the panel grade — some allow a return for a single bright pixel, others require several. Check your specific warranty, and record what you find with a photograph." },
+        { q: "Which colour should I check on?", a: "All of them. Black shows stuck pixels and backlight bleed, white shows dead pixels and dust, and the solid primaries show sub-pixel failures that plain black and white can hide." },
+        { q: "Can this fix a stuck pixel?", a: "Sometimes. Rapid colour cycling over a stuck pixel can restart it, which is why the test includes a cycling mode. It never works on a dead pixel." },
+        { q: "Does this work on a phone or a TV?", a: "Yes on a phone. For a TV, open the page in the TV's browser if it has one, or cast the tab — but be aware that video compression can hide a single pixel." },
+        { q: "Is there a risk of burn-in from the solid colours?", a: "For a few minutes, no. OLED burn-in comes from static images over many hours. Do not leave a solid field up all day." },
+      ],
+    },
+  },
 ];
 
 export const getTool = (slug: string) => tools.find((t) => t.slug === slug);

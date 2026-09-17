@@ -289,39 +289,99 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
     let lights = { green: 0, amber: 0, red: 0 };
     let tick: number | undefined;
 
-    // ---- sound, synthesised so the timer works offline ----
+    // ---- sound ----
+    //
+    // Real recordings are used when they exist in /sounds/, because a recorded
+    // bell sounds like a bell and a synthesised one sounds like a test tone.
+    // The folder ships empty — see public/sounds/README.md — so a fallback is
+    // built here from layered partials with a bell-like decay, which is
+    // deliberately louder and richer than a single sine.
     let audio: AudioContext | null = null;
+    const buffers: Record<string, AudioBuffer | null> = {};
+    const files: Record<string, string[]> = {
+      chime: ["/sounds/chime.mp3", "/sounds/chime.wav"],
+      bell: ["/sounds/bell.mp3", "/sounds/bell.wav"],
+      pip: ["/sounds/pip.mp3", "/sounds/pip.wav"],
+    };
+
     const ensureAudio = () => {
       if (!audio) {
         const Ctor = window.AudioContext || (window as any).webkitAudioContext;
         if (Ctor) audio = new Ctor();
       }
-      // iOS suspends the context until a gesture resumes it.
+      // iOS keeps the context suspended until a gesture resumes it.
       if (audio?.state === "suspended") audio.resume();
       return audio;
     };
-    const beep = (freq: number, at: number, length = 0.35, gain = 0.25) => {
+
+    /** Fetches a sound once. A missing file is remembered so it is not retried. */
+    const load = async (name: string) => {
+      if (name in buffers) return buffers[name];
+      buffers[name] = null;
+      const ctx = ensureAudio();
+      if (!ctx) return null;
+      for (const url of files[name] ?? []) {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) continue;
+          buffers[name] = await ctx.decodeAudioData(await res.arrayBuffer());
+          return buffers[name];
+        } catch { /* try the next extension, then fall back */ }
+      }
+      return null;
+    };
+
+    const playBuffer = (buf: AudioBuffer, gain = 1) => {
       const ctx = ensureAudio();
       if (!ctx) return;
-      const osc = ctx.createOscillator();
+      const src = ctx.createBufferSource();
       const vol = ctx.createGain();
-      osc.frequency.value = freq;
-      osc.type = "sine";
-      vol.gain.setValueAtTime(0, ctx.currentTime + at);
-      vol.gain.linearRampToValueAtTime(gain, ctx.currentTime + at + 0.02);
-      vol.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + at + length);
-      osc.connect(vol).connect(ctx.destination);
-      osc.start(ctx.currentTime + at);
-      osc.stop(ctx.currentTime + at + length + 0.05);
+      vol.gain.value = gain;
+      src.buffer = buf;
+      src.connect(vol).connect(ctx.destination);
+      src.start();
     };
-    const playAlarm = () => {
+
+    /** A struck-bell fallback: a few partials at once, each decaying. */
+    const strike = (root: number, at = 0, length = 1.6, gain = 0.55) => {
+      const ctx = ensureAudio();
+      if (!ctx) return;
+      // Ratios of an idealised bell, which is why this reads as a chime rather
+      // than as a beep.
+      [1, 2, 2.4, 3, 4.5].forEach((ratio, i) => {
+        const osc = ctx.createOscillator();
+        const vol = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = root * ratio;
+        const peak = gain / (i + 1.4);
+        const t = ctx.currentTime + at;
+        vol.gain.setValueAtTime(0.0001, t);
+        vol.gain.exponentialRampToValueAtTime(peak, t + 0.008);
+        vol.gain.exponentialRampToValueAtTime(0.0001, t + length / (1 + i * 0.35));
+        osc.connect(vol).connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + length + 0.1);
+      });
+    };
+
+    const playAlarm = async () => {
       if (muted) return;
       const kind = soundSelect.value;
       if (kind === "none") return;
-      if (kind === "chime") { beep(880, 0); beep(1320, 0.28, 0.5); }
-      else for (let i = 0; i < 6; i++) beep(1046, i * 0.34, 0.22, 0.4);
+      ensureAudio();
+      const buf = await load(kind);
+      if (buf) return playBuffer(buf);
+      // Fallback: one warm strike for the chime, an insistent series for the bell.
+      if (kind === "chime") { strike(660, 0, 2.2); strike(990, 0.42, 1.8, 0.4); }
+      else for (let i = 0; i < 5; i++) strike(880, i * 0.42, 0.9, 0.7);
     };
-    const tickSound = () => { if (!muted && soundSelect.value !== "none") beep(660, 0, 0.09, 0.14); };
+
+    const tickSound = async () => {
+      if (muted || soundSelect.value === "none") return;
+      const buf = await load("pip");
+      if (buf) return playBuffer(buf, 0.7);
+      strike(1320, 0, 0.22, 0.3);
+    };
 
     // ---- screen wake lock, so a projector does not sleep mid-timer ----
     let wake: any = null;
@@ -450,6 +510,8 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
 
     const start = () => {
       ensureAudio(); // the gesture that starts the timer also unlocks sound
+      void load(soundSelect.value);
+      void load("pip");
       if (state === "idle" || state === "finished") readInputs();
       const now = Date.now();
 
@@ -622,6 +684,9 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
       paintSaved();
       say(`Saved ${fmt(total)}`);
     });
+    // Changing the sound plays it, so the choice is made by ear.
+    soundSelect.addEventListener("change", () => { if (!muted) void playAlarm(); });
+
     muteBtn.addEventListener("click", () => {
       muted = !muted;
       muteBtn.setAttribute("aria-pressed", String(muted));

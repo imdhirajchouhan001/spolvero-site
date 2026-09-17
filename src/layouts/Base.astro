@@ -1,7 +1,6 @@
 ---
 import "@/styles/global.css";
 import AdInterrupt from "@/components/AdInterrupt.astro";
-import Announcement from "@/components/Announcement.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import { adsenseClient } from "@/data/ads";
@@ -140,9 +139,13 @@ const siteJsonLd = [
               }
               var ins = el.querySelector("ins.adsbygoogle");
               if (!ins) return;
-              setTimeout(function () {
-                if (ins.getAttribute("data-ad-status") === "unfilled" || !ins.firstElementChild) el.dataset.adEmpty = "";
-              }, 2500);
+              // Only give the slot its height once an ad is genuinely in it.
+              var settle = function () {
+                var status = ins.getAttribute("data-ad-status");
+                if (status === "filled" && ins.firstElementChild) el.dataset.adFilledOk = "";
+                else el.dataset.adEmpty = "";
+              };
+              setTimeout(settle, 2000);
             }
             var io = new IntersectionObserver(function (entries) {
               entries.forEach(function (e) {
@@ -169,7 +172,6 @@ const siteJsonLd = [
   </head>
   <body class="min-h-screen bg-secondary text-primary">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:shadow-lg">Skip to content</a>
-    <Announcement />
     <Header cta={headerCta} label={headerLabel} labelHref={headerLabelHref} />
     <main id="main">
       <slot />

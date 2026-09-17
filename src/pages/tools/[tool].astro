@@ -1,0 +1,174 @@
+---
+// The device tests that share the DeviceTest engine. The webcam test keeps its own
+// page file because it carries nine long-tail variants under it.
+import Base from "@/layouts/Base.astro";
+import DeviceTest from "@/components/tools/DeviceTest.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Faq from "@/components/Faq.astro";
+import Icon from "@/components/Icon.astro";
+import AdSlot from "@/components/AdSlot.astro";
+import Button from "@/components/ui/Button.astro";
+import Badge from "@/components/ui/Badge.astro";
+import { tools, type Tool } from "@/data/tools";
+
+export function getStaticPaths() {
+  return tools
+    .filter((t) => t.engine && t.page)
+    .map((tool) => ({ params: { tool: tool.slug }, props: { tool } }));
+}
+
+const { tool } = Astro.props as { tool: Tool };
+const p = tool.page!;
+const site = Astro.site!.toString();
+const url = new URL(`/tools/${tool.slug}/`, site).toString();
+const siblings = tools.filter((t) => t.slug !== tool.slug && t.status === "live");
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site },
+      { "@type": "ListItem", position: 2, name: "Tools", item: new URL("/tools/", site).toString() },
+      { "@type": "ListItem", position: 3, name: tool.name, item: url },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: `Spolvero ${tool.name}`,
+    applicationCategory: "UtilitiesApplication",
+    operatingSystem: "Web browser: Chrome, Safari, Firefox, Edge",
+    url,
+    description: p.description,
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    publisher: { "@type": "Organization", name: "Spolvero", url: site },
+    isAccessibleForFree: true,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: p.faqs.map((f) => ({
+      "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+];
+---
+
+<Base
+  title={p.title}
+  description={p.description}
+  headerCta={{ label: "All tools", href: "/tools/" }}
+  headerLabel={tool.name}
+  headerLabelHref={`/tools/${tool.slug}/`}
+>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="bg-secondary pt-5 pb-12 md:pt-7 md:pb-16">
+    <div class="container-page flex flex-col items-center text-center">
+      <nav aria-label="Breadcrumb" class="flex flex-wrap items-center justify-center gap-2 text-sm font-semibold text-tertiary">
+        <a href="/tools/" class="hover:text-tertiary_hover">Tools</a>
+        <span aria-hidden="true">/</span>
+        <span class="text-brand-secondary">{tool.name}</span>
+      </nav>
+      <h1 class="mt-4 max-w-4xl text-display-sm font-semibold text-primary md:text-display-md">{p.h1}</h1>
+      <p class="mt-3 max-w-2xl text-md text-tertiary md:text-lg">{p.intro}</p>
+    </div>
+
+    <div class="mt-6 md:mt-8">
+      <DeviceTest engine={tool.engine!} accent={tool.accent} />
+    </div>
+
+    <div class="container-page mt-10 max-w-5xl md:mt-12">
+      <AdSlot placement="below-results" />
+    </div>
+  </section>
+
+  <section class="bg-secondary pb-14 md:pb-20">
+    <div class="container-page">
+      <div class="mx-auto max-w-3xl rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary md:p-8" data-reveal>
+        <h2 class="text-display-xs font-semibold text-primary">The short answer</h2>
+        <p class="mt-3 text-lg text-tertiary">{p.answer}</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="bg-secondary pb-14 md:pb-20">
+    <div class="container-page max-w-4xl"><AdSlot placement="in-content" /></div>
+  </div>
+
+  <section class="bg-secondary pb-14 md:pb-20">
+    <div class="container-page">
+      <SectionHeader eyebrow="Getting it right" title="Four things worth knowing" />
+      <ul class="mx-auto mt-10 grid max-w-5xl gap-6 md:mt-12 md:grid-cols-2">
+        {p.tips.map((t) => (
+          <li class="flex gap-4 rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary" data-reveal>
+            <span class="grid size-10 shrink-0 place-items-center rounded-full text-neutral-900" style={`background:${tool.tint}`} aria-hidden="true">
+              <Icon name="check" class="size-5" />
+            </span>
+            <div>
+              <h3 class="text-lg font-semibold text-primary">{t.title}</h3>
+              <p class="mt-1.5 text-md text-tertiary">{t.body}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="bg-secondary pb-14 md:pb-20">
+    <div class="container-page">
+      <div class="mx-auto grid max-w-5xl gap-8 rounded-3xl bg-brand-section px-6 py-10 md:grid-cols-2 md:px-10" data-reveal>
+        <div>
+          <h2 class="text-display-xs font-semibold text-primary_on-brand">Nothing leaves your device</h2>
+          <p class="mt-3 text-md text-tertiary_on-brand">
+            This test runs entirely in your browser. There is no upload, no recording and no server that could receive
+            anything — close the tab and it is gone.
+          </p>
+        </div>
+        <ul class="flex flex-col gap-3 self-center">
+          {["No sign-up and no account", "Nothing recorded or stored", "Works with an ad blocker on", "Free, and staying free"].map((x) => (
+            <li class="flex gap-3 text-md text-primary_on-brand">
+              <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-white/15"><Icon name="check" class="size-3.5" /></span>
+              {x}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" class="bg-secondary pb-14 md:pb-20">
+    <div class="container-page grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16">
+      <div>
+        <SectionHeader align="left" eyebrow="FAQ" title="Questions people ask" lede="Anything we've missed?" />
+        <div class="mt-6" data-reveal>
+          <Button href={`/contact/?topic=bug&app=${tool.slug}`} variant="outline" size="lg">Tell us</Button>
+        </div>
+      </div>
+      <div data-reveal><Faq id="tool-faq" items={p.faqs} /></div>
+    </div>
+  </section>
+
+  <section class="bg-secondary pb-16 md:pb-24">
+    <div class="container-page">
+      <h2 class="text-display-xs font-semibold text-primary" data-reveal>Other device tests</h2>
+      <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {siblings.map((t) => (
+          <li data-reveal>
+            <a href={`/tools/${t.slug}/`} class="group flex h-full flex-col rounded-3xl bg-primary p-5 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
+              <div class="flex items-start justify-between gap-3">
+                <span class="grid size-11 place-items-center rounded-2xl text-neutral-900" style={`background:${t.tint}`} aria-hidden="true">
+                  <Icon name={t.icon} class="size-5" />
+                </span>
+                <Badge variant="success" size="sm">Live</Badge>
+              </div>
+              <p class="mt-4 text-md font-semibold text-primary">{t.name}</p>
+              <p class="mt-1 text-sm text-tertiary">{t.tagline}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>

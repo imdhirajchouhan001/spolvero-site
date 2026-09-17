@@ -47,11 +47,17 @@ const enabled = Boolean(adsenseClient && slot) || adsPreview;
 )}
 
 <style>
-  /* Height is reserved before anything loads, so an arriving ad shifts nothing. */
-  .ad-slot { min-height: var(--ad-min-h); }
+  /* A slot takes no space until an ad is actually in it.
+     Reserving the height up front is the usual CLS advice, but it only helps if
+     an ad arrives. While the account is unapproved — or for anyone running an ad
+     blocker — every reserved box is a blank gap in the middle of the page, which
+     is worse than the shift it prevents. So the slot starts collapsed and claims
+     its height once AdSense reports the unit filled. */
+  .ad-slot { min-height: 0; }
+  .ad-slot:not([data-ad-filled-ok]) > * { display: none; }
+  .ad-slot[data-ad-filled-ok] { min-height: var(--ad-min-h); }
   @media (min-width: 768px) {
-    .ad-slot { min-height: var(--ad-min-h-md); }
+    .ad-slot[data-ad-filled-ok] { min-height: var(--ad-min-h-md); }
   }
-  /* An unfilled or blocked unit takes no space at all. */
-  .ad-slot[data-ad-empty] { min-height: 0; display: none; }
+  .ad-slot[data-ad-empty] { display: none; }
 </style>
