@@ -86,7 +86,7 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
       <!-- Controls. In fullscreen these fade out and return on mouse move. -->
       <div class="flex flex-wrap items-center justify-center gap-2" data-controls>
         <Button variant="default" size="lg" data-start><Icon name="play" />Start</Button>
-        <Button variant="on-dark" size="lg" class="hidden" data-pause>Pause</Button>
+        <Button variant="on-dark" size="lg" style="display:none" data-pause>Pause</Button>
         <Button variant="on-dark" size="md" data-add>+1 min</Button>
         <Button variant="on-dark-ghost" size="md" data-reset>Reset</Button>
         <Button variant="on-dark-ghost" size="md" data-fullscreen aria-label="Fullscreen"><Icon name="browser" />Fullscreen</Button>
@@ -368,8 +368,12 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
     const setState = (s: State) => {
       state = s;
       root.dataset.state = s;
-      startBtn.classList.toggle("hidden", s === "running");
-      pauseBtn.classList.toggle("hidden", s !== "running");
+      // Toggling a `hidden` class does not work here: the button's own base class
+      // carries `inline-flex`, and at runtime the later display utility wins. (It
+      // looks fine on first render only because tailwind-merge resolves the clash
+      // at build time.) Setting display directly is unambiguous.
+      startBtn.style.display = s === "running" ? "none" : "";
+      pauseBtn.style.display = s === "running" ? "" : "none";
       broadcast(s === "running");
     };
 
