@@ -1,0 +1,57 @@
+---
+// One display ad unit.
+//
+// Renders nothing at all until an AdSense client id is configured, so an unapproved
+// account never leaves empty grey boxes on the page. Once configured it reserves its
+// height up front (so no layout shift), lazy-loads when scrolled near, and collapses
+// itself if the unit comes back unfilled or an ad blocker removed the script.
+import { adsenseClient, adsPreview, slotId, placements, type Placement } from "@/data/ads";
+
+interface Props {
+  placement: Placement;
+  /** Waits for the tool to publish a result before loading. Used below the score panel. */
+  afterResult?: boolean;
+  class?: string;
+}
+const { placement, afterResult = false, class: className } = Astro.props;
+const cfg = placements[placement];
+const slot = slotId(placement);
+const enabled = Boolean(adsenseClient && slot) || adsPreview;
+---
+
+{enabled && (
+  <aside
+    class:list={["ad-slot mx-auto w-full", cfg.hideBelow === "xl" && "hidden xl:block", className]}
+    data-ad-slot
+    data-ad-after-result={afterResult ? "" : undefined}
+    style={`--ad-min-h:${cfg.minHeight};--ad-min-h-md:${cfg.mdMinHeight}`}
+    aria-label={cfg.label}
+  >
+    <p class="mb-1 text-center text-xs text-quaternary">{cfg.label}</p>
+    {adsPreview ? (
+      <div class="grid w-full place-items-center rounded-2xl border-2 border-dashed border-primary bg-primary/50 text-center" style={`min-height:var(--ad-min-h-md)`}>
+        <span class="px-4 text-sm font-semibold text-quaternary">
+          {placement} · {cfg.mdMinHeight} reserved
+        </span>
+      </div>
+    ) : (
+      <ins
+        class="adsbygoogle block w-full"
+        data-ad-client={adsenseClient}
+        data-ad-slot={slot}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      ></ins>
+    )}
+  </aside>
+)}
+
+<style>
+  /* Height is reserved before anything loads, so an arriving ad shifts nothing. */
+  .ad-slot { min-height: var(--ad-min-h); }
+  @media (min-width: 768px) {
+    .ad-slot { min-height: var(--ad-min-h-md); }
+  }
+  /* An unfilled or blocked unit takes no space at all. */
+  .ad-slot[data-ad-empty] { min-height: 0; display: none; }
+</style>

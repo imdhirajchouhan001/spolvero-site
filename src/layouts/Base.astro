@@ -1,7 +1,11 @@
 ---
 import "@/styles/global.css";
+import AdInterrupt from "@/components/AdInterrupt.astro";
+import Announcement from "@/components/Announcement.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
+import { adsenseClient } from "@/data/ads";
+import { navGroups, navLinks } from "@/data/nav";
 
 interface Props {
   title: string;
@@ -15,6 +19,37 @@ interface Props {
 const { title, description, image = "/assets/brand/og.png", themeColor = "#101057", noindex = false, headerCta } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
+const site = Astro.site!.toString();
+
+// Site-wide structured data, emitted once per page: who publishes this, what the site is,
+// and the sections search engines should treat as the main navigation.
+const siteJsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": `${site}#organization`,
+    name: "Spolvero",
+    url: site,
+    logo: new URL("/assets/brand/mark.svg", site).toString(),
+    email: "spolvero.design@gmail.com",
+    description: "An independent studio designing and building apps, games, web tools and software.",
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${site}#website`,
+    name: "Spolvero",
+    url: site,
+    publisher: { "@id": `${site}#organization` },
+    inLanguage: "en",
+  },
+  ...navGroups.concat(navLinks.map((l) => ({ label: l.label, href: l.href, blurb: "", items: [] }))).map((g) => ({
+    "@context": "https://schema.org",
+    "@type": "SiteNavigationElement",
+    name: g.label,
+    url: new URL(g.href, site).toString(),
+  })),
+];
 ---
 
 <!doctype html>
@@ -25,7 +60,9 @@ const ogImage = new URL(image, Astro.site);
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"} />
+    <meta property="og:locale" content="en" />
+    <meta name="author" content="Spolvero" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Spolvero" />
     <meta property="og:title" content={title} />
@@ -62,15 +99,67 @@ const ogImage = new URL(image, Astro.site);
         y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
       })(window, document, "clarity", "script", "yjjrmtb5mx");
     </script>
+    {adsenseClient && (
+      <>
+        <script
+          is:inline
+          async
+          crossorigin="anonymous"
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
+        ></script>
+        <!-- Lazy fill: a unit only requests an ad near the viewport, and the unit under the
+             tool waits for a finished test. An unfilled or blocked unit collapses to nothing. -->
+        <script is:inline>
+          addEventListener("DOMContentLoaded", function () {
+            var slots = Array.prototype.slice.call(document.querySelectorAll("[data-ad-slot]"));
+            if (!slots.length) return;
+            function fill(el) {
+              if (el.dataset.adFilled !== undefined) return;
+              el.dataset.adFilled = "";
+              try {
+                (window.adsbygoogle = window.adsbygoogle || []).push({});
+              } catch (e) {
+                el.dataset.adEmpty = "";
+                return;
+              }
+              var ins = el.querySelector("ins.adsbygoogle");
+              if (!ins) return;
+              setTimeout(function () {
+                if (ins.getAttribute("data-ad-status") === "unfilled" || !ins.firstElementChild) el.dataset.adEmpty = "";
+              }, 2500);
+            }
+            var io = new IntersectionObserver(function (entries) {
+              entries.forEach(function (e) {
+                if (!e.isIntersecting) return;
+                var el = e.target;
+                if (el.dataset.adAfterResult !== undefined && el.dataset.adReady === undefined) return;
+                io.unobserve(el);
+                fill(el);
+              });
+            }, { rootMargin: "200px" });
+            slots.forEach(function (el) { io.observe(el); });
+            document.addEventListener("spolvero:result", function () {
+              slots.filter(function (el) { return el.dataset.adAfterResult !== undefined; }).forEach(function (el) {
+                el.dataset.adReady = "";
+                if (el.getBoundingClientRect().top < innerHeight + 200) { io.unobserve(el); fill(el); }
+              });
+            });
+          });
+        </script>
+      </>
+    )}
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(siteJsonLd)} />
     <slot name="head" />
   </head>
-  <body class="min-h-screen bg-primary text-primary">
+  <body class="min-h-screen bg-secondary text-primary">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:shadow-lg">Skip to content</a>
+    <Announcement />
     <Header cta={headerCta} />
     <main id="main">
       <slot />
     </main>
     <Footer />
+    <AdInterrupt />
     <script>
       import "flowbite";
       import { gsap } from "gsap";

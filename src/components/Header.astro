@@ -1,27 +1,72 @@
 ---
 import Icon from "@/components/Icon.astro";
 import { Button } from "@/components/base/buttons/button";
+import { Badge } from "@/components/base/badges/badges";
+import { navGroups, navLinks } from "@/data/nav";
 
 interface Props {
   cta?: { label: string; href: string };
 }
 const { cta = { label: "Contact us", href: "/contact/" } } = Astro.props;
-const links = [
-  { label: "Apps", href: "/#apps" },
-  { label: "Coming up", href: "/#next" },
-  { label: "Design studio", href: "/#studio" },
-  { label: "Contact", href: "/contact/" },
-];
 ---
 
-<header class="sticky top-0 z-40 border-b border-transparent bg-primary/85 backdrop-blur-lg transition-colors" data-header>
+<header class="sticky top-0 z-40 border-b border-transparent bg-secondary/85 backdrop-blur-lg transition-colors" data-header>
   <nav aria-label="Main" class="container-page flex h-18 items-center justify-between gap-6">
-    <div class="flex items-center gap-10">
+    <div class="flex items-center gap-8">
       <a href="/" aria-label="Spolvero home" class="text-brand-800">
         <span class="logo-mark w-[112px]"></span>
       </a>
+
       <ul class="hidden items-center gap-1 md:flex">
-        {links.map((l) => (
+        {navGroups.map((g) => (
+          <li class="relative" data-menu>
+            <button
+              type="button"
+              id={`nav-${g.label.toLowerCase()}-button`}
+              class="flex items-center gap-1 rounded-md px-2 py-1 text-md font-semibold text-secondary transition hover:text-secondary_hover aria-expanded:text-brand-secondary"
+              aria-expanded="false"
+              aria-controls={`nav-${g.label.toLowerCase()}`}
+              data-menu-button
+            >
+              {g.label}
+              <svg class="size-4 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true" data-menu-chevron><path d="M6 9l6 6 6-6" /></svg>
+            </button>
+
+            <div
+              id={`nav-${g.label.toLowerCase()}`}
+              class="invisible absolute top-full left-0 z-50 w-80 translate-y-1 pt-3 opacity-0 transition duration-150"
+              data-menu-panel
+            >
+              <div class="overflow-hidden rounded-3xl bg-primary shadow-lg ring-1 ring-secondary">
+                <div class="border-b border-secondary px-4 py-3">
+                  <p class="text-sm text-tertiary">{g.blurb}</p>
+                </div>
+                <ul class="flex flex-col p-2">
+                  {g.items.map((it) => (
+                    <li>
+                      <a href={it.href} class="flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 transition hover:bg-primary_hover">
+                        <span class="min-w-0">
+                          <span class="block truncate text-md font-semibold text-primary">{it.label}</span>
+                          {it.note && <span class="block truncate text-sm text-tertiary">{it.note}</span>}
+                        </span>
+                        {it.status === "live"
+                          ? <Badge type="pill-color" color="success" size="sm">Live</Badge>
+                          : <Badge type="pill-color" color="gray" size="sm">Soon</Badge>}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+                {g.footer && (
+                  <a href={g.footer.href} class="flex items-center justify-between gap-2 border-t border-secondary bg-secondary px-4 py-3 text-md font-semibold text-brand-secondary transition hover:bg-primary_hover">
+                    {g.footer.label}
+                    <Icon name="arrow" class="size-4" />
+                  </a>
+                )}
+              </div>
+            </div>
+          </li>
+        ))}
+        {navLinks.map((l) => (
           <li><a href={l.href} class="rounded-md px-2 py-1 text-md font-semibold text-secondary transition hover:text-secondary_hover">{l.label}</a></li>
         ))}
       </ul>
@@ -44,24 +89,113 @@ const links = [
     </div>
   </nav>
 
-  <!-- Flowbite collapse -->
-  <div id="mobile-menu" class="hidden border-t border-secondary bg-primary md:hidden">
-    <ul class="container-page flex flex-col gap-1 py-4">
-      {links.map((l) => (
-        <li><a href={l.href} class="block rounded-md px-2 py-3 text-md font-semibold text-primary hover:bg-primary_hover">{l.label}</a></li>
+  <!-- Mobile: groups are listed open, so everything is one tap away. -->
+  <div id="mobile-menu" class="hidden max-h-[calc(100vh-4.5rem)] overflow-y-auto border-t border-secondary bg-secondary md:hidden">
+    <div class="container-page flex flex-col gap-6 py-5">
+      {navGroups.map((g) => (
+        <div>
+          <p class="text-sm font-semibold text-quaternary">{g.label}</p>
+          <ul class="mt-2 flex flex-col">
+            {g.items.map((it) => (
+              <li>
+                <a href={it.href} class="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 hover:bg-primary_hover">
+                  <span class="text-md font-semibold text-primary">{it.label}</span>
+                  {it.status === "live"
+                    ? <Badge type="pill-color" color="success" size="sm">Live</Badge>
+                    : <Badge type="pill-color" color="gray" size="sm">Soon</Badge>}
+                </a>
+              </li>
+            ))}
+            {g.footer && (
+              <li>
+                <a href={g.footer.href} class="flex items-center gap-1.5 rounded-lg px-2 py-2.5 text-md font-semibold text-brand-secondary hover:bg-primary_hover">
+                  {g.footer.label} <Icon name="arrow" class="size-4" />
+                </a>
+              </li>
+            )}
+          </ul>
+        </div>
       ))}
-      <li class="pt-2"><Button href={cta.href} size="lg" color="primary" className="w-full">{cta.label}</Button></li>
-    </ul>
+      <ul class="flex flex-col border-t border-secondary pt-4">
+        {navLinks.map((l) => (
+          <li><a href={l.href} class="block rounded-lg px-2 py-2.5 text-md font-semibold text-primary hover:bg-primary_hover">{l.label}</a></li>
+        ))}
+      </ul>
+      <Button href={cta.href} size="lg" color="primary" className="w-full">{cta.label}</Button>
+    </div>
   </div>
 </header>
+
+<style>
+  /* The panel's open/closed classes are toggled in script — Tailwind utilities would
+     otherwise outrank a scoped rule here. Only the chevron, which has no utility of
+     its own, is styled from CSS. */
+  [data-menu-button][aria-expanded="true"] [data-menu-chevron] { transform: rotate(180deg); }
+</style>
 
 <script>
   const header = document.querySelector<HTMLElement>("[data-header]");
   const onScroll = () => header?.classList.toggle("border-secondary", window.scrollY > 8);
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
+
   // Close the mobile menu after picking a link.
   document.querySelectorAll<HTMLAnchorElement>("#mobile-menu a").forEach((a) =>
     a.addEventListener("click", () => document.querySelector<HTMLButtonElement>("[data-collapse-toggle=mobile-menu]")?.click()),
   );
+
+  const menus = Array.from(document.querySelectorAll<HTMLElement>("[data-menu]"));
+  const canHover = window.matchMedia("(hover: hover)").matches;
+
+  const setOpen = (menu: HTMLElement, open: boolean) => {
+    const button = menu.querySelector<HTMLButtonElement>("[data-menu-button]")!;
+    const panel = menu.querySelector<HTMLElement>("[data-menu-panel]")!;
+    button.setAttribute("aria-expanded", String(open));
+    panel.classList.toggle("invisible", !open);
+    panel.classList.toggle("opacity-0", !open);
+    panel.classList.toggle("translate-y-1", !open);
+  };
+  const closeAll = (except?: HTMLElement) => menus.forEach((m) => m !== except && setOpen(m, false));
+
+  menus.forEach((menu) => {
+    const button = menu.querySelector<HTMLButtonElement>("[data-menu-button]")!;
+    let closeTimer: number | undefined;
+
+    button.addEventListener("click", () => {
+      const open = button.getAttribute("aria-expanded") === "true";
+      closeAll(menu);
+      setOpen(menu, !open);
+    });
+
+    if (canHover) {
+      menu.addEventListener("pointerenter", () => {
+        window.clearTimeout(closeTimer);
+        closeAll(menu);
+        setOpen(menu, true);
+      });
+      // A small delay so the pointer can cross the gap to the panel.
+      menu.addEventListener("pointerleave", () => {
+        closeTimer = window.setTimeout(() => setOpen(menu, false), 120);
+      });
+    }
+
+    // Keyboard: the panel closes once focus leaves the whole group.
+    menu.addEventListener("focusout", (e) => {
+      if (!menu.contains(e.relatedTarget as Node)) setOpen(menu, false);
+    });
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      const open = menus.find((m) => m.querySelector("[data-menu-button]")?.getAttribute("aria-expanded") === "true");
+      if (open) {
+        setOpen(open, false);
+        open.querySelector<HTMLButtonElement>("[data-menu-button]")?.focus();
+      }
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!(e.target as Element)?.closest("[data-menu]")) closeAll();
+  });
 </script>

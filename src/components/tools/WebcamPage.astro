@@ -1,0 +1,286 @@
+---
+// One page body for /tools/webcam-test/ and every long-tail variant under it.
+// Each caller supplies its own H1, answer, intro, tips and FAQs — everything below
+// the tool differs per page, so Google sees pages worth keeping apart.
+import WebcamTest from "@/components/tools/WebcamTest.astro";
+import Troubleshoot from "@/components/tools/Troubleshoot.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import AdSlot from "@/components/AdSlot.astro";
+import { adsenseClient, adsPreview } from "@/data/ads";
+import Faq from "@/components/Faq.astro";
+import Icon from "@/components/Icon.astro";
+import { Button } from "@/components/base/buttons/button";
+import { Badge } from "@/components/base/badges/badges";
+import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
+import { BackgroundPattern } from "@/components/shared-assets/background-patterns";
+import { getIcon } from "@/lib/icons";
+import { appRequirements, howToSteps, tools, webcamVariants, type Faq as FaqItem, type Tip } from "@/data/tools";
+
+interface Props {
+  h1: string;
+  answer: string;
+  intro: string;
+  tips: Tip[];
+  faqs: FaqItem[];
+  /** Set on a variant page; the head page leaves it off. */
+  crumb?: string;
+  /** Highlighted row in the requirements table, matching appRequirements[].app. */
+  highlight?: string;
+  variantSlug?: string;
+}
+const { h1, answer, intro, tips, faqs, crumb, highlight, variantSlug } = Astro.props;
+// Pigment rotations. Flat accents only — never used to carry meaning on their own,
+// so the pages stay readable for anyone who cannot separate these hues.
+const stepColours = ["var(--color-giallo)", "var(--color-verde)", "var(--color-rosa)"];
+const tipTints = ["var(--color-arancio-tint)", "var(--color-cielo-tint)", "var(--color-verde-tint)", "var(--color-giallo-tint)"];
+
+const siblings = tools.filter((t) => t.slug !== "webcam-test");
+const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
+---
+
+<!-- Hero + tool, above the fold -->
+<section class="relative overflow-hidden bg-secondary pt-5 pb-12 md:pt-7 md:pb-16">
+  <!-- Flat accent shapes, purely decorative, kept well clear of the tool itself. -->
+  <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <span class="absolute -top-10 -left-16 hidden size-56 rounded-full bg-giallo/20 lg:block"></span>
+    <span class="absolute top-24 -right-20 hidden size-72 rounded-full bg-arancio/15 lg:block"></span>
+    <span class="absolute top-6 right-1/4 hidden size-4 rounded-full bg-rosa lg:block"></span>
+    <span class="absolute top-40 left-1/5 hidden size-3 rounded-full bg-verde lg:block"></span>
+  </div>
+
+  <div class="relative container-page flex flex-col items-center text-center">
+    <nav aria-label="Breadcrumb" class="flex flex-wrap items-center justify-center gap-2 text-sm font-semibold text-tertiary">
+      <a href="/tools/" class="hover:text-tertiary_hover">Tools</a>
+      <span aria-hidden="true">/</span>
+      {crumb ? (
+        <>
+          <a href="/tools/webcam-test/" class="hover:text-tertiary_hover">Webcam test</a>
+          <span aria-hidden="true">/</span>
+          <span class="text-brand-secondary">{crumb}</span>
+        </>
+      ) : (
+        <span class="text-brand-secondary">Webcam test</span>
+      )}
+    </nav>
+
+    <h1 class="mt-4 max-w-4xl text-display-sm font-semibold text-primary md:text-display-md">{h1}</h1>
+    <p class="mt-3 max-w-2xl text-md text-tertiary md:text-lg">{intro}</p>
+
+  </div>
+
+  <div class="relative mt-6 md:mt-8">
+    <WebcamTest />
+  </div>
+
+  <div class="relative container-page mt-10 max-w-5xl md:mt-12">
+    <AdSlot placement="below-results" afterResult />
+  </div>
+</section>
+
+<!-- The short answer, readable without a camera (and quotable by an AI answer) -->
+<section class="bg-secondary py-14 md:py-20">
+  <div class="container-page">
+    <div class="mx-auto max-w-3xl rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary md:p-8" data-reveal>
+      <h2 class="text-display-xs font-semibold text-primary">The short answer</h2>
+      <p class="mt-3 text-lg text-tertiary">{answer}</p>
+    </div>
+
+    <!-- How to use -->
+    <div class="mt-14 md:mt-20">
+      <SectionHeader eyebrow="How to use it" title="Three steps, about three seconds" />
+      <ol class="mx-auto mt-10 grid max-w-5xl gap-6 md:mt-12 md:grid-cols-3">
+        {howToSteps.map((s, i) => (
+          <li class="flex flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary" data-reveal>
+            <span
+              class="grid size-11 place-items-center rounded-full text-md font-semibold text-neutral-900"
+              style={`background:${stepColours[i % stepColours.length]}`}
+              aria-hidden="true"
+            >{i + 1}</span>
+            <h3 class="mt-5 text-lg font-semibold text-primary"><span class="sr-only">Step {i + 1}: </span>{s.name}</h3>
+            <p class="mt-2 text-md text-tertiary">{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<div class="bg-secondary pt-14 md:pt-20">
+  <div class="container-page max-w-4xl">
+    <AdSlot placement="in-content" />
+  </div>
+</div>
+
+<!-- Page-specific tips -->
+<section class="bg-secondary pb-14 md:pb-20">
+  <div class="container-page">
+    <SectionHeader eyebrow="Get a better picture" title="Four things worth doing before you join" />
+    <ul class="mx-auto mt-10 grid max-w-5xl gap-6 md:mt-12 md:grid-cols-2">
+      {tips.map((t, i) => (
+        <li class="flex gap-4 rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary" data-reveal>
+          <span
+            class="grid size-10 shrink-0 place-items-center rounded-full text-neutral-900"
+            style={`background:${tipTints[i % tipTints.length]}`}
+            aria-hidden="true"
+          >
+            <Icon name="zap" class="size-5" />
+          </span>
+          <div>
+            <h3 class="text-lg font-semibold text-primary">{t.title}</h3>
+            <p class="mt-1.5 text-md text-tertiary">{t.body}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<!-- Troubleshooting -->
+<section class="bg-secondary py-14 md:py-20">
+  <div class="container-page">
+    <SectionHeader
+      eyebrow="Troubleshooting"
+      title="If the camera didn't start"
+      lede="Open the one that matches what the test told you. If the test detected the problem, that section is already open."
+    />
+    <div class="mx-auto mt-10 max-w-5xl md:mt-12" data-reveal>
+      <Troubleshoot />
+    </div>
+  </div>
+</section>
+
+<!-- Reference table -->
+<section class="bg-secondary py-14 md:py-20">
+  <div class="container-page">
+    <SectionHeader
+      eyebrow="What your results mean"
+      title="What each app actually needs"
+      lede="Resolution and frame rate each app sends, from their own published requirements, checked September 2026."
+    />
+    <div class="mx-auto mt-10 max-w-5xl overflow-x-auto rounded-3xl ring-1 ring-secondary md:mt-12" data-reveal>
+      <table class="w-full min-w-[640px] border-collapse text-left">
+        <caption class="sr-only">Minimum and recommended webcam resolution and frame rate for common video call apps</caption>
+        <thead>
+          <tr class="bg-secondary">
+            <th scope="col" class="px-4 py-4 text-sm font-semibold text-tertiary md:px-6">App</th>
+            <th scope="col" class="px-4 py-4 text-sm font-semibold text-tertiary md:px-6">Minimum</th>
+            <th scope="col" class="px-4 py-4 text-sm font-semibold text-tertiary md:px-6">Looks good at</th>
+            <th scope="col" class="px-4 py-4 text-sm font-semibold text-tertiary md:px-6">Worth knowing</th>
+          </tr>
+        </thead>
+        <tbody>
+          {appRequirements.map((r) => (
+            <tr class:list={["border-t border-secondary", r.app === highlight && "bg-brand-primary"]}>
+              <th scope="row" class="px-4 py-4 text-md font-semibold text-primary md:px-6">{r.app}</th>
+              <td class="px-4 py-4 text-md text-tertiary md:px-6">{r.video}</td>
+              <td class="px-4 py-4 text-md font-medium text-primary md:px-6">{r.good}</td>
+              <td class="px-4 py-4 text-md text-tertiary md:px-6">{r.note}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="mx-auto mt-4 max-w-5xl text-sm text-tertiary" data-reveal>
+      Above 1080p at 30fps there is nothing more to gain for a meeting: mainstream call apps will not send it.
+    </p>
+  </div>
+</section>
+
+<!-- Privacy -->
+<section id="privacy" class="bg-secondary py-14 md:py-20">
+  <div class="container-page grid gap-10 lg:grid-cols-2 lg:gap-16">
+    <div>
+      <SectionHeader align="left" eyebrow="Privacy" title="How this tool handles your camera" lede="A camera test that uploads your face would defeat the point. This one cannot." />
+      <div class="mt-6" data-reveal>
+        <Button href="/privacy/" color="secondary" size="lg" iconTrailing={getIcon("arrow")}>Read the site privacy policy</Button>
+      </div>
+    </div>
+    <ul class="flex flex-col gap-4 self-center" data-reveal>
+      {[
+        "Your browser opens the camera and hands the stream to this page. The page shows it in a video element and samples it on a canvas — both are in your own tab.",
+        "There is no upload code, no recording and no server that could receive video. Nothing is stored in your browser either.",
+        "Permission is per-site and per-browser, and you can withdraw it any time from the address bar.",
+        "Close the tab and the camera stops. The indicator light goes out because the stream really has ended.",
+      ].map((x) => (
+        <li class="flex gap-3 rounded-2xl bg-primary p-4 ring-1 ring-secondary">
+          <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-success-secondary text-fg-success-primary"><Icon name="check" class="size-3.5" /></span>
+          <span class="text-md text-tertiary">{x}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="bg-secondary py-14 md:py-20">
+  <div class:list={["container-page grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16", (adsenseClient || adsPreview) && "xl:grid-cols-[1fr_2fr_300px]"]}>
+    <div>
+      <SectionHeader align="left" eyebrow="FAQ" title="Questions people ask" lede="Anything we've missed?" />
+      <div class="mt-6" data-reveal>
+        <Button href="/contact/?topic=bug&app=webcam-test" color="secondary" size="lg">Tell us</Button>
+      </div>
+    </div>
+    <div data-reveal>
+      <Faq id="webcam-faq" items={faqs} />
+    </div>
+    {(adsenseClient || adsPreview) && (
+      <div class="hidden xl:block">
+        <div class="sticky top-24">
+          <AdSlot placement="sidebar" />
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+<!-- Same tool, other situations -->
+<section class="bg-secondary py-14 md:py-20">
+  <div class="container-page">
+    <h2 class="text-display-xs font-semibold text-primary" data-reveal>Test your camera for something specific</h2>
+    <ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {otherVariants.map((v) => (
+        <li data-reveal>
+          <a href={`/tools/webcam-test/${v.slug}/`} class="flex items-center justify-between gap-3 rounded-2xl bg-primary p-4 shadow-xs ring-1 ring-secondary transition hover:bg-primary_hover">
+            <span class="text-md font-semibold text-primary">{v.label}</span>
+            <Icon name="arrow" class="size-5 text-fg-quaternary" />
+          </a>
+        </li>
+      ))}
+      {crumb && (
+        <li data-reveal>
+          <a href="/tools/webcam-test/" class="flex items-center justify-between gap-3 rounded-2xl bg-primary p-4 shadow-xs ring-1 ring-secondary transition hover:bg-primary_hover">
+            <span class="text-md font-semibold text-primary">General webcam test</span>
+            <Icon name="arrow" class="size-5 text-fg-quaternary" />
+          </a>
+        </li>
+      )}
+    </ul>
+
+    <h2 class="mt-14 text-display-xs font-semibold text-primary md:mt-16" data-reveal>More device tests</h2>
+    <p class="mt-2 text-md text-tertiary" data-reveal>Same idea, same privacy. In design now.</p>
+    <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {siblings.map((t) => (
+        <li class="flex flex-col rounded-2xl bg-primary p-5 shadow-xs ring-1 ring-secondary" data-reveal>
+          <div class="flex items-start justify-between gap-3">
+            <FeaturedIcon icon={getIcon(t.icon)} size="md" color="gray" theme="modern" />
+            <Badge type="pill-color" color="gray" size="sm">Coming soon</Badge>
+          </div>
+          <p class="mt-4 text-md font-semibold text-primary">{t.name}</p>
+          <p class="mt-1 text-sm text-tertiary">{t.tagline}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<!-- Studio line: every tool page is a lead source for the design studio. -->
+<section class="bg-secondary pb-16 md:pb-24">
+  <div class="container-page">
+    <div class="mx-auto flex max-w-3xl flex-col items-center gap-4 rounded-3xl bg-brand-section px-6 py-8 text-center md:flex-row md:justify-between md:text-left" data-reveal>
+      <p class="text-md text-tertiary_on-brand">
+        <span class="font-semibold text-primary_on-brand">Built by Spolvero studio.</span> We design apps and websites for other people too.
+      </p>
+      <Button href="/contact/?topic=design" color="secondary" size="lg" iconTrailing={getIcon("arrow")}>Need an app designed?</Button>
+    </div>
+  </div>
+</section>

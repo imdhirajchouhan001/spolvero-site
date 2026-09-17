@@ -1,0 +1,54 @@
+---
+// Troubleshooting, keyed by the error the tool actually detected so the fix the
+// user needs is the one that opens. Native <details> — no JS, works before hydration.
+import { troubleshooting } from "@/data/tools";
+---
+
+<div id="fix" class="flex flex-col gap-3">
+  {troubleshooting.map((t) => (
+    <details id={`fix-${t.id}`} class="group rounded-3xl bg-primary px-5 py-4 shadow-xs ring-1 ring-secondary md:px-6">
+      <summary
+        class="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-semibold text-primary"
+        data-fix-toggle={t.id}
+        aria-expanded="false"
+      >
+        <span>{t.q}</span>
+        <span class="grid size-6 shrink-0 place-items-center rounded-full border-2 border-current text-fg-quaternary" aria-hidden="true">
+          <svg class="size-3.5 transition-transform group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6" /></svg>
+        </span>
+      </summary>
+      <p class="mt-3 text-md text-tertiary">{t.lead}</p>
+      <div class="mt-5 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {t.groups.map((g) => (
+          <div class="rounded-2xl bg-primary p-4 ring-1 ring-secondary">
+            <h4 class="text-sm font-semibold text-brand-secondary">{g.name}</h4>
+            <ol class="mt-3 flex flex-col gap-2.5">
+              {g.steps.map((s, i) => (
+                <li class="flex gap-2.5 text-sm text-tertiary">
+                  <span class="grid size-5 shrink-0 place-items-center rounded-full bg-secondary text-xs font-semibold text-secondary">{i + 1}</span>
+                  <span>{s}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))}
+      </div>
+    </details>
+  ))}
+</div>
+
+<script>
+  // Keep aria-expanded honest for screen readers, and let the tool open a section by id.
+  document.querySelectorAll<HTMLDetailsElement>("#fix > details").forEach((d) => {
+    const summary = d.querySelector<HTMLElement>("[data-fix-toggle]");
+    d.addEventListener("toggle", () => summary?.setAttribute("aria-expanded", String(d.open)));
+  });
+  // A section linked to from the tool's error state opens and scrolls into view.
+  const openFromHash = () => {
+    if (!location.hash.startsWith("#fix-")) return;
+    const el = document.querySelector<HTMLDetailsElement>(location.hash);
+    if (el) { el.open = true; el.scrollIntoView({ behavior: "smooth", block: "start" }); }
+  };
+  window.addEventListener("hashchange", openFromHash);
+  openFromHash();
+</script>

@@ -1,0 +1,30 @@
+---
+import Base from "@/layouts/Base.astro";
+import WebcamPage from "@/components/tools/WebcamPage.astro";
+import { webcamJsonLd } from "@/components/tools/schema";
+import { webcamVariants, type Variant } from "@/data/tools";
+
+export function getStaticPaths() {
+  return webcamVariants.map((variant) => ({ params: { variant: variant.slug }, props: { variant } }));
+}
+
+const { variant: v } = Astro.props as { variant: Variant };
+const url = new URL(`/tools/webcam-test/${v.slug}/`, Astro.site).toString();
+// Which row of the requirements table to highlight, where the page has a matching app.
+const highlights: Record<string, string> = { zoom: "Zoom", teams: "Microsoft Teams", "google-meet": "Google Meet", obs: "Twitch / OBS" };
+const jsonLd = webcamJsonLd({ url, name: `Spolvero Webcam Test — ${v.label}`, description: v.description, faqs: v.faqs, site: Astro.site!.toString(), crumb: v.label });
+---
+
+<Base title={v.title} description={v.description} headerCta={{ label: "All tools", href: "/tools/" }}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+  <WebcamPage
+    h1={v.h1}
+    intro={v.intro}
+    answer={v.answer}
+    tips={v.tips}
+    faqs={v.faqs}
+    crumb={v.label}
+    variantSlug={v.slug}
+    highlight={highlights[v.slug]}
+  />
+</Base>

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "@fontsource-variable/inter";
+/* Headings use a rounded geometric face; Inter stays for body and UI. */
+@import "@fontsource-variable/figtree";
 @import "./theme.css";
 @import "./typography.css";
 
@@ -14,7 +16,31 @@
 /* Spolvero brand: the Untitled UI brand scale rebuilt around the logo ink (#101057 = brand-800). */
 @theme {
   --font-body: "Inter Variable", "Inter", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  --font-display: "Inter Variable", "Inter", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-display: "Figtree Variable", "Figtree", "Inter Variable", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  /* ------------------------------------------------------------------
+     Warm neutrals.
+     Tailwind's default neutral scale is cold grey; every surface, border
+     and body colour in the theme is built on it, so warming the scale here
+     warms the whole site in one place. Anchored on a cream ground and a
+     warm near-black rather than pure white and slate.
+     ------------------------------------------------------------------ */
+  --color-neutral-25: #fdfbfa;
+  --color-neutral-50: #f9f4f2;
+  --color-neutral-100: #f2ebe7;
+  --color-neutral-200: #e7ded8;
+  --color-neutral-300: #d6cac2;
+  --color-neutral-400: #a9a09a;
+  --color-neutral-500: #746c66;
+  --color-neutral-600: #6b6560;
+  --color-neutral-700: #56514c;
+  --color-neutral-800: #44423f;
+  --color-neutral-900: #2d2c2b;
+  --color-neutral-950: #1c1b1a;
+
+  /* Larger corners, used on cards and sections. */
+  --radius-4xl: 2rem;
+  --radius-5xl: 2.5rem;
 
   --color-brand-25: rgb(250 250 255);
   --color-brand-50: rgb(243 243 253);
@@ -29,10 +55,18 @@
   --color-brand-900: rgb(12 12 72);
   --color-brand-950: rgb(7 7 47);
 
-  /* Fresco pigments, used as small accents (from the Spolvero idea) */
+  /* Fresco pigments: small, flat accents. One per tool, plus decorative shapes.
+     Each is paired with a tint light enough to carry text at AA. */
   --color-giallo: #ffc83d;
+  --color-giallo-tint: #fff4d9;
   --color-verde: #23b26d;
+  --color-verde-tint: #dff5ea;
   --color-rosa: #ff6fa3;
+  --color-rosa-tint: #ffe6ef;
+  --color-arancio: #ff7e1d;
+  --color-arancio-tint: #ffeadb;
+  --color-cielo: #2e9bff;
+  --color-cielo-tint: #e2f0ff;
 }
 
 @utility scrollbar-hide {
@@ -56,6 +90,10 @@
   }
   html { scroll-behavior: smooth; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
   h1, h2, h3 { text-wrap: balance; }
   p { text-wrap: pretty; }
   [id] { scroll-margin-top: 96px; }

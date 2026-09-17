@@ -140,7 +140,7 @@ const services = [
   <section class="bg-primary pb-16 md:pb-24">
     <div class="container-page">
       <SectionHeader eyebrow="Why Spolvero" title="Apps shouldn't cost you your privacy" lede="Many everyday apps ask for too much and explain too little. We build ours the other way round." />
-      <div class="mx-auto mt-12 max-w-5xl overflow-hidden rounded-2xl ring-1 ring-secondary md:mt-16" data-reveal>
+      <div class="mx-auto mt-12 max-w-5xl overflow-hidden rounded-3xl ring-1 ring-secondary md:mt-16" data-reveal>
         <table class="w-full border-collapse text-left">
           <caption class="sr-only">How typical apps compare with Spolvero apps</caption>
           <thead>
@@ -181,7 +181,7 @@ const services = [
       <SectionHeader eyebrow="Our apps" title="Each one does one job well" lede="Tap any app to see how it works." />
 
       <!-- Featured (live) app -->
-      <div class="mt-12 grid overflow-hidden rounded-2xl bg-primary shadow-xs ring-1 ring-secondary md:mt-16 lg:grid-cols-2" data-reveal>
+      <div class="mt-12 grid overflow-hidden rounded-3xl bg-primary shadow-xs ring-1 ring-secondary md:mt-16 lg:grid-cols-2" data-reveal>
         <div class="flex flex-col p-6 md:p-12">
           <div class="flex items-center gap-4">
             <AppIcon product={featured} size={56} />
@@ -217,7 +217,7 @@ const services = [
       <ul class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {rest.map((p) => (
           <li data-reveal>
-            <a href={`/${p.slug}/`} class="group flex h-full flex-col overflow-hidden rounded-2xl bg-primary shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
+            <a href={`/${p.slug}/`} class="group flex h-full flex-col overflow-hidden rounded-3xl bg-primary shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
               <div class="flex flex-col gap-4 p-6">
                 <div class="flex items-start justify-between gap-3">
                   <AppIcon product={p} size={48} />
@@ -248,7 +248,7 @@ const services = [
           </li>
         ))}
         <li data-reveal>
-          <a href="/contact/?topic=design" class="group flex h-full flex-col justify-between rounded-2xl border-2 border-dashed border-primary bg-primary p-6 transition hover:border-brand">
+          <a href="/contact/?topic=design" class="group flex h-full flex-col justify-between rounded-3xl border-2 border-dashed border-primary bg-primary p-6 transition hover:border-brand">
             <FeaturedIcon icon={getIcon("sparkles")} size="lg" color="brand" theme="modern" />
             <div class="mt-10">
               <p class="text-xl font-semibold text-primary">Have an app idea?</p>
@@ -268,16 +268,29 @@ const services = [
     <div class="container-page">
       <SectionHeader eyebrow="Coming up" title="On the drawing board" lede="Beyond apps, this is what we're sketching next. Nothing to download yet." />
       <ul class="mt-12 grid gap-6 md:mt-16 md:grid-cols-3">
-        {categories.map((c) => (
-          <li class="flex flex-col rounded-2xl bg-secondary p-6 md:p-8" data-reveal>
-            <div class="flex items-start justify-between">
-              <FeaturedIcon icon={getIcon(c.icon)} size="lg" color="brand" theme="modern" />
-              <Badge type="pill-color" color="brand" size="sm">In design</Badge>
-            </div>
-            <h3 class="mt-8 text-xl font-semibold text-primary">{c.title}</h3>
-            <p class="mt-2 text-md text-tertiary">{c.body}</p>
-          </li>
-        ))}
+        {categories.map((c) => {
+          const Card = "href" in c && c.href ? "a" : "div";
+          return (
+            <li data-reveal>
+              <Card
+                href={"href" in c ? c.href : undefined}
+                class:list={["group flex h-full flex-col rounded-3xl bg-secondary p-6 md:p-8", "href" in c && c.href && "transition hover:bg-primary_hover focus-visible:outline-2 focus-visible:outline-focus-ring"]}
+              >
+                <div class="flex items-start justify-between">
+                  <FeaturedIcon icon={getIcon(c.icon)} size="lg" color="brand" theme="modern" />
+                  <Badge type="pill-color" color={"href" in c && c.href ? "success" : "brand"} size="sm">{"href" in c && c.href ? "Live now" : "In design"}</Badge>
+                </div>
+                <h3 class="mt-8 text-xl font-semibold text-primary">{c.title}</h3>
+                <p class="mt-2 text-md text-tertiary">{c.body}</p>
+                {"href" in c && c.href && (
+                  <span class="mt-4 inline-flex items-center gap-1.5 text-md font-semibold text-brand-secondary">
+                    Open the tools <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+                  </span>
+                )}
+              </Card>
+            </li>
+          );
+        })}
       </ul>
     </div>
   </section>
@@ -296,7 +309,7 @@ const services = [
           ))}
         </ul>
       </div>
-      <div class="self-center rounded-2xl bg-primary p-6 shadow-lg ring-1 ring-secondary md:p-10" data-reveal>
+      <div class="self-center rounded-3xl bg-primary p-6 shadow-lg ring-1 ring-secondary md:p-10" data-reveal>
         <div class="flex items-center justify-between gap-4">
           <p class="text-lg font-semibold text-brand-secondary">Hourly rate</p>
           <Badge type="pill-color" color="brand" size="md">Worldwide</Badge>
@@ -321,7 +334,7 @@ const services = [
       <SectionHeader eyebrow="How we work" title="From first call to launch in three steps" />
       <ol class="mt-12 grid gap-6 md:mt-16 md:grid-cols-3">
         {steps.map((s, i) => (
-          <li class="relative flex flex-col rounded-2xl bg-primary p-6 shadow-xs ring-1 ring-secondary md:p-8" data-reveal>
+          <li class="relative flex flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary md:p-8" data-reveal>
             <span class="grid size-12 place-items-center rounded-full bg-brand-solid text-lg font-semibold text-white" aria-hidden="true">{i + 1}</span>
             <h3 class="mt-6 text-xl font-semibold text-primary"><span class="sr-only">Step {i + 1}: </span>{s.title}</h3>
             <p class="mt-2 text-md text-tertiary">{s.body}</p>
@@ -349,7 +362,7 @@ const services = [
   <!-- Newsletter CTA -->
   <section id="updates" class="bg-primary py-16 md:py-24">
     <div class="container-page">
-      <div class="relative overflow-hidden rounded-2xl bg-brand-section px-6 py-10 md:px-16 md:py-16" data-reveal>
+      <div class="relative overflow-hidden rounded-3xl bg-brand-section px-6 py-10 md:px-16 md:py-16" data-reveal>
         <BackgroundPattern pattern="grid" size="md" className="absolute -top-10 right-0 text-brand-700 opacity-60" />
         <div class="relative grid gap-8 lg:grid-cols-2 lg:items-center">
           <div>

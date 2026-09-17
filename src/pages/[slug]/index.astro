@@ -105,7 +105,7 @@ const jsonLd = {
           <div class="relative grid w-[70%] max-w-[300px] grid-cols-3 gap-2.5 rounded-t-[2rem] bg-[#1f1f24] p-5 pt-24 shadow-3xl" aria-hidden="true" data-hero-shot="0">
             <span class="absolute top-8 right-6 text-display-xs font-semibold text-white">₹1,180</span>
             {["7", "8", "9", "4", "5", "6", "1", "2", "3", "5%", "18%", "40%"].map((k) => (
-              <span class:list={["grid h-12 place-items-center rounded-xl font-medium text-white", !k.includes("%") && "bg-white/10"]} style={k.includes("%") ? `background:${p.accent}` : undefined}>{k}</span>
+              <span class:list={["grid h-12 place-items-center rounded-2xl font-medium text-white", !k.includes("%") && "bg-white/10"]} style={k.includes("%") ? `background:${p.accent}` : undefined}>{k}</span>
             ))}
           </div>
         )}
@@ -154,7 +154,7 @@ const jsonLd = {
   <!-- Promise -->
   <section class="bg-primary py-16 md:py-24">
     <div class="container-page">
-      <div class="grid gap-12 rounded-2xl bg-brand-section px-6 py-10 md:px-16 md:py-16 lg:grid-cols-2" data-reveal>
+      <div class="grid gap-12 rounded-3xl bg-brand-section px-6 py-10 md:px-16 md:py-16 lg:grid-cols-2" data-reveal>
         <div>
           <SectionHeader align="left" onBrand eyebrow="Our promise" title={p.promise.title} lede={p.promise.body} />
           {p.policy && (
@@ -182,7 +182,7 @@ const jsonLd = {
         <SectionHeader eyebrow="Pricing" title="Free, with Pro" lede="Everything you need is free. Pro is there if you want more." />
         <div class="mt-12 grid gap-8 md:mt-16 md:grid-cols-2">
           {[{ name: "Free", note: "Forever", items: p.pricing.free, pro: false }, { name: "Pro", note: p.pricing.proNote, items: p.pricing.pro, pro: true }].map((plan) => (
-            <div class:list={["flex flex-col rounded-2xl p-6 shadow-lg md:p-8", plan.pro ? "bg-brand-section" : "bg-primary ring-1 ring-secondary"]} data-reveal>
+            <div class:list={["flex flex-col rounded-3xl p-6 shadow-lg md:p-8", plan.pro ? "bg-brand-section" : "bg-primary ring-1 ring-secondary"]} data-reveal>
               <div class="flex items-center justify-between">
                 <p class:list={["text-display-xs font-semibold", plan.pro ? "text-primary_on-brand" : "text-primary"]}>{plan.name}</p>
                 {plan.pro && <Badge type="pill-color" color="brand" size="md">No ads</Badge>}
@@ -214,7 +214,7 @@ const jsonLd = {
       </div>
       <div data-reveal>
         <Faq id={`faq-${p.slug}`} items={p.faqs} />
-        {p.disclaimer && <p class="mt-8 rounded-xl bg-primary p-5 text-sm text-tertiary ring-1 ring-secondary">{p.disclaimer}</p>}
+        {p.disclaimer && <p class="mt-8 rounded-2xl bg-primary p-5 text-sm text-tertiary ring-1 ring-secondary">{p.disclaimer}</p>}
       </div>
     </div>
   </section>
@@ -222,7 +222,7 @@ const jsonLd = {
   <!-- CTA -->
   <section class="bg-primary py-16 md:py-24">
     <div class="container-page">
-      <div class="flex flex-col items-center rounded-2xl bg-secondary px-6 py-10 text-center md:py-16" data-reveal>
+      <div class="flex flex-col items-center rounded-3xl bg-secondary px-6 py-10 text-center md:py-16" data-reveal>
         <AppIcon product={p} size={64} />
         <h2 class="mt-6 text-display-xs font-semibold text-primary md:text-display-sm">{isLive ? `Try ${p.name} today` : `Be first to try ${p.name}`}</h2>
         <p class="mt-3 text-lg text-tertiary md:text-xl">{isLive ? "Free on Google Play." : "We'll email you the day it's out."}</p>
@@ -244,7 +244,7 @@ const jsonLd = {
       <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {others.map((o) => (
           <li data-reveal>
-            <a href={`/${o.slug}/`} class="flex items-center gap-3 rounded-xl bg-primary p-4 shadow-xs ring-1 ring-secondary transition hover:bg-primary_hover">
+            <a href={`/${o.slug}/`} class="flex items-center gap-3 rounded-2xl bg-primary p-4 shadow-xs ring-1 ring-secondary transition hover:bg-primary_hover">
               <AppIcon product={o} size={40} />
               <span>
                 <span class="block text-md font-semibold text-primary">{o.name}</span>

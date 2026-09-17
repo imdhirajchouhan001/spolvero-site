@@ -324,7 +324,7 @@ export const products = allProducts.filter((p) => !p.hidden);
 export const categories = [
   { title: "Games", body: "2D games first, 3D later.", icon: "gamepad" },
   { title: "Software", body: "Online tools for small teams and solo businesses.", icon: "monitor" },
-  { title: "Web tools", body: "Free tools that run in your browser.", icon: "wrench" },
+  { title: "Web tools", body: "Free device tests that run in your browser. The webcam test is live now.", icon: "wrench", href: "/tools/" },
 ];
 
 export const getProduct = (slug: string) => products.find((p) => p.slug === slug);

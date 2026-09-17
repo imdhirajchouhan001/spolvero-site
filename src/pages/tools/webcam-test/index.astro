@@ -1,0 +1,28 @@
+---
+import Base from "@/layouts/Base.astro";
+import WebcamPage from "@/components/tools/WebcamPage.astro";
+import { webcamJsonLd } from "@/components/tools/schema";
+import { webcamFaqs } from "@/data/tools";
+
+const url = new URL("/tools/webcam-test/", Astro.site).toString();
+const title = "Webcam Test — Check Your Camera Online (Free, Private)";
+const description =
+  "Test your webcam in 3 seconds. See a live preview, a readiness score, and whether your resolution, frame rate and lighting are good enough for a call. Nothing is uploaded.";
+const jsonLd = webcamJsonLd({ url, name: "Spolvero Webcam Test", description, faqs: webcamFaqs, site: Astro.site!.toString() });
+---
+
+<Base title={title} description={description} headerCta={{ label: "All tools", href: "/tools/" }}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+  <WebcamPage
+    h1="Webcam test: check your camera in 3 seconds"
+    intro="Open the camera, get a readiness score, and find out exactly what to fix. Free, no sign-up, and the video never leaves your browser."
+    answer="To test a webcam, open this page in the browser you use for calls and select Test my camera, then choose Allow. You get a live preview plus your real resolution, measured frame rate and a lighting check. For any mainstream video call you want 1280×720 at 30fps with light in front of you rather than behind."
+    tips={[
+      { title: "Put the light in front of you", body: "The single biggest improvement available, and it is free. A window or lamp facing you beats a more expensive camera facing a dark room, and it usually raises your resolution and frame rate too, because cameras stop compensating for darkness." },
+      { title: "Raise the camera to eye level", body: "A laptop on a desk films you from below. A stack of books under it fixes the angle, and costs nothing. Aim for your eyes at roughly the top third of the frame." },
+      { title: "Clean the lens", body: "Laptop webcams sit exactly where fingers and screen wipes land. A soft cloth fixes a surprising share of complaints about a blurry camera." },
+      { title: "Close what you are not using", body: "Other video apps hold the camera, and a busy CPU makes the browser drop frames. Quitting Zoom, Teams and OBS before a call is the fastest frame rate fix there is." },
+    ]}
+    faqs={webcamFaqs}
+  />
+</Base>
