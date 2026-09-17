@@ -22,7 +22,8 @@ export type Product = {
   icon?: string;
   monogram?: string;
   playUrl?: string;
-  /** Screenshots already include a device frame or store artwork. */
+  /** Screenshots already include a device frame or store artwork.
+   *  Bare app screens are `false`: the site wraps them in its own mockup. */
   framed: boolean;
   screenshots: Screenshot[];
   features: Feature[];
@@ -31,9 +32,11 @@ export type Product = {
   faqs: { q: string; a: string }[];
   policy?: string;
   disclaimer?: string;
+  /** Kept in this file but left off the site: no card, no page, no footer link. */
+  hidden?: boolean;
 };
 
-export const products: Product[] = [
+const allProducts: Product[] = [
   {
     slug: "unspend",
     name: "Unspend",
@@ -48,7 +51,7 @@ export const products: Product[] = [
     tint: "#e8eeff",
     icon: "/products/unspend/icon.webp",
     playUrl: "https://play.google.com/store/apps/details?id=design.spolvero.unspend",
-    framed: true,
+    framed: false,
     screenshots: [
       { src: "/products/unspend/01.webp", alt: "Home screen showing a monthly spend of 8,450 rupees and upcoming renewals", caption: "Your real monthly total" },
       { src: "/products/unspend/02.webp", alt: "Insights screen with a donut chart of spending by category", caption: "Where the money goes" },
@@ -104,7 +107,7 @@ export const products: Product[] = [
     accent: "#0868f8",
     tint: "#e7f0ff",
     icon: "/products/exact/icon.webp",
-    framed: true,
+    framed: false,
     screenshots: [
       { src: "/products/exact/01.webp", alt: "Compress screen with size targets of 50 KB, 100 KB, 200 KB, 500 KB and 1 MB", caption: "Name a size" },
       { src: "/products/exact/02.webp", alt: "Preview comparing the original 761 KB photo with the 33 KB result using a split slider", caption: "See the damage before you save" },
@@ -149,11 +152,12 @@ export const products: Product[] = [
     icon: "/products/enough/icon.webp",
     framed: false,
     screenshots: [
-      { src: "/products/enough/01.webp", alt: "Explainer showing how a 1.50 litre drink target is worked out from EFSA figures", caption: "Where your number comes from" },
-      { src: "/products/enough/02.webp", alt: "Onboarding: your drinking target is 1.50 L a day", caption: "A target lower than most apps" },
-      { src: "/products/enough/03.webp", alt: "The sources behind the target: EFSA, IOM and food moisture", caption: "Every source, named" },
-      { src: "/products/enough/04.webp", alt: "Weekly history chart showing days goal met and below goal", caption: "An honest history" },
-      { src: "/products/enough/05.webp", alt: "Reminder setup asking for wake and sleep times", caption: "Reminders while you're awake" },
+      { src: "/products/enough/01.webp", alt: "Today screen showing 1.19 L logged of a 1.50 L target, with one-tap vessels below", caption: "One honest number" },
+      { src: "/products/enough/02.webp", alt: "Explainer for the 2.4 L ceiling, headed \"More water is not better water\"", caption: "An upper bound, not a push" },
+      { src: "/products/enough/03.webp", alt: "Where your number comes from: 2.0 L total water, minus 25% from food, leaving a 1.5 L drink target", caption: "Your number as arithmetic" },
+      { src: "/products/enough/04.webp", alt: "Log a drink screen with glass, bottle, coffee and tea, each one tap", caption: "A glass logged in a second" },
+      { src: "/products/enough/05.webp", alt: "Weekly history chart marking days goal met, below goal and mostly logged late", caption: "Late logs count, and are marked" },
+      { src: "/products/enough/06.webp", alt: "Health Connect screen listing which app holds your activity data, read on device", caption: "Nothing leaves your phone" },
     ],
     features: [
       { icon: "book", title: "A number with a source", body: "Your target is worked out from published standards (EFSA, US IOM and ICMR-NIN) and every step is shown on screen." },
@@ -191,6 +195,7 @@ export const products: Product[] = [
     accent: "#6d4aff",
     tint: "#f0ebff",
     monogram: "B",
+    hidden: true,
     framed: false,
     screenshots: [
       { src: "/products/baseline/01.webp", alt: "Today screen with a ready read, a streak and today's photo slot", caption: "Your day at a glance" },
@@ -236,6 +241,7 @@ export const products: Product[] = [
     accent: "#b7791f",
     tint: "#fbf3e3",
     monogram: "A",
+    hidden: true,
     framed: false,
     screenshots: [
       { src: "/products/astro/01.webp", alt: "Today screen with a daily reading and a link to why", caption: "A daily reading, with reasons" },
@@ -310,6 +316,8 @@ export const products: Product[] = [
       "GST Calculator is an independent app. It is not affiliated with, endorsed by, or representing the Government of India, the GST Council, or the Central Board of Indirect Taxes and Customs. Official rate sources: cbic-gst.gov.in and gstcouncil.gov.in.",
   },
 ];
+
+export const products = allProducts.filter((p) => !p.hidden);
 
 export const categories = [
   { title: "Games", body: "2D games first, 3D later.", icon: "gamepad" },

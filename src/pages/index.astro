@@ -17,13 +17,13 @@ import { getIcon } from "@/lib/icons";
 import { products, categories, getProduct } from "@/data/products";
 
 const live = products.filter((p) => p.status === "live");
+// Centre of the fan sits in the middle; every product here needs at least one screenshot.
 const fan = [
   { p: getProduct("enough")!, i: 0 },
-  { p: getProduct("baseline")!, i: 0 },
   { p: getProduct("unspend")!, i: 0 },
   { p: getProduct("exact")!, i: 0 },
-  { p: getProduct("astro")!, i: 2 },
 ];
+const fanCentre = (fan.length - 1) / 2;
 const [featured, ...rest] = products;
 
 const principles = [
@@ -108,9 +108,9 @@ const services = [
       <div class="relative mt-16 h-[380px] w-full max-w-5xl md:mt-20 md:h-[520px]" data-fan aria-label="Screens from Spolvero apps">
         {fan.map(({ p, i }, idx) => (
           <div
-            class:list={["absolute bottom-0 left-1/2 w-[160px] origin-bottom md:w-[240px]", (idx === 0 || idx === 4) && "hidden md:block"]}
-            data-fan-item={idx - 2}
-            style={`z-index:${10 - Math.abs(idx - 2)};transform:translateX(-50%)`}
+            class="absolute bottom-0 left-1/2 w-[160px] origin-bottom md:w-[240px]"
+            data-fan-item={idx - fanCentre}
+            style={`z-index:${10 - Math.abs(idx - fanCentre)};transform:translateX(-50%)`}
           >
             <Screen product={p} shot={p.screenshots[i]} />
           </div>
