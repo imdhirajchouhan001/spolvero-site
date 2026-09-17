@@ -5,6 +5,7 @@ import Icon from "@/components/Icon.astro";
 import Screen from "@/components/Screen.astro";
 import NotifyForm from "@/components/NotifyForm.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
+import Faq from "@/components/Faq.astro";
 import SplitText from "@/components/SplitText";
 import { Button } from "@/components/base/buttons/button";
 import { GooglePlayButton } from "@/components/base/buttons/app-store-buttons";
@@ -27,8 +28,33 @@ const [featured, ...rest] = products;
 
 const principles = [
   { icon: "lock", title: "Private by default", body: "Your data stays on your phone. No bank logins, no gallery access, no account needed to start." },
-  { icon: "eyeoff", title: "Ads that know their place", body: "No ad before your first result, and nothing you type ever reaches an ad network." },
+  { icon: "eyeoff", title: "Ads that know their place", body: "Free apps may show ads, but nothing you type or track in our apps is ever shared with an ad network." },
   { icon: "quote", title: "Numbers you can check", body: "Every figure shows where it came from, and our apps say plainly what they can't prove." },
+];
+
+// Every "Spolvero way" line must stay true for all apps in src/data/products.ts.
+const comparison = [
+  { old: "Asks for your bank login, whole photo gallery or an account first", ours: "Asks only for what the job needs, and you can start without an account" },
+  { old: "Sends what you enter to its own servers", ours: "Keeps what you enter on your phone by default" },
+  { old: "Uses what you do in the app to target ads", ours: "Ads never see what you put into the app" },
+  { old: "Gives you numbers with no explanation", ours: "Shows where its numbers come from" },
+  { old: "Puts the main feature behind a paywall", ours: "The main job is free; upgrades are optional" },
+];
+
+const steps = [
+  { title: "Discover", body: "A call about your product, users and goals. You get a written scope and quote before any work starts." },
+  { title: "Design", body: "Flows, screens and a clickable prototype, reviewed with you as we go, plus a design system to keep it consistent." },
+  { title: "Hand off and launch", body: "Developer-ready Figma files and assets, plus store screenshots and listing copy if you need them." },
+];
+
+const studioFaqs = [
+  { q: "How much does a project cost?", a: "We charge $20–30 an hour depending on scope. You get a written quote with an estimate of hours before anything starts, so there are no surprises." },
+  { q: "How long does a project take?", a: "It depends on the size of the product. We agree a timeline in the quote and keep you updated as we go." },
+  { q: "What do I get at the end?", a: "Figma files with every screen and state, a clickable prototype, a component library or design system, and exported assets ready for your developers." },
+  { q: "Who owns the designs?", a: "You do. Once the project is paid, the final designs are yours to use however you like." },
+  { q: "Will you sign an NDA?", a: "Yes. Send it over with your first message and we'll sign it before you share any details." },
+  { q: "Do you work with clients outside India?", a: "Yes. We work with founders and teams anywhere in the world, over email and video calls." },
+  { q: "Can you also design my website or brand?", a: "Yes. Along with app design we do landing pages, product websites, and naming, logo, colour and type." },
 ];
 
 const services = [
@@ -107,6 +133,45 @@ const services = [
           </li>
         ))}
       </ul>
+    </div>
+  </section>
+
+  <!-- Old way vs Spolvero way -->
+  <section class="bg-primary pb-16 md:pb-24">
+    <div class="container-page">
+      <SectionHeader eyebrow="Why Spolvero" title="Apps shouldn't cost you your privacy" lede="Many everyday apps ask for too much and explain too little. We build ours the other way round." />
+      <div class="mx-auto mt-12 max-w-5xl overflow-hidden rounded-2xl ring-1 ring-secondary md:mt-16" data-reveal>
+        <table class="w-full border-collapse text-left">
+          <caption class="sr-only">How typical apps compare with Spolvero apps</caption>
+          <thead>
+            <tr class="bg-secondary">
+              <th scope="col" class="w-1/2 px-4 py-4 text-sm font-semibold text-tertiary md:px-6">Many apps</th>
+              <th scope="col" class="w-1/2 bg-brand-section px-4 py-4 text-sm font-semibold text-primary_on-brand md:px-6">Spolvero apps</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comparison.map((row) => (
+              <tr class="border-t border-secondary">
+                <td class="px-4 py-5 align-top md:px-6">
+                  <span class="flex gap-3 text-md text-tertiary">
+                    <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-error-secondary text-fg-error-primary"><Icon name="close" class="size-3.5" /></span>
+                    {row.old}
+                  </span>
+                </td>
+                <td class="bg-brand-primary px-4 py-5 align-top md:px-6">
+                  <span class="flex gap-3 text-md font-medium text-primary">
+                    <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-success-secondary text-fg-success-primary"><Icon name="check" class="size-3.5" /></span>
+                    {row.ours}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-10 flex justify-center" data-reveal>
+        <Button href="#apps" color="primary" size="xl" iconTrailing={getIcon("arrow")}>See our apps</Button>
+      </div>
     </div>
   </section>
 
@@ -248,6 +313,35 @@ const services = [
           </ul>
         </div>
         <Button href="/contact/?topic=design" color="primary" size="xl" className="mt-8 w-full" iconTrailing={getIcon("arrow")}>Tell us about your project</Button>
+      </div>
+    </div>
+
+    <!-- How we work -->
+    <div class="container-page mt-20 md:mt-24">
+      <SectionHeader eyebrow="How we work" title="From first call to launch in three steps" />
+      <ol class="mt-12 grid gap-6 md:mt-16 md:grid-cols-3">
+        {steps.map((s, i) => (
+          <li class="relative flex flex-col rounded-2xl bg-primary p-6 shadow-xs ring-1 ring-secondary md:p-8" data-reveal>
+            <span class="grid size-12 place-items-center rounded-full bg-brand-solid text-lg font-semibold text-white" aria-hidden="true">{i + 1}</span>
+            <h3 class="mt-6 text-xl font-semibold text-primary"><span class="sr-only">Step {i + 1}: </span>{s.title}</h3>
+            <p class="mt-2 text-md text-tertiary">{s.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Studio FAQ -->
+  <section id="studio-faq" class="bg-primary py-16 md:py-24">
+    <div class="container-page grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-16">
+      <div>
+        <SectionHeader align="left" eyebrow="Design studio" title="Questions from clients" lede="Anything else about working with us?" />
+        <div class="mt-6" data-reveal>
+          <Button href="/contact/?topic=design" color="secondary" size="lg">Ask us directly</Button>
+        </div>
+      </div>
+      <div data-reveal>
+        <Faq id="studio-faq-list" items={studioFaqs} />
       </div>
     </div>
   </section>
