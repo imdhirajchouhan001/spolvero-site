@@ -5,6 +5,7 @@ import Icon from "@/components/Icon.astro";
 import Screen from "@/components/Screen.astro";
 import NotifyForm from "@/components/NotifyForm.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
+import AdSlot from "@/components/AdSlot.astro";
 import Faq from "@/components/Faq.astro";
 import SplitText from "@/components/SplitText";
 import { Button } from "@/components/base/buttons/button";
@@ -218,6 +219,12 @@ const jsonLd = {
       </div>
     </div>
   </section>
+
+  <div class="bg-primary pb-16 md:pb-20">
+    <div class="container-page max-w-4xl">
+      <AdSlot placement="in-content" />
+    </div>
+  </div>
 
   <!-- CTA -->
   <section class="bg-primary py-16 md:py-24">

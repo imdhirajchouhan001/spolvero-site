@@ -12,10 +12,17 @@ import {
   interruptSlots, interstitialAfterSections, anchorDelaySeconds,
 } from "@/data/ads";
 
+// Content pages carry ads; pages that are not content do not. Error pages and
+// bare form pages are excluded because AdSense policy prohibits ads on screens
+// with little or no content, and a breach found during review is a rejection.
+const path = Astro.url.pathname;
+const excluded = ["/404", "/contact"];
+const monetised = !excluded.some((p) => path.startsWith(p));
+
 // Each format needs its own ad unit to exist, otherwise it would fire an ad
 // request with no slot. Preview mode draws the boxes without any unit.
-const showAnchor = adsAnchor && (adsPreview || Boolean(adsenseClient && interruptSlots.anchor));
-const showInterstitial = adsInterstitial && (adsPreview || Boolean(adsenseClient && interruptSlots.interstitial));
+const showAnchor = monetised && adsAnchor && (adsPreview || Boolean(adsenseClient && interruptSlots.anchor));
+const showInterstitial = monetised && adsInterstitial && (adsPreview || Boolean(adsenseClient && interruptSlots.interstitial));
 ---
 
 {showAnchor && (

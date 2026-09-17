@@ -24,15 +24,15 @@ export const adsPreview = env.PUBLIC_ADS_PREVIEW === "1";
 
 export type Placement = "below-results" | "in-content" | "sidebar";
 
-/** Ad unit IDs from AdSense → Ads → By ad unit.
- *  An empty string means that unit does not render at all, so the pages stay
- *  clean until the units exist. Paste the numbers here once they do. */
+/** Ad unit IDs from AdSense → Ads → By ad unit, created 17 September 2026.
+ *  An empty string disables that unit entirely, which is the switch to use if a
+ *  placement ever needs pulling without touching the components. */
 const slots = {
-  "below-results": (env.PUBLIC_ADSENSE_SLOT_BELOW_RESULTS as string) || "",
-  "in-content": (env.PUBLIC_ADSENSE_SLOT_IN_CONTENT as string) || "",
-  sidebar: (env.PUBLIC_ADSENSE_SLOT_SIDEBAR as string) || "",
-  anchor: (env.PUBLIC_ADSENSE_SLOT_ANCHOR as string) || "",
-  interstitial: (env.PUBLIC_ADSENSE_SLOT_INTERSTITIAL as string) || "",
+  "below-results": (env.PUBLIC_ADSENSE_SLOT_BELOW_RESULTS as string) || "1383146619",
+  "in-content": (env.PUBLIC_ADSENSE_SLOT_IN_CONTENT as string) || "3755738098",
+  sidebar: (env.PUBLIC_ADSENSE_SLOT_SIDEBAR as string) || "7567437704",
+  anchor: (env.PUBLIC_ADSENSE_SLOT_ANCHOR as string) || "1129574752",
+  interstitial: (env.PUBLIC_ADSENSE_SLOT_INTERSTITIAL as string) || "4298663576",
 };
 
 /** Reserved box per placement, matched to the unit sizes AdSense will fill. */

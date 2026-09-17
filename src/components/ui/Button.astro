@@ -1,0 +1,78 @@
+---
+// Button, built on the shadcn token set (bg-primary, bg-secondary, border, ring…)
+// so it follows light and dark automatically.
+//
+// It is an Astro component rather than the React one from shadcn/ui on purpose:
+// a button that only needs to look like a button should not ship a framework to
+// the browser. The React component in ./button.tsx stays available for anywhere
+// that genuinely needs client-side behaviour.
+//
+// Sizes are larger and fully rounded than shadcn's defaults, which is the site's
+// own design language rather than the stock look.
+import { cn } from "cn";
+
+type Variant = "default" | "secondary" | "outline" | "ghost" | "link" | "destructive" | "on-brand";
+type Size = "sm" | "md" | "lg" | "xl";
+
+interface Props {
+  variant?: Variant;
+  size?: Size;
+  href?: string;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
+  class?: string;
+  /** Anything else — data attributes, aria, form props — passes straight through. */
+  [key: string]: unknown;
+}
+
+const {
+  variant = "default",
+  size = "md",
+  href,
+  type = "button",
+  disabled = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const base =
+  "group/button inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-full border border-transparent font-semibold whitespace-nowrap transition-all outline-none select-none focus-visible:ring-[3px] focus-visible:ring-[var(--ring)]/50 focus-visible:border-[var(--ring)] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0";
+
+// The shadcn variables are referenced directly rather than through bg-primary and
+// friends: the Untitled UI theme in theme.css defines those same utility names for
+// its own surfaces, and it wins the cascade. Naming the variables is unambiguous.
+const variants: Record<Variant, string> = {
+  default:
+    "bg-[var(--primary)] text-[var(--primary-foreground)] shadow-xs hover:brightness-110",
+  secondary:
+    "bg-[var(--secondary)] text-[var(--secondary-foreground)] hover:brightness-95",
+  outline:
+    "border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] shadow-xs hover:bg-[var(--muted)]",
+  ghost: "text-[var(--foreground)] hover:bg-[var(--muted)]",
+  link: "text-[var(--primary)] underline-offset-4 hover:underline",
+  destructive: "bg-[var(--destructive)]/10 text-[var(--destructive)] hover:bg-[var(--destructive)]/20",
+  // For the deep brand panel, where the normal surfaces have no contrast.
+  "on-brand": "bg-[var(--card)] text-[var(--foreground)] shadow-xs hover:brightness-95",
+};
+
+const sizes: Record<Size, string> = {
+  sm: "h-8 px-3.5 text-sm [&_svg]:size-4",
+  md: "h-10 px-4.5 text-sm [&_svg]:size-4",
+  lg: "h-11 px-5 text-md [&_svg]:size-5",
+  xl: "h-13 px-6 text-md [&_svg]:size-5",
+};
+
+const classes = cn(base, variants[variant], sizes[size], className);
+const Tag = href && !disabled ? "a" : "button";
+---
+
+<Tag
+  class={classes}
+  href={href && !disabled ? href : undefined}
+  type={Tag === "button" ? type : undefined}
+  disabled={Tag === "button" && disabled ? true : undefined}
+  aria-disabled={disabled ? "true" : undefined}
+  {...rest}
+>
+  <slot />
+</Tag>

@@ -54,6 +54,7 @@ export const navGroups: NavGroup[] = [
 
 /** Flat links that sit beside the dropdowns. */
 export const navLinks: NavItem[] = [
+  { label: "Articles", href: "/articles/" },
   { label: "Design studio", href: "/#studio" },
   { label: "Contact", href: "/contact/" },
 ];

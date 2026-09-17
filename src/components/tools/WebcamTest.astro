@@ -8,7 +8,7 @@
 //
 // Nothing here uploads: the stream goes to a <video> and a <canvas>, both local.
 import Icon from "@/components/Icon.astro";
-import { Button } from "@/components/base/buttons/button";
+import Button from "@/components/ui/Button.astro";
 import { getIcon } from "@/lib/icons";
 
 const checks = [
@@ -107,9 +107,7 @@ const checks = [
           <p class="mt-2 text-md text-tertiary">
             One tap, one browser prompt, and you get a score with anything worth fixing.
           </p>
-          <Button color="primary" size="xl" className="mt-6 w-full" iconLeading={getIcon("camera")} data-start>
-            Test my camera
-          </Button>
+          <Button variant="default" size="xl" class="mt-6 w-full" data-start><Icon name="camera" />Test my camera</Button>
           <ul class="mt-6 flex flex-col gap-3">
             {["Works on Chrome, Safari, Firefox and Edge", "Front and rear cameras on phones", "Revoke access any time from the address bar"].map((x) => (
               <li class="flex gap-2.5 text-md text-tertiary">
@@ -168,8 +166,8 @@ const checks = [
                 class="w-full rounded-lg bg-primary px-3 py-2 text-sm text-primary shadow-xs ring-1 ring-primary outline-focus-ring focus:ring-2 focus:ring-brand"
               ></select>
             </label>
-            <Button color="secondary" size="sm" data-retest>Test again</Button>
-            <Button color="tertiary" size="sm" data-stop>Stop</Button>
+            <Button variant="outline" size="sm" data-retest>Test again</Button>
+            <Button variant="ghost" size="sm" data-stop>Stop</Button>
           </div>
         </div>
 

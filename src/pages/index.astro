@@ -5,6 +5,7 @@ import Icon from "@/components/Icon.astro";
 import Screen from "@/components/Screen.astro";
 import NotifyForm from "@/components/NotifyForm.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
+import AdSlot from "@/components/AdSlot.astro";
 import Faq from "@/components/Faq.astro";
 import SplitText from "@/components/SplitText";
 import { Button } from "@/components/base/buttons/button";
@@ -263,8 +264,14 @@ const services = [
     </div>
   </section>
 
+  <div class="bg-primary pt-16 md:pt-24">
+    <div class="container-page max-w-4xl">
+      <AdSlot placement="in-content" />
+    </div>
+  </div>
+
   <!-- On the drawing board -->
-  <section id="next" class="bg-primary py-16 md:py-24">
+  <section id="next" class="bg-primary pt-16 pb-16 md:pt-20 md:pb-24">
     <div class="container-page">
       <SectionHeader eyebrow="Coming up" title="On the drawing board" lede="Beyond apps, this is what we're sketching next. Nothing to download yet." />
       <ul class="mt-12 grid gap-6 md:mt-16 md:grid-cols-3">

@@ -1,7 +1,7 @@
 ---
 import Icon from "@/components/Icon.astro";
-import { Button } from "@/components/base/buttons/button";
-import { Badge } from "@/components/base/badges/badges";
+import Button from "@/components/ui/Button.astro";
+import Badge from "@/components/ui/Badge.astro";
 import { navGroups, navLinks } from "@/data/nav";
 
 interface Props {
@@ -50,8 +50,8 @@ const { cta = { label: "Contact us", href: "/contact/" } } = Astro.props;
                           {it.note && <span class="block truncate text-sm text-tertiary">{it.note}</span>}
                         </span>
                         {it.status === "live"
-                          ? <Badge type="pill-color" color="success" size="sm">Live</Badge>
-                          : <Badge type="pill-color" color="gray" size="sm">Soon</Badge>}
+                          ? <Badge variant="success" size="sm">Live</Badge>
+                          : <Badge variant="secondary" size="sm">Soon</Badge>}
                       </a>
                     </li>
                   ))}
@@ -74,7 +74,7 @@ const { cta = { label: "Contact us", href: "/contact/" } } = Astro.props;
 
     <div class="flex items-center gap-2">
       <div class="hidden md:block">
-        <Button href={cta.href} size="lg" color="primary">{cta.label}</Button>
+        <Button href={cta.href} size="lg" variant="default">{cta.label}</Button>
       </div>
       <button
         type="button"
@@ -101,8 +101,8 @@ const { cta = { label: "Contact us", href: "/contact/" } } = Astro.props;
                 <a href={it.href} class="flex items-center justify-between gap-3 rounded-lg px-2 py-2.5 hover:bg-primary_hover">
                   <span class="text-md font-semibold text-primary">{it.label}</span>
                   {it.status === "live"
-                    ? <Badge type="pill-color" color="success" size="sm">Live</Badge>
-                    : <Badge type="pill-color" color="gray" size="sm">Soon</Badge>}
+                    ? <Badge variant="success" size="sm">Live</Badge>
+                    : <Badge variant="secondary" size="sm">Soon</Badge>}
                 </a>
               </li>
             ))}
@@ -121,7 +121,7 @@ const { cta = { label: "Contact us", href: "/contact/" } } = Astro.props;
           <li><a href={l.href} class="block rounded-lg px-2 py-2.5 text-md font-semibold text-primary hover:bg-primary_hover">{l.label}</a></li>
         ))}
       </ul>
-      <Button href={cta.href} size="lg" color="primary" className="w-full">{cta.label}</Button>
+      <Button href={cta.href} size="lg" variant="default" class="w-full">{cta.label}</Button>
     </div>
   </div>
 </header>

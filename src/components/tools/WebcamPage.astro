@@ -9,10 +9,9 @@ import AdSlot from "@/components/AdSlot.astro";
 import { adsenseClient, adsPreview } from "@/data/ads";
 import Faq from "@/components/Faq.astro";
 import Icon from "@/components/Icon.astro";
-import { Button } from "@/components/base/buttons/button";
-import { Badge } from "@/components/base/badges/badges";
+import Button from "@/components/ui/Button.astro";
+import Badge from "@/components/ui/Badge.astro";
 import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
-import { BackgroundPattern } from "@/components/shared-assets/background-patterns";
 import { getIcon } from "@/lib/icons";
 import { appRequirements, howToSteps, tools, webcamVariants, type Faq as FaqItem, type Tip } from "@/data/tools";
 
@@ -40,13 +39,6 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
 
 <!-- Hero + tool, above the fold -->
 <section class="relative overflow-hidden bg-secondary pt-5 pb-12 md:pt-7 md:pb-16">
-  <!-- Flat accent shapes, purely decorative, kept well clear of the tool itself. -->
-  <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-    <span class="absolute -top-10 -left-16 hidden size-56 rounded-full bg-giallo/20 lg:block"></span>
-    <span class="absolute top-24 -right-20 hidden size-72 rounded-full bg-arancio/15 lg:block"></span>
-    <span class="absolute top-6 right-1/4 hidden size-4 rounded-full bg-rosa lg:block"></span>
-    <span class="absolute top-40 left-1/5 hidden size-3 rounded-full bg-verde lg:block"></span>
-  </div>
 
   <div class="relative container-page flex flex-col items-center text-center">
     <nav aria-label="Breadcrumb" class="flex flex-wrap items-center justify-center gap-2 text-sm font-semibold text-tertiary">
@@ -192,7 +184,7 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
     <div>
       <SectionHeader align="left" eyebrow="Privacy" title="How this tool handles your camera" lede="A camera test that uploads your face would defeat the point. This one cannot." />
       <div class="mt-6" data-reveal>
-        <Button href="/privacy/" color="secondary" size="lg" iconTrailing={getIcon("arrow")}>Read the site privacy policy</Button>
+        <Button href="/privacy/" variant="outline" size="lg">Read the site privacy policy<Icon name="arrow" /></Button>
       </div>
     </div>
     <ul class="flex flex-col gap-4 self-center" data-reveal>
@@ -217,7 +209,7 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
     <div>
       <SectionHeader align="left" eyebrow="FAQ" title="Questions people ask" lede="Anything we've missed?" />
       <div class="mt-6" data-reveal>
-        <Button href="/contact/?topic=bug&app=webcam-test" color="secondary" size="lg">Tell us</Button>
+        <Button href="/contact/?topic=bug&app=webcam-test" variant="outline" size="lg">Tell us</Button>
       </div>
     </div>
     <div data-reveal>
@@ -263,7 +255,7 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
         <li class="flex flex-col rounded-2xl bg-primary p-5 shadow-xs ring-1 ring-secondary" data-reveal>
           <div class="flex items-start justify-between gap-3">
             <FeaturedIcon icon={getIcon(t.icon)} size="md" color="gray" theme="modern" />
-            <Badge type="pill-color" color="gray" size="sm">Coming soon</Badge>
+            <Badge variant="secondary" size="sm">Coming soon</Badge>
           </div>
           <p class="mt-4 text-md font-semibold text-primary">{t.name}</p>
           <p class="mt-1 text-sm text-tertiary">{t.tagline}</p>
@@ -280,7 +272,7 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
       <p class="text-md text-tertiary_on-brand">
         <span class="font-semibold text-primary_on-brand">Built by Spolvero studio.</span> We design apps and websites for other people too.
       </p>
-      <Button href="/contact/?topic=design" color="secondary" size="lg" iconTrailing={getIcon("arrow")}>Need an app designed?</Button>
+      <Button href="/contact/?topic=design" variant="outline" size="lg">Need an app designed?<Icon name="arrow" /></Button>
     </div>
   </div>
 </section>

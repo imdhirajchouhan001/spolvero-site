@@ -2,10 +2,9 @@
 import Base from "@/layouts/Base.astro";
 import Icon from "@/components/Icon.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
-import { Button } from "@/components/base/buttons/button";
-import { Badge } from "@/components/base/badges/badges";
+import Button from "@/components/ui/Button.astro";
+import Badge from "@/components/ui/Badge.astro";
 import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
-import { BackgroundPattern } from "@/components/shared-assets/background-patterns";
 import { getIcon } from "@/lib/icons";
 import { tools, webcamVariants } from "@/data/tools";
 
@@ -46,11 +45,6 @@ const jsonLd = [{
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
 
   <section class="relative overflow-hidden bg-secondary pt-14 pb-14 md:pt-20 md:pb-20">
-    <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-      <span class="absolute -top-16 -left-20 hidden size-64 rounded-full bg-cielo/15 lg:block"></span>
-      <span class="absolute -top-8 -right-16 hidden size-56 rounded-full bg-rosa/15 lg:block"></span>
-      <span class="absolute top-28 left-1/4 hidden size-3.5 rounded-full bg-giallo lg:block"></span>
-    </div>
     <div class="relative container-page flex flex-col items-center text-center">
       <nav aria-label="Breadcrumb" class="text-sm font-semibold text-brand-secondary">Tools</nav>
       <h1 class="mt-5 max-w-3xl text-display-sm font-semibold text-primary md:text-display-lg">Check your gear before the call starts</h1>
@@ -59,9 +53,9 @@ const jsonLd = [{
         and what to do when they don't. Nothing to install, and nothing you test leaves your device.
       </p>
       <div class="mt-8 flex flex-wrap items-center justify-center gap-2">
-        <Badge type="pill-color" color="success" size="lg">Nothing uploaded</Badge>
-        <Badge type="pill-color" color="gray" size="lg">No sign-up</Badge>
-        <Badge type="pill-color" color="gray" size="lg">Free</Badge>
+        <Badge variant="success" size="lg">Nothing uploaded</Badge>
+        <Badge variant="secondary" size="lg">No sign-up</Badge>
+        <Badge variant="secondary" size="lg">Free</Badge>
       </div>
     </div>
   </section>
@@ -77,7 +71,7 @@ const jsonLd = [{
                 <span class="grid size-14 place-items-center rounded-2xl text-neutral-900" style={`background:${t.tint}`} aria-hidden="true">
                   <Icon name={t.icon} class="size-7" />
                 </span>
-                <Badge type="pill-color" color="success" size="sm">Live</Badge>
+                <Badge variant="success" size="sm">Live</Badge>
               </div>
               <h2 class="mt-6 text-xl font-semibold text-primary">{t.name}</h2>
               <p class="mt-1 text-md font-medium text-brand-secondary">{t.tagline}</p>
@@ -113,7 +107,7 @@ const jsonLd = [{
               <span class="grid size-12 place-items-center rounded-2xl text-neutral-900" style={`background:${t.tint}`} aria-hidden="true">
                 <Icon name={t.icon} class="size-6" />
               </span>
-              <Badge type="pill-color" color="gray" size="sm">In design</Badge>
+              <Badge variant="secondary" size="sm">In design</Badge>
             </div>
             <h2 class="mt-6 text-lg font-semibold text-primary">{t.name}</h2>
             <p class="mt-1.5 text-md text-tertiary">{t.summary}</p>
@@ -121,7 +115,7 @@ const jsonLd = [{
         ))}
       </ul>
       <div class="mt-12 flex justify-center" data-reveal>
-        <Button href="/tools/webcam-test/" color="primary" size="xl" iconTrailing={getIcon("arrow")}>Start with the webcam test</Button>
+        <Button href="/tools/webcam-test/" variant="default" size="xl">Start with the webcam test<Icon name="arrow" /></Button>
       </div>
     </div>
   </section>

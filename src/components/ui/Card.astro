@@ -1,0 +1,37 @@
+---
+// Card surface on the shadcn token set: `bg-card` and `border` follow the theme,
+// so a card is correct in light and dark without a second set of classes.
+import { cn } from "cn";
+
+interface Props {
+  /** `raised` is the default page card; `flat` sits on its own without a border. */
+  tone?: "raised" | "flat" | "muted";
+  /** Renders an <a> when given, keeping the whole card clickable. */
+  href?: string;
+  hover?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+const { tone = "raised", href, hover = false, class: className, ...rest } = Astro.props;
+
+const tones = {
+  raised: "bg-[var(--card)] border-[var(--border)] shadow-xs",
+  flat: "bg-[var(--card)] border-transparent",
+  muted: "bg-[var(--muted)] border-transparent",
+};
+
+const Tag = href ? "a" : "div";
+---
+
+<Tag
+  class={cn(
+    "rounded-3xl border",
+    tones[tone],
+    hover && "group transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+    className,
+  )}
+  href={href}
+  {...rest}
+>
+  <slot />
+</Tag>

@@ -1,0 +1,36 @@
+---
+// Badge on the shadcn token set. Static markup, no client JS.
+import { cn } from "cn";
+
+type Variant = "default" | "secondary" | "outline" | "success" | "warning" | "destructive" | "accent";
+type Size = "sm" | "md" | "lg";
+
+interface Props {
+  variant?: Variant;
+  size?: Size;
+  class?: string;
+}
+const { variant = "secondary", size = "md", class: className } = Astro.props;
+
+const base =
+  "inline-flex w-fit shrink-0 items-center justify-center gap-1.5 rounded-full border border-transparent font-semibold whitespace-nowrap [&>svg]:size-3";
+
+// Named variables rather than bg-primary etc, for the same reason as Button.astro.
+const variants: Record<Variant, string> = {
+  default: "bg-[var(--primary)] text-[var(--primary-foreground)]",
+  secondary: "bg-[var(--secondary)] text-[var(--secondary-foreground)]",
+  outline: "border-[var(--border)] text-[var(--muted-foreground)]",
+  success: "bg-success-secondary text-fg-success-primary",
+  warning: "bg-warning-secondary text-fg-warning-primary",
+  destructive: "bg-[var(--destructive)]/10 text-[var(--destructive)]",
+  accent: "bg-[var(--accent)] text-[var(--accent-foreground)]",
+};
+
+const sizes: Record<Size, string> = {
+  sm: "h-5.5 px-2 text-xs",
+  md: "h-6.5 px-2.5 text-xs",
+  lg: "h-7.5 px-3 text-sm",
+};
+---
+
+<span class={cn(base, variants[variant], sizes[size], className)}><slot /></span>

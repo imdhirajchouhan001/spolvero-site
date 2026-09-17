@@ -1,0 +1,119 @@
+---
+import { getCollection } from "astro:content";
+import Base from "@/layouts/Base.astro";
+import Icon from "@/components/Icon.astro";
+import Button from "@/components/ui/Button.astro";
+import Badge from "@/components/ui/Badge.astro";
+import { getIcon } from "@/lib/icons";
+
+const articles = (await getCollection("articles")).sort(
+  (a, b) => new Date(b.data.published).getTime() - new Date(a.data.published).getTime(),
+);
+const [featured, ...rest] = articles;
+
+const title = "Camera and video call guides — Spolvero";
+const description =
+  "Plain guides to the problems people actually have with webcams and video calls: cameras that will not start, pictures that look grainy, and what resolution you really need.";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: Astro.site!.toString() },
+      { "@type": "ListItem", position: 2, name: "Articles", item: new URL("/articles/", Astro.site).toString() },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Spolvero articles",
+    description,
+    url: new URL("/articles/", Astro.site).toString(),
+    hasPart: articles.map((a) => ({
+      "@type": "Article",
+      headline: a.data.title,
+      description: a.data.description,
+      datePublished: a.data.published,
+      url: new URL(`/articles/${a.id}/`, Astro.site).toString(),
+    })),
+  },
+];
+
+const readable = (iso: string) =>
+  new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+---
+
+<Base title={title} description={description} headerCta={{ label: "All tools", href: "/tools/" }}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="relative overflow-hidden bg-secondary pt-12 pb-12 md:pt-16 md:pb-16">
+    <div class="relative container-page flex flex-col items-center text-center">
+      <nav aria-label="Breadcrumb" class="text-sm font-semibold text-brand-secondary">Articles</nav>
+      <h1 class="mt-5 max-w-3xl text-display-sm font-semibold text-primary md:text-display-lg">
+        Fixes for the things that go wrong on camera
+      </h1>
+      <p class="mt-4 max-w-2xl text-md text-tertiary md:text-lg">
+        Written to answer the question, not to fill a page. Each one ends where the problem does, and every fix has been
+        checked against the tools on this site.
+      </p>
+    </div>
+  </section>
+
+  <section class="bg-secondary pb-14 md:pb-20">
+    <div class="container-page">
+      <!-- Featured -->
+      {featured && (
+        <a
+          href={`/articles/${featured.id}/`}
+          class="group grid overflow-hidden rounded-3xl bg-primary shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring lg:grid-cols-2"
+          data-reveal
+        >
+          <div class="flex flex-col justify-center p-6 md:p-10">
+            <div class="flex flex-wrap items-center gap-2">
+              <Badge variant="default" size="sm">Latest</Badge>
+              {featured.data.tags.map((t) => <Badge variant="secondary" size="sm">{t}</Badge>)}
+            </div>
+            <h2 class="mt-4 text-display-xs font-semibold text-primary md:text-display-sm">{featured.data.title}</h2>
+            <p class="mt-3 text-lg text-tertiary">{featured.data.description}</p>
+            <p class="mt-4 text-sm text-tertiary">
+              <time datetime={featured.data.updated}>{readable(featured.data.updated)}</time> · {featured.data.minutes} min read
+            </p>
+            <span class="mt-6 inline-flex items-center gap-1.5 text-md font-semibold text-brand-secondary">
+              Read the guide <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </div>
+          <div class="relative hidden items-center justify-center bg-arancio-tint p-10 lg:flex">
+            <p class="relative max-w-sm text-lg text-neutral-900">
+              <span class="block text-sm font-semibold text-neutral-700">The short answer</span>
+              <span class="mt-2 block">{featured.data.answer}</span>
+            </p>
+          </div>
+        </a>
+      )}
+
+      <!-- The rest -->
+      <ul class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {rest.map((a) => (
+          <li data-reveal>
+            <a href={`/articles/${a.id}/`} class="group flex h-full flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
+              <div class="flex flex-wrap gap-2">
+                {a.data.tags.map((t) => <Badge variant="secondary" size="sm">{t}</Badge>)}
+              </div>
+              <h2 class="mt-4 text-lg font-semibold text-primary">{a.data.title}</h2>
+              <p class="mt-2 text-md text-tertiary">{a.data.description}</p>
+              <p class="mt-4 text-sm text-tertiary">{a.data.minutes} min read</p>
+              <span class="mt-auto inline-flex items-center gap-1.5 pt-5 text-md font-semibold text-brand-secondary">
+                Read <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-12 flex justify-center" data-reveal>
+        <Button href="/tools/webcam-test/" variant="default" size="xl">Test your camera<Icon name="arrow" /></Button>
+      </div>
+    </div>
+  </section>
+</Base>

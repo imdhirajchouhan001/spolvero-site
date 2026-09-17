@@ -75,7 +75,20 @@ const siteJsonLd = [
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <script is:inline>document.documentElement.classList.add("js");</script>
+    <!-- The site is light only for now. The dark token set is still defined in
+         global.css and theme.css; to bring it back, restore the stored-preference
+         script here and put <ThemeToggle /> back in the header. -->
+    <meta name="color-scheme" content="light" />
+    <script is:inline>
+      // Content is hidden until the reveal animation runs. This inline script has no
+      // imports, so it cannot fail to load: if the animation module has not marked
+      // itself ready shortly after load, drop the class and show everything as plain
+      // HTML. Without this, one failed chunk would render every page blank.
+      document.documentElement.classList.add("js");
+      setTimeout(function () {
+        if (!document.documentElement.dataset.revealReady) document.documentElement.classList.remove("js");
+      }, 4000);
+    </script>
     <!-- Google Analytics 4 with Consent Mode v2: no ad cookies anywhere; no analytics cookies in the EEA, UK and Switzerland without consent. -->
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
@@ -166,8 +179,22 @@ const siteJsonLd = [
       import { ScrollTrigger } from "gsap/ScrollTrigger";
       gsap.registerPlugin(ScrollTrigger);
 
+      // Tells the inline fallback above that the animation is alive.
+      document.documentElement.dataset.revealReady = "1";
+
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
+        // Anything already on screen animates in straight away. Waiting for a scroll
+        // trigger to notice it leaves the first screenful blank for a moment, which is
+        // the part of the page the visitor is actually looking at.
+        const onScreen = gsap.utils
+          .toArray<HTMLElement>("[data-reveal]")
+          .filter((el) => el.getBoundingClientRect().top < window.innerHeight * 0.95);
+        if (onScreen.length) {
+          gsap.to(onScreen, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.08, overwrite: true });
+          onScreen.forEach((el) => el.removeAttribute("data-reveal"));
+        }
+
         ScrollTrigger.batch("[data-reveal]", {
           start: "top 88%",
           once: true,
