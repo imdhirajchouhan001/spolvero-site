@@ -8,16 +8,25 @@ import SectionHeader from "@/components/SectionHeader.astro";
 import AdSlot from "@/components/AdSlot.astro";
 import Faq from "@/components/Faq.astro";
 import SplitText from "@/components/SplitText";
-import { Button } from "@/components/base/buttons/button";
+import Button from "@/components/ui/Button.astro";
 import { GooglePlayButton } from "@/components/base/buttons/app-store-buttons";
-import { Badge } from "@/components/base/badges/badges";
+import Badge from "@/components/ui/Badge.astro";
 import { BadgeGroup } from "@/components/base/badges/badge-groups";
 import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
 import { BackgroundPattern } from "@/components/shared-assets/background-patterns";
 import { getIcon } from "@/lib/icons";
 import { products, categories, getProduct } from "@/data/products";
+import { tools } from "@/data/tools";
+import { timers } from "@/data/timers";
+import { pillars, stats, testimonials, companyFaqs } from "@/data/home";
+import { getCollection } from "astro:content";
 
 const live = products.filter((p) => p.status === "live");
+const liveTools = tools.filter((t) => t.status === "live");
+const liveTimers = timers.filter((t) => t.status === "live");
+const latestArticles = (await getCollection("articles"))
+  .sort((a, b) => new Date(b.data.published).getTime() - new Date(a.data.published).getTime())
+  .slice(0, 3);
 // Centre of the fan sits in the middle; every product here needs at least one screenshot.
 const fan = [
   { p: getProduct("enough")!, i: 0 },
@@ -65,12 +74,22 @@ const services = [
   "Name, logo, colour and type",
   "Store listings and screenshots",
 ];
+const homeJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: companyFaqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
 ---
 
 <Base
   title="Spolvero — a studio for small, useful apps"
   description="Spolvero designs and builds apps, games, web tools and software, and takes on UI/UX and branding projects for others."
 >
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(homeJsonLd)} />
   <!-- Hero -->
   <section class="relative overflow-hidden bg-primary pt-16 md:pt-24">
     <BackgroundPattern pattern="grid" size="lg" className="absolute top-0 left-1/2 hidden -translate-x-1/2 text-border-secondary opacity-70 md:block" />
@@ -102,8 +121,8 @@ const services = [
       </p>
 
       <div class="mt-8 flex w-full flex-col-reverse items-stretch gap-3 sm:w-auto sm:flex-row sm:items-start md:mt-12" data-reveal>
-        <Button href="/contact/?topic=design" color="secondary" size="xl" iconLeading={getIcon("pen")}>Hire us for design</Button>
-        <Button href="#apps" color="primary" size="xl">See our apps</Button>
+        <Button href="/contact/?topic=design" variant="outline" size="xl"><Icon name="pen" />Hire us for design</Button>
+        <Button href="#apps" variant="default" size="xl">See our apps</Button>
       </div>
 
       <div class="relative mt-16 h-[380px] w-full max-w-5xl md:mt-20 md:h-[520px]" data-fan aria-label="Screens from Spolvero apps">
@@ -119,6 +138,48 @@ const services = [
       </div>
     </div>
     <div class="relative h-px bg-border-secondary"></div>
+  </section>
+
+  <!-- What Spolvero actually is: three things, said plainly and early -->
+  <section id="what-we-do" class="bg-primary py-16 md:py-24">
+    <div class="container-page">
+      <SectionHeader
+        eyebrow="What we do"
+        title="One studio, three kinds of work"
+        lede="We make our own apps, publish free tools anyone can use, and design products for other people. Each one makes the other two better."
+      />
+      <ul class="mt-12 grid gap-6 md:mt-16 md:grid-cols-3">
+        {pillars.map((x) => (
+          <li data-reveal>
+            <a href={x.href} class="group flex h-full flex-col rounded-3xl bg-secondary p-6 transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring md:p-8">
+              <span class="grid size-14 place-items-center rounded-2xl text-neutral-900" style={`background:${x.tint}`} aria-hidden="true">
+                <Icon name={x.icon} class="size-7" />
+              </span>
+              <p class="mt-6 text-sm font-semibold text-brand-secondary">{x.kind}</p>
+              <h3 class="mt-1 text-xl font-semibold text-primary">{x.title}</h3>
+              <p class="mt-3 text-md text-tertiary">{x.body}</p>
+              <p class="mt-4 text-sm font-medium text-secondary">{x.proof}</p>
+              <span class="mt-auto inline-flex items-center gap-1.5 pt-6 text-md font-semibold text-brand-secondary">
+                {x.cta} <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <dl class="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-6 border-t border-secondary pt-10 md:mt-16 md:grid-cols-4" data-reveal>
+        {stats.map((x) => (
+          <div class="text-center">
+            <dt class="sr-only">{x.label}</dt>
+            <dd>
+              <span class="block text-display-sm font-semibold text-primary md:text-display-md">{x.value}</span>
+              <span class="mt-1 block text-md font-medium text-secondary">{x.label}</span>
+              <span class="mt-0.5 block text-sm text-tertiary">{x.note}</span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   </section>
 
   <!-- Principles -->
@@ -171,7 +232,7 @@ const services = [
         </table>
       </div>
       <div class="mt-10 flex justify-center" data-reveal>
-        <Button href="#apps" color="primary" size="xl" iconTrailing={getIcon("arrow")}>See our apps</Button>
+        <Button href="#apps" variant="default" size="xl">See our apps<Icon name="arrow" /></Button>
       </div>
     </div>
   </section>
@@ -191,7 +252,7 @@ const services = [
               <p class="text-md text-tertiary">{featured.kind} · {featured.platform}</p>
             </div>
           </div>
-          <div class="mt-6"><Badge type="pill-color" color="success" size="md">Live on Google Play</Badge></div>
+          <div class="mt-6"><Badge variant="success" size="md">Live on Google Play</Badge></div>
           <h3 class="mt-4 text-display-xs font-semibold text-primary md:text-display-sm">{featured.tagline}</h3>
           <p class="mt-4 text-lg text-tertiary">{featured.summary}</p>
           <ul class="mt-6 flex flex-col gap-4">
@@ -204,7 +265,7 @@ const services = [
           </ul>
           <div class="mt-8 flex flex-wrap items-center gap-4 md:mt-auto md:pt-10">
             <GooglePlayButton href={featured.playUrl} size="lg" />
-            <Button href={`/${featured.slug}/`} color="link-color" size="lg" iconTrailing={getIcon("arrow")}>Learn more</Button>
+            <Button href={`/${featured.slug}/`} variant="link" size="lg">Learn more<Icon name="arrow" /></Button>
           </div>
         </div>
         <div class="relative flex min-h-[340px] justify-center gap-4 overflow-hidden bg-brand-primary px-6 pt-12 md:pt-16">
@@ -222,7 +283,7 @@ const services = [
               <div class="flex flex-col gap-4 p-6">
                 <div class="flex items-start justify-between gap-3">
                   <AppIcon product={p} size={48} />
-                  <Badge type="pill-color" color="gray" size="sm">Coming soon</Badge>
+                  <Badge variant="secondary" size="sm">Coming soon</Badge>
                 </div>
                 <div>
                   <p class="text-lg font-semibold text-primary">{p.name}</p>
@@ -270,6 +331,86 @@ const services = [
     </div>
   </div>
 
+  <!-- Free tools: the pages that bring people to the site at all -->
+  <section id="tools" class="bg-primary py-16 md:py-24">
+    <div class="container-page">
+      <SectionHeader
+        eyebrow="Free tools"
+        title="Useful in the browser, free forever"
+        lede="No sign-up, nothing uploaded, and no feature held back. Ads on the page pay for them, never the person using them."
+      />
+      <ul class="mt-12 grid gap-6 md:mt-16 md:grid-cols-2">
+        {liveTools.map((t) => (
+          <li data-reveal>
+            <a href={`/tools/${t.slug}/`} class="group flex h-full flex-col rounded-3xl bg-secondary p-6 transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring md:p-8">
+              <div class="flex items-start justify-between gap-4">
+                <span class="grid size-14 place-items-center rounded-2xl text-neutral-900" style={`background:${t.tint}`} aria-hidden="true">
+                  <Icon name={t.icon} class="size-7" />
+                </span>
+                <Badge variant="success" size="sm">Live</Badge>
+              </div>
+              <h3 class="mt-6 text-xl font-semibold text-primary">{t.name}</h3>
+              <p class="mt-1 text-md font-medium text-brand-secondary">{t.tagline}</p>
+              <p class="mt-3 text-md text-tertiary">{t.summary}</p>
+              <span class="mt-auto inline-flex items-center gap-1.5 pt-6 text-md font-semibold text-brand-secondary">
+                Open the tool <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+              </span>
+            </a>
+          </li>
+        ))}
+        <li data-reveal>
+          <a href="/tools/timers/" class="group flex h-full flex-col rounded-3xl bg-secondary p-6 transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring md:p-8">
+            <div class="flex items-start justify-between gap-4">
+              <span class="grid size-14 place-items-center rounded-2xl text-neutral-900" style="background:#e2f0ff" aria-hidden="true">
+                <Icon name="clock" class="size-7" />
+              </span>
+              <Badge variant="success" size="sm">{liveTimers.length} live</Badge>
+            </div>
+            <h3 class="mt-6 text-xl font-semibold text-primary">Timers</h3>
+            <p class="mt-1 text-md font-medium text-brand-secondary">Big enough for the back of the room.</p>
+            <p class="mt-3 text-md text-tertiary">
+              A classroom countdown, Toastmasters speech lights and an exam clock. Fullscreen carries no ads at all.
+            </p>
+            <span class="mt-auto inline-flex items-center gap-1.5 pt-6 text-md font-semibold text-brand-secondary">
+              See the timers <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </a>
+        </li>
+      </ul>
+      <div class="mt-10 flex justify-center" data-reveal>
+        <Button href="/tools/" variant="outline" size="lg">Every free tool<Icon name="arrow" /></Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Guides: the content cluster, linked from the homepage so it gets crawled -->
+  <section id="guides" class="bg-secondary py-16 md:py-24">
+    <div class="container-page">
+      <SectionHeader
+        eyebrow="Guides"
+        title="Answers to the things that actually go wrong"
+        lede="Written to solve the problem and then stop. Every fix has been checked against the tools on this site."
+      />
+      <ul class="mt-12 grid gap-6 md:mt-16 md:grid-cols-3">
+        {latestArticles.map((a) => (
+          <li data-reveal>
+            <a href={`/articles/${a.id}/`} class="group flex h-full flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
+              <p class="text-sm font-semibold text-brand-secondary">{a.data.tags[0] ?? "Guide"}</p>
+              <h3 class="mt-2 text-lg font-semibold text-primary">{a.data.title}</h3>
+              <p class="mt-2 text-md text-tertiary">{a.data.description}</p>
+              <span class="mt-auto inline-flex items-center gap-1.5 pt-5 text-md font-semibold text-brand-secondary">
+                Read <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div class="mt-10 flex justify-center" data-reveal>
+        <Button href="/articles/" variant="outline" size="lg">All guides<Icon name="arrow" /></Button>
+      </div>
+    </div>
+  </section>
+
   <!-- On the drawing board -->
   <section id="next" class="bg-primary pt-16 pb-16 md:pt-20 md:pb-24">
     <div class="container-page">
@@ -285,7 +426,7 @@ const services = [
               >
                 <div class="flex items-start justify-between">
                   <FeaturedIcon icon={getIcon(c.icon)} size="lg" color="brand" theme="modern" />
-                  <Badge type="pill-color" color={"href" in c && c.href ? "success" : "brand"} size="sm">{"href" in c && c.href ? "Live now" : "In design"}</Badge>
+                  <Badge  size="sm">{"href" in c && c.href ? "Live now" : "In design"}</Badge>
                 </div>
                 <h3 class="mt-8 text-xl font-semibold text-primary">{c.title}</h3>
                 <p class="mt-2 text-md text-tertiary">{c.body}</p>
@@ -319,7 +460,7 @@ const services = [
       <div class="self-center rounded-3xl bg-primary p-6 shadow-lg ring-1 ring-secondary md:p-10" data-reveal>
         <div class="flex items-center justify-between gap-4">
           <p class="text-lg font-semibold text-brand-secondary">Hourly rate</p>
-          <Badge type="pill-color" color="brand" size="md">Worldwide</Badge>
+          <Badge variant="default" size="md">Worldwide</Badge>
         </div>
         <p class="mt-4 text-display-lg font-semibold text-primary md:text-display-xl">$20–30<span class="text-xl font-medium text-tertiary md:text-display-xs"> / hour</span></p>
         <p class="mt-4 text-md text-tertiary">Depending on scope. You get a written quote before any work starts.</p>
@@ -332,7 +473,7 @@ const services = [
             ))}
           </ul>
         </div>
-        <Button href="/contact/?topic=design" color="primary" size="xl" className="mt-8 w-full" iconTrailing={getIcon("arrow")}>Tell us about your project</Button>
+        <Button href="/contact/?topic=design" variant="default" size="xl" class="mt-8 w-full">Tell us about your project<Icon name="arrow" /></Button>
       </div>
     </div>
 
@@ -357,11 +498,45 @@ const services = [
       <div>
         <SectionHeader align="left" eyebrow="Design studio" title="Questions from clients" lede="Anything else about working with us?" />
         <div class="mt-6" data-reveal>
-          <Button href="/contact/?topic=design" color="secondary" size="lg">Ask us directly</Button>
+          <Button href="/contact/?topic=design" variant="outline" size="lg">Ask us directly</Button>
         </div>
       </div>
       <div data-reveal>
         <Faq id="studio-faq-list" items={studioFaqs} />
+      </div>
+    </div>
+  </section>
+
+  {testimonials.length > 0 && (
+    <section id="testimonials" class="bg-primary py-16 md:py-24">
+      <div class="container-page">
+        <SectionHeader eyebrow="In their words" title="What people say" />
+        <ul class="mt-12 grid gap-6 md:mt-16 md:grid-cols-3">
+          {testimonials.map((t) => (
+            <li class="flex flex-col rounded-3xl bg-secondary p-6 md:p-8" data-reveal>
+              <blockquote class="text-lg text-primary">“{t.quote}”</blockquote>
+              <div class="mt-auto pt-6">
+                <p class="text-md font-semibold text-primary">{t.name}</p>
+                <p class="text-sm text-tertiary">{t.role}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <!-- About Spolvero. Separate from the studio FAQ, and feeds FAQPage schema. -->
+  <section id="about-faq" class="bg-primary py-16 md:py-24">
+    <div class="container-page grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-16">
+      <div>
+        <SectionHeader align="left" eyebrow="About Spolvero" title="The short version" lede="What we are, and how the whole thing pays for itself." />
+        <div class="mt-6" data-reveal>
+          <Button href="/contact/" variant="outline" size="lg">Ask us something</Button>
+        </div>
+      </div>
+      <div data-reveal>
+        <Faq id="company-faq" items={companyFaqs} />
       </div>
     </div>
   </section>

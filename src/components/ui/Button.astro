@@ -11,7 +11,7 @@
 // own design language rather than the stock look.
 import { cn } from "cn";
 
-type Variant = "default" | "secondary" | "outline" | "ghost" | "link" | "destructive" | "on-brand";
+type Variant = "default" | "secondary" | "outline" | "ghost" | "link" | "destructive" | "on-brand" | "on-dark" | "on-dark-ghost";
 type Size = "sm" | "md" | "lg" | "xl";
 
 interface Props {
@@ -53,6 +53,10 @@ const variants: Record<Variant, string> = {
   destructive: "bg-[var(--destructive)]/10 text-[var(--destructive)] hover:bg-[var(--destructive)]/20",
   // For the deep brand panel, where the normal surfaces have no contrast.
   "on-brand": "bg-[var(--card)] text-[var(--foreground)] shadow-xs hover:brightness-95",
+  // For controls sitting on a near-black stage, such as the timer display, where
+  // the theme's own foreground would be dark ink on a dark ground.
+  "on-dark": "bg-white/15 text-white ring-1 ring-white/20 hover:bg-white/25",
+  "on-dark-ghost": "text-white/70 hover:bg-white/10 hover:text-white",
 };
 
 const sizes: Record<Size, string> = {

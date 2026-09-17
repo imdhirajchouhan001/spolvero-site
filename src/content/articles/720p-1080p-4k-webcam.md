@@ -1,6 +1,6 @@
 ---
 title: "720p, 1080p or 4K: what a webcam actually needs to be"
-seoTitle: "720p vs 1080p vs 4K Webcam: What You Actually Need"
+seoTitle: "720p vs 1080p vs 4K Webcam: What You Need"
 description: "Meeting apps cap what they will send long before a 4K webcam becomes useful. Here is what each resolution is really worth, and what to spend on instead."
 published: "2026-09-17"
 updated: "2026-09-17"

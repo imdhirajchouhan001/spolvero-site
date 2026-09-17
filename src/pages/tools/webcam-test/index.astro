@@ -7,7 +7,7 @@ import { webcamFaqs } from "@/data/tools";
 const url = new URL("/tools/webcam-test/", Astro.site).toString();
 const title = "Webcam Test — Check Your Camera Online (Free, Private)";
 const description =
-  "Test your webcam in 3 seconds. See a live preview, a readiness score, and whether your resolution, frame rate and lighting are good enough for a call. Nothing is uploaded.";
+  "Test your webcam in 3 seconds. Get a readiness score plus resolution, frame rate and lighting checks. Nothing is uploaded — the video stays in your browser.";
 const jsonLd = webcamJsonLd({ url, name: "Spolvero Webcam Test", description, faqs: webcamFaqs, site: Astro.site!.toString() });
 ---
 

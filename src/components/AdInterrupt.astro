@@ -102,6 +102,12 @@ const showInterstitial = monetised && adsInterstitial && (adsPreview || Boolean(
         return r.bottom > 0 && r.top < innerHeight;
       };
 
+      // A running timer is being shown to a room. Nothing may cover it, and an ad
+      // carrying sound would clash with the alarm, so both formats stand down.
+      var timerRunning = function () {
+        return document.documentElement.hasAttribute("data-timer-running");
+      };
+
       var fill = function (el) {
         if (preview || el.dataset.adFilled !== undefined) return;
         el.dataset.adFilled = "";
@@ -126,7 +132,7 @@ const showInterstitial = monetised && adsInterstitial && (adsPreview || Boolean(
       if (anchor && !read(KEY_A)) {
         wire(anchor, KEY_A);
         setTimeout(function () {
-          if (read(KEY_A)) return;
+          if (read(KEY_A) || timerRunning()) return;
           anchor.classList.remove("hidden");
           fill(anchor);
         }, (Number(anchor.dataset.delay) || 10) * 1000);
@@ -140,7 +146,7 @@ const showInterstitial = monetised && adsInterstitial && (adsPreview || Boolean(
         var sections = Array.prototype.slice.call(document.querySelectorAll("main section"));
         var passed = 0;
         var open = function () {
-          if (read(KEY_I) || resultOnScreen()) return;
+          if (read(KEY_I) || resultOnScreen() || timerRunning()) return;
           lastFocus = document.activeElement;
           inter.classList.remove("hidden");
           inter.classList.add("flex");
@@ -164,6 +170,12 @@ const showInterstitial = monetised && adsInterstitial && (adsPreview || Boolean(
         });
         inter.addEventListener("click", function (e) { if (e.target === inter) close(inter, KEY_I); });
       }
+
+      document.addEventListener("spolvero:timer", function (e) {
+        if (!e.detail || !e.detail.running) return;
+        if (anchor) anchor.classList.add("hidden");
+        if (inter) { inter.classList.add("hidden"); inter.classList.remove("flex"); }
+      });
     })();
   </script>
 )}

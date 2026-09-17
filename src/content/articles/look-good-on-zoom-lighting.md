@@ -1,6 +1,6 @@
 ---
 title: "How to look good on Zoom using things you already own"
-seoTitle: "How to Look Good on Zoom: Lighting Setup With Things at Home"
+seoTitle: "How to Look Good on Zoom: Lighting at Home"
 description: "You do not need a ring light. A lamp, a window and a stack of books will do more for how you look on a video call than any camera upgrade."
 published: "2026-09-17"
 updated: "2026-09-17"

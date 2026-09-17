@@ -1,7 +1,7 @@
 ---
 title: "Is my laptop camera hacked? How to actually check"
-seoTitle: "Is My Laptop Camera Hacked? How to Check and What to Do"
-description: "Camera hijacking is rarer than the headlines suggest, but not impossible. Here is how to check properly on Windows and Mac, and what the indicator light really tells you."
+seoTitle: "Is My Laptop Camera Hacked? How to Check"
+description: "Camera hijacking is rarer than the headlines suggest, but not impossible. How to check properly on Windows and Mac, and what the light tells you."
 published: "2026-09-17"
 updated: "2026-09-17"
 answer: "Start with the indicator light: on a Mac it is wired to the camera's power and cannot be turned off in software, so a dark light means the camera is off. On Windows it is usually firmware-controlled and very hard to bypass, but not guaranteed. Check which apps have camera permission, look for processes you do not recognise, and cover the lens when you are not using it."

@@ -1,0 +1,101 @@
+---
+import Base from "@/layouts/Base.astro";
+import TimerPage from "@/components/timers/TimerPage.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import { timerJsonLd } from "@/components/timers/schema";
+import { timers, activityDurations, speechTimings, type Timer } from "@/data/timers";
+
+export function getStaticPaths() {
+  return timers.filter((t) => t.status === "live" && t.page).map((timer) => ({ params: { timer: timer.slug }, props: { timer } }));
+}
+
+const { timer } = Astro.props as { timer: Timer };
+const p = timer.page!;
+const url = new URL(`/tools/timers/${timer.slug}/`, Astro.site).toString();
+const jsonLd = timerJsonLd({
+  url, name: `Spolvero ${timer.name}`, description: p.description, faqs: p.faqs,
+  site: Astro.site!.toString(), crumb: timer.name,
+});
+---
+
+<Base title={p.title} description={p.description} headerCta={{ label: "All timers", href: "/tools/timers/" }}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+
+  <TimerPage timer={timer}>
+    <Fragment slot="reference">
+      {timer.slug === "classroom-timer" && (
+        <section class="bg-secondary pb-14 md:pb-20">
+          <div class="container-page">
+            <SectionHeader
+              eyebrow="How long should it take?"
+              title="Timings that work in a real lesson"
+              lede="Common activity lengths, as a starting point rather than a rule. Adjust for your year group."
+            />
+            <div class="mx-auto mt-10 max-w-4xl overflow-x-auto rounded-3xl ring-1 ring-secondary md:mt-12" data-reveal>
+              <table class="w-full min-w-[520px] border-collapse text-left">
+                <caption class="sr-only">Suggested durations for common classroom activities</caption>
+                <thead>
+                  <tr class="bg-primary">
+                    <th scope="col" class="px-4 py-4 text-sm font-semibold text-tertiary md:px-6">Activity</th>
+                    <th scope="col" class="px-4 py-4 text-sm font-semibold text-tertiary md:px-6">Typical</th>
+                    <th scope="col" class="px-4 py-4 text-sm font-semibold text-tertiary md:px-6">Worth knowing</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {activityDurations.map((r) => (
+                    <tr class="border-t border-secondary bg-primary">
+                      <th scope="row" class="px-4 py-4 text-md font-semibold text-primary md:px-6">{r.activity}</th>
+                      <td class="px-4 py-4 text-md font-medium text-primary tabular-nums md:px-6">{r.time}</td>
+                      <td class="px-4 py-4 text-md text-tertiary md:px-6">{r.note}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {timer.slug === "speech-timer" && (
+        <section class="bg-secondary pb-14 md:pb-20">
+          <div class="container-page">
+            <SectionHeader
+              eyebrow="Toastmasters timing"
+              title="Green, amber and red for every speech type"
+              lede="The standard timings used in club meetings and contests, from Toastmasters International."
+            />
+            <div class="mx-auto mt-10 max-w-4xl overflow-x-auto rounded-3xl ring-1 ring-secondary md:mt-12" data-reveal>
+              <table class="w-full min-w-[560px] border-collapse text-left">
+                <caption class="sr-only">Toastmasters speech lengths and timing light points</caption>
+                <thead>
+                  <tr class="bg-primary">
+                    <th scope="col" class="px-4 py-4 text-sm font-semibold text-tertiary md:px-6">Speech</th>
+                    <th scope="col" class="px-4 py-4 text-sm font-semibold text-tertiary md:px-6">Range</th>
+                    <th scope="col" class="px-4 py-4 text-sm font-semibold text-tertiary md:px-6">Green</th>
+                    <th scope="col" class="px-4 py-4 text-sm font-semibold text-tertiary md:px-6">Amber</th>
+                    <th scope="col" class="px-4 py-4 text-sm font-semibold text-tertiary md:px-6">Red</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {speechTimings.map((r) => (
+                    <tr class="border-t border-secondary bg-primary">
+                      <th scope="row" class="px-4 py-4 text-md font-semibold text-primary md:px-6">{r.type}</th>
+                      <td class="px-4 py-4 text-md text-tertiary tabular-nums md:px-6">{r.range}</td>
+                      <td class="px-4 py-4 text-md tabular-nums text-[#1a8a54] md:px-6">{r.green}</td>
+                      <td class="px-4 py-4 text-md tabular-nums text-[#946200] md:px-6">{r.amber}</td>
+                      <td class="px-4 py-4 text-md tabular-nums text-[#c4342f] md:px-6">{r.red}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p class="mx-auto mt-4 max-w-4xl text-sm text-tertiary" data-reveal>
+              In contests, finishing more than 30 seconds outside the range means disqualification. In ordinary club
+              meetings the range is treated as guidance.
+            </p>
+          </div>
+        </section>
+      )}
+    </Fragment>
+  </TimerPage>
+</Base>

@@ -1,6 +1,7 @@
 // One source for the main navigation, the mobile menu and the SiteNavigationElement schema.
 import { products } from "@/data/products";
 import { tools } from "@/data/tools";
+import { timers } from "@/data/timers";
 
 export type NavItem = { label: string; href: string; note?: string; status?: "live" | "soon" };
 
@@ -19,6 +20,13 @@ const appItems: NavItem[] = products.map((p) => ({
   href: `/${p.slug}/`,
   note: p.kind,
   status: p.status === "live" ? "live" : "soon",
+}));
+
+const timerItems: NavItem[] = timers.map((t) => ({
+  label: t.name,
+  href: t.status === "live" ? `/tools/timers/${t.slug}/` : "/tools/timers/",
+  note: t.kind,
+  status: t.status,
 }));
 
 const toolItems: NavItem[] = tools.map((t) => ({
@@ -44,11 +52,18 @@ export const navGroups: NavGroup[] = [
     footer: { label: "What we're sketching", href: "/#next" },
   },
   {
-    label: "Tools",
+    label: "Device tests",
     href: "/tools/",
     blurb: "Browser tests for your camera, mic, speakers and screen.",
     items: toolItems,
     footer: { label: "All device tests", href: "/tools/" },
+  },
+  {
+    label: "Timers",
+    href: "/tools/timers/",
+    blurb: "Big, calm timers for classrooms, speeches and exams.",
+    items: timerItems,
+    footer: { label: "All timers", href: "/tools/timers/" },
   },
 ];
 

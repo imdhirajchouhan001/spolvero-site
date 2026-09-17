@@ -1,0 +1,687 @@
+---
+// The shared timer engine. One component, three modes:
+//
+//   countdown  classroom — counts down to zero
+//   speech     counts up, with green / amber / red lights at set points
+//   exam       counts down, with an optional reading phase, and shows the
+//              wall-clock start and finish times
+//
+// No framework and no dependencies: the whole thing is one small module script,
+// so the page stays static and there is nothing to hydrate.
+//
+// Time comes from Date.now() rather than from counting ticks. Browsers throttle
+// timers in background tabs heavily, which is what makes other web timers drift;
+// reading the clock each frame means switching tabs cannot lose time.
+//
+// Sound is synthesised with the Web Audio API rather than loaded as files, so the
+// timer works with no network once the page is open.
+import Icon from "@/components/Icon.astro";
+import Button from "@/components/ui/Button.astro";
+import type { Preset, TimerMode } from "@/data/timers";
+import { shortcuts } from "@/data/timers";
+
+interface Props {
+  mode: TimerMode;
+  presets: Preset[];
+  defaultSeconds: number;
+  /** Used to key the saved times, so each timer remembers its own. */
+  slug: string;
+  accent: string;
+}
+const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
+---
+
+<section class="container-page" aria-labelledby="timer-heading">
+  <div
+    class="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--card)] shadow-lg"
+    data-timer
+    data-mode={mode}
+    data-slug={slug}
+    data-default={defaultSeconds}
+    data-state="idle"
+    style={`--timer-accent:${accent}`}
+  >
+    <h2 id="timer-heading" class="sr-only">Timer</h2>
+
+    <!-- Display. In fullscreen this element becomes the whole screen. -->
+    <div class="timer-stage relative flex flex-col items-center justify-center gap-4 bg-[#12121c] px-6 py-10 text-white md:py-14" data-stage>
+      <!-- Exam only: the wall-clock times, which are the point of an exam clock. -->
+      <div class="flex gap-8 text-center opacity-0 transition-opacity" data-clock-row hidden={mode !== "exam"}>
+        <div>
+          <p class="text-xs tracking-wide text-white/50 uppercase">Started</p>
+          <p class="text-lg font-semibold tabular-nums md:text-2xl" data-clock-start>—</p>
+        </div>
+        <div>
+          <p class="text-xs tracking-wide text-white/50 uppercase">Finishes</p>
+          <p class="text-lg font-semibold tabular-nums md:text-2xl" data-clock-end>—</p>
+        </div>
+      </div>
+
+      <!-- Phase label: reading/writing in exam mode, paused everywhere. -->
+      <p class="text-sm font-semibold tracking-wide text-white/60 uppercase" data-phase></p>
+
+      <!-- The ring and the digits. -->
+      <div class="relative grid place-items-center">
+        <svg class="timer-ring size-56 -rotate-90 md:size-72" viewBox="0 0 120 120" aria-hidden="true" data-ring-wrap>
+          <circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" stroke-width="6" class="text-white/10" />
+          <circle
+            cx="60" cy="60" r="54" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"
+            class="text-[var(--timer-accent)] transition-[stroke-dashoffset] duration-200 ease-linear"
+            stroke-dasharray="339.29" stroke-dashoffset="0" data-ring
+          />
+        </svg>
+        <p class="timer-digits absolute font-semibold tabular-nums" data-digits>5:00</p>
+      </div>
+
+      <!-- Speech only: the three lights. -->
+      <div class="flex gap-3" data-lights hidden={mode !== "speech"}>
+        {["green", "amber", "red"].map((c) => (
+          <span
+            class="grid h-8 w-16 place-items-center rounded-full text-xs font-semibold text-white/40 ring-1 ring-white/15 transition"
+            data-light={c}
+          >{c}</span>
+        ))}
+      </div>
+
+      <!-- Controls. In fullscreen these fade out and return on mouse move. -->
+      <div class="flex flex-wrap items-center justify-center gap-2" data-controls>
+        <Button variant="default" size="lg" data-start><Icon name="play" />Start</Button>
+        <Button variant="on-dark" size="lg" class="hidden" data-pause>Pause</Button>
+        <Button variant="on-dark" size="md" data-add>+1 min</Button>
+        <Button variant="on-dark-ghost" size="md" data-reset>Reset</Button>
+        <Button variant="on-dark-ghost" size="md" data-fullscreen aria-label="Fullscreen"><Icon name="browser" />Fullscreen</Button>
+        <Button variant="on-dark-ghost" size="md" data-mute aria-pressed="false" aria-label="Mute">Sound on</Button>
+      </div>
+
+      <!-- Only shown while running in fullscreen; the promise the page makes. -->
+      <p class="absolute bottom-3 text-xs text-white/25 opacity-0 transition-opacity" data-fs-note>No ads in fullscreen</p>
+    </div>
+
+    <!-- Setup. Everything below is hidden once fullscreen starts. -->
+    <div class="p-5 md:p-6" data-setup>
+      <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Presets">
+        {presets.map((p) => (
+          <button
+            type="button"
+            class="rounded-full border border-[var(--border)] px-3.5 py-2 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--muted)] aria-pressed:border-transparent aria-pressed:bg-[var(--primary)] aria-pressed:text-[var(--primary-foreground)]"
+            data-preset={p.seconds}
+            data-lights={p.lights ? `${p.lights.green},${p.lights.amber},${p.lights.red}` : undefined}
+            aria-pressed="false"
+            title={p.note}
+          >{p.label}</button>
+        ))}
+      </div>
+
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <label class="flex flex-col gap-1.5">
+          <span class="text-sm font-semibold text-secondary">
+            {mode === "speech" ? "Maximum time" : "Minutes"}
+          </span>
+          <div class="flex items-center gap-2">
+            <input
+              type="number" min="1" max="600" step="1" inputmode="numeric"
+              class="w-24 rounded-xl border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-md tabular-nums text-[var(--foreground)] outline-none focus:ring-2 focus:ring-[var(--ring)]"
+              data-minutes
+            />
+            <span class="text-md text-tertiary">min</span>
+            <input
+              type="number" min="0" max="59" step="5" inputmode="numeric"
+              class="w-20 rounded-xl border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-md tabular-nums text-[var(--foreground)] outline-none focus:ring-2 focus:ring-[var(--ring)]"
+              data-seconds
+            />
+            <span class="text-md text-tertiary">sec</span>
+          </div>
+        </label>
+
+        {mode === "exam" && (
+          <label class="flex flex-col gap-1.5">
+            <span class="text-sm font-semibold text-secondary">Reading time before writing</span>
+            <div class="flex items-center gap-2">
+              <input
+                type="number" min="0" max="60" step="1" value="0" inputmode="numeric"
+                class="w-24 rounded-xl border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-md tabular-nums text-[var(--foreground)] outline-none focus:ring-2 focus:ring-[var(--ring)]"
+                data-reading
+              />
+              <span class="text-md text-tertiary">min</span>
+            </div>
+          </label>
+        )}
+
+        {mode === "exam" && (
+          <label class="flex flex-col gap-1.5 sm:col-span-2">
+            <span class="text-sm font-semibold text-secondary">Label on screen (optional)</span>
+            <input
+              type="text" maxlength="60" placeholder="e.g. Hall B — Paper 2"
+              class="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-md text-[var(--foreground)] outline-none focus:ring-2 focus:ring-[var(--ring)]"
+              data-label
+            />
+          </label>
+        )}
+
+        {mode === "speech" && (
+          <fieldset class="flex flex-col gap-1.5">
+            <legend class="text-sm font-semibold text-secondary">Lights at</legend>
+            <div class="flex items-center gap-2">
+              {[["green", "Green"], ["amber", "Amber"], ["red", "Red"]].map(([k, label]) => (
+                <label class="flex items-center gap-1.5">
+                  <span class="text-sm text-tertiary">{label}</span>
+                  <input
+                    type="text" inputmode="numeric" size="4" placeholder="0:00"
+                    pattern="[0-9]{1,3}(:[0-5][0-9])?"
+                    class="w-16 rounded-xl border border-[var(--border)] bg-[var(--card)] px-2 py-2 text-sm tabular-nums text-[var(--foreground)] outline-none focus:ring-2 focus:ring-[var(--ring)]"
+                    data-light-input={k}
+                  />
+                </label>
+              ))}
+              <span class="text-sm text-tertiary">m:ss</span>
+            </div>
+          </fieldset>
+        )}
+
+        <label class="flex flex-col gap-1.5">
+          <span class="text-sm font-semibold text-secondary">Sound</span>
+          <select
+            data-sound
+            class="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-md text-[var(--foreground)] outline-none focus:ring-2 focus:ring-[var(--ring)]"
+          >
+            <option value="chime">Soft chime</option>
+            <option value="bell">Loud bell</option>
+            <option value="none">No sound</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Saved times, kept on this device only. -->
+      <div class="mt-5 border-t border-[var(--border)] pt-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <p class="text-sm font-semibold text-secondary">My times</p>
+          <Button variant="outline" size="sm" data-save>Save this time</Button>
+        </div>
+        <ul class="mt-3 flex flex-wrap gap-2" data-saved>
+          <li class="text-sm text-tertiary" data-saved-empty>Nothing saved yet. Saved times stay on this device — no account, nothing uploaded.</li>
+        </ul>
+      </div>
+
+      <!-- Keyboard map, which is genuinely how the tool is meant to be driven. -->
+      <dl class="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-[var(--border)] pt-4 text-sm">
+        {shortcuts.map((s) => (
+          <div class="flex items-center gap-1.5">
+            <dt><kbd class="rounded-md border border-[var(--border)] bg-[var(--muted)] px-1.5 py-0.5 font-mono text-xs">{s.keys}</kbd></dt>
+            <dd class="text-tertiary">{s.action}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+
+    <p class="sr-only" role="status" aria-live="polite" data-announce></p>
+  </div>
+</section>
+
+<style>
+  /* The digits scale with the stage, so the same markup is readable on a laptop
+     and from the back of a classroom once fullscreen. */
+  .timer-digits { font-size: clamp(3.5rem, 12vw, 7rem); line-height: 1; }
+
+  [data-timer]:fullscreen { border-radius: 0; border: 0; }
+  [data-timer]:fullscreen [data-setup] { display: none; }
+  [data-timer]:fullscreen .timer-stage { height: 100vh; justify-content: center; gap: 2vh; }
+  [data-timer]:fullscreen .timer-digits { font-size: 22vh; }
+  [data-timer]:fullscreen .timer-ring { width: 46vh; height: 46vh; }
+  [data-timer]:fullscreen [data-fs-note] { opacity: 1; }
+
+  /* Controls get out of the way while a timer runs in fullscreen, and come back
+     on any mouse movement. */
+  [data-timer]:fullscreen[data-state="running"] [data-controls] { opacity: 0; }
+  [data-timer]:fullscreen[data-idle-cursor="false"] [data-controls] { opacity: 1; }
+  [data-controls] { transition: opacity 0.3s; }
+  [data-timer]:fullscreen[data-state="running"][data-idle-cursor="true"] { cursor: none; }
+
+  [data-clock-row]:not([hidden]) { opacity: 1; }
+
+  /* Time's up: the whole stage turns and pulses, which reads from across a room. */
+  @keyframes timer-flash { 0%, 100% { background-color: #12121c; } 50% { background-color: #7a1020; } }
+  [data-timer][data-state="finished"] .timer-stage { animation: timer-flash 0.9s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    [data-timer][data-state="finished"] .timer-stage { animation: none; background-color: #7a1020; }
+  }
+</style>
+
+<script>
+  type Mode = "countdown" | "speech" | "exam";
+  type State = "idle" | "running" | "paused" | "finished";
+
+  const root = document.querySelector<HTMLElement>("[data-timer]");
+  if (root) init(root);
+
+  function init(root: HTMLElement) {
+    const mode = root.dataset.mode as Mode;
+    const slug = root.dataset.slug!;
+    const q = <T extends HTMLElement>(sel: string) => root.querySelector<T>(sel);
+
+    const stage = q<HTMLElement>("[data-stage]")!;
+    const digits = q<HTMLElement>("[data-digits]")!;
+    const ring = root.querySelector("[data-ring]") as SVGCircleElement;
+    const phase = q<HTMLElement>("[data-phase]")!;
+    const announce = q<HTMLElement>("[data-announce]")!;
+    const minutesInput = q<HTMLInputElement>("[data-minutes]")!;
+    const secondsInput = q<HTMLInputElement>("[data-seconds]")!;
+    const readingInput = q<HTMLInputElement>("[data-reading]");
+    const labelInput = q<HTMLInputElement>("[data-label]");
+    const soundSelect = q<HTMLSelectElement>("[data-sound]")!;
+    const startBtn = q<HTMLElement>("[data-start]")!;
+    const pauseBtn = q<HTMLElement>("[data-pause]")!;
+    const muteBtn = q<HTMLElement>("[data-mute]")!;
+    const savedList = q<HTMLElement>("[data-saved]")!;
+    const clockStart = q<HTMLElement>("[data-clock-start]");
+    const clockEnd = q<HTMLElement>("[data-clock-end]");
+
+    const RING = 339.29;
+    const pageTitle = document.title;
+
+    let state: State = "idle";
+    let total = Number(root.dataset.default || 300); // seconds for this run
+    let readingTotal = 0;
+    let endsAt = 0; // timestamp the current phase ends (countdown) …
+    let startedAt = 0; // … or began (speech)
+    let leftWhenPaused = 0;
+    let inReading = false;
+    let muted = false;
+    let lights = { green: 0, amber: 0, red: 0 };
+    let tick: number | undefined;
+
+    // ---- sound, synthesised so the timer works offline ----
+    let audio: AudioContext | null = null;
+    const ensureAudio = () => {
+      if (!audio) {
+        const Ctor = window.AudioContext || (window as any).webkitAudioContext;
+        if (Ctor) audio = new Ctor();
+      }
+      // iOS suspends the context until a gesture resumes it.
+      if (audio?.state === "suspended") audio.resume();
+      return audio;
+    };
+    const beep = (freq: number, at: number, length = 0.35, gain = 0.25) => {
+      const ctx = ensureAudio();
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const vol = ctx.createGain();
+      osc.frequency.value = freq;
+      osc.type = "sine";
+      vol.gain.setValueAtTime(0, ctx.currentTime + at);
+      vol.gain.linearRampToValueAtTime(gain, ctx.currentTime + at + 0.02);
+      vol.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + at + length);
+      osc.connect(vol).connect(ctx.destination);
+      osc.start(ctx.currentTime + at);
+      osc.stop(ctx.currentTime + at + length + 0.05);
+    };
+    const playAlarm = () => {
+      if (muted) return;
+      const kind = soundSelect.value;
+      if (kind === "none") return;
+      if (kind === "chime") { beep(880, 0); beep(1320, 0.28, 0.5); }
+      else for (let i = 0; i < 6; i++) beep(1046, i * 0.34, 0.22, 0.4);
+    };
+    const tickSound = () => { if (!muted && soundSelect.value !== "none") beep(660, 0, 0.09, 0.14); };
+
+    // ---- screen wake lock, so a projector does not sleep mid-timer ----
+    let wake: any = null;
+    const keepAwake = async () => {
+      try { wake = await (navigator as any).wakeLock?.request("screen"); } catch { /* not critical */ }
+    };
+    const releaseAwake = () => { try { wake?.release(); } catch {} wake = null; };
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible" && state === "running") keepAwake();
+    });
+
+    // ---- formatting ----
+    const fmt = (s: number) => {
+      s = Math.max(0, Math.round(s));
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      const sec = s % 60;
+      return h > 0
+        ? `${h}:${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`
+        : `${m}:${String(sec).padStart(2, "0")}`;
+    };
+    const clockTime = (d: Date) => d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+    /** Accepts "6", "1:30" or "90" minutes-and-seconds and returns seconds. */
+    const parseClock = (raw: string) => {
+      const v = (raw || "").trim();
+      if (!v) return 0;
+      const parts = v.split(":");
+      if (parts.length === 2) return Math.max(0, Number(parts[0] || 0) * 60 + Number(parts[1] || 0));
+      return Math.max(0, Number(parts[0] || 0) * 60);
+    };
+    const setLightInput = (k: string, seconds: number) => {
+      const el = root.querySelector<HTMLInputElement>(`[data-light-input="${k}"]`);
+      if (el) el.value = fmt(seconds);
+    };
+
+    // ---- ads must never cover a timer that is being shown to a room ----
+    const broadcast = (running: boolean) => {
+      document.documentElement.toggleAttribute("data-timer-running", running);
+      document.dispatchEvent(new CustomEvent("spolvero:timer", { detail: { running } }));
+    };
+
+    // ---- render ----
+    const setState = (s: State) => {
+      state = s;
+      root.dataset.state = s;
+      startBtn.classList.toggle("hidden", s === "running");
+      pauseBtn.classList.toggle("hidden", s !== "running");
+      broadcast(s === "running");
+    };
+
+    const paint = () => {
+      const now = Date.now();
+      let shown: number;
+      let fraction: number;
+
+      if (mode === "speech") {
+        const elapsed = state === "paused" ? leftWhenPaused : (now - startedAt) / 1000;
+        shown = elapsed;
+        fraction = total > 0 ? Math.min(1, elapsed / total) : 0;
+        paintLights(elapsed);
+        if (elapsed >= total && state === "running") reachedEnd();
+      } else {
+        const left = state === "paused" ? leftWhenPaused : (endsAt - now) / 1000;
+        shown = Math.max(0, left);
+        const span = inReading ? readingTotal : total;
+        fraction = span > 0 ? Math.max(0, Math.min(1, left / span)) : 0;
+        if (left <= 0 && state === "running") {
+          if (inReading) return startWriting();
+          return reachedEnd();
+        }
+        // The last ten seconds get a quiet pip, which is the cue people expect.
+        if (state === "running" && left <= 10 && Math.ceil(left) !== lastPip) {
+          lastPip = Math.ceil(left);
+          if (lastPip > 0) tickSound();
+        }
+      }
+
+      digits.textContent = fmt(shown);
+      ring.style.strokeDashoffset = String(RING * (mode === "speech" ? fraction : 1 - fraction));
+
+      // Colour warns before the end without needing anyone to read the number.
+      const warn = mode === "speech" ? fraction >= 0.8 : fraction <= 0.2;
+      ring.style.color = state === "finished" ? "#ff6b6b" : warn ? "#ffc83d" : "";
+
+      if (state === "running") {
+        document.title = `${fmt(shown)} · ${pageTitle}`;
+      }
+    };
+    let lastPip = -1;
+
+    const paintLights = (elapsed: number) => {
+      const on = (k: "green" | "amber" | "red") => lights[k] > 0 && elapsed >= lights[k];
+      const colours: Record<string, string> = { green: "#23b26d", amber: "#ffc83d", red: "#e8443f" };
+      (["green", "amber", "red"] as const).forEach((k) => {
+        const el = root.querySelector<HTMLElement>(`[data-light="${k}"]`);
+        if (!el) return;
+        const lit = on(k);
+        el.style.background = lit ? colours[k] : "";
+        el.style.color = lit ? "#12121c" : "";
+        el.classList.toggle("ring-white/15", !lit);
+      });
+      // In speech mode the stage itself takes the current light, so the signal is
+      // unmissable from the lectern.
+      const active = on("red") ? colours.red : on("amber") ? colours.amber : on("green") ? colours.green : "";
+      stage.style.backgroundColor = active ? active + "22" : "";
+    };
+
+    // ---- transitions ----
+    const readInputs = () => {
+      const m = Number(minutesInput.value || 0);
+      const s = Number(secondsInput.value || 0);
+      total = Math.max(1, m * 60 + s);
+      readingTotal = Math.max(0, Number(readingInput?.value || 0)) * 60;
+      if (mode === "speech") {
+        (["green", "amber", "red"] as const).forEach((k) => {
+          const el = root.querySelector<HTMLInputElement>(`[data-light-input="${k}"]`);
+          lights[k] = el ? parseClock(el.value) : 0;
+        });
+      }
+    };
+
+    const start = () => {
+      ensureAudio(); // the gesture that starts the timer also unlocks sound
+      if (state === "idle" || state === "finished") readInputs();
+      const now = Date.now();
+
+      if (mode === "speech") {
+        startedAt = state === "paused" ? now - leftWhenPaused * 1000 : now;
+      } else {
+        if (state === "paused") {
+          endsAt = now + leftWhenPaused * 1000;
+        } else {
+          inReading = readingTotal > 0;
+          endsAt = now + (inReading ? readingTotal : total) * 1000;
+          if (mode === "exam") paintClock(now);
+        }
+      }
+      lastPip = -1;
+      phase.textContent = inReading ? "Reading time" : mode === "exam" ? "Writing time" : "";
+      setState("running");
+      keepAwake();
+      loop();
+      say(inReading ? "Reading time started" : "Timer started");
+    };
+
+    const pause = () => {
+      const now = Date.now();
+      leftWhenPaused = mode === "speech" ? (now - startedAt) / 1000 : (endsAt - now) / 1000;
+      setState("paused");
+      phase.textContent = "Paused";
+      releaseAwake();
+      stop();
+      paint();
+      say("Paused");
+    };
+
+    const reset = () => {
+      stop();
+      setState("idle");
+      releaseAwake();
+      inReading = false;
+      leftWhenPaused = 0;
+      lastPip = -1;
+      readInputs();
+      phase.textContent = "";
+      stage.style.backgroundColor = "";
+      document.title = pageTitle;
+      if (clockStart) clockStart.textContent = "—";
+      if (clockEnd) clockEnd.textContent = "—";
+      digits.textContent = fmt(mode === "speech" ? 0 : total);
+      ring.style.strokeDashoffset = mode === "speech" ? String(RING) : "0";
+      ring.style.color = "";
+      paintLights(0);
+      say("Reset");
+    };
+
+    const startWriting = () => {
+      inReading = false;
+      endsAt = Date.now() + total * 1000;
+      phase.textContent = "Writing time";
+      playAlarm();
+      say("Reading time over. Writing time has started.");
+      paint();
+    };
+
+    const reachedEnd = () => {
+      if (mode === "speech") {
+        // A speech timer keeps running past the maximum, because the timekeeper
+        // has to report the actual time taken.
+        return;
+      }
+      stop();
+      setState("finished");
+      releaseAwake();
+      phase.textContent = "Time's up";
+      digits.textContent = "0:00";
+      document.title = `Time's up · ${pageTitle}`;
+      playAlarm();
+      say("Time is up");
+    };
+
+    const addMinutes = (n: number) => {
+      if (mode === "speech") { total = Math.max(60, total + n * 60); }
+      else if (state === "running") { endsAt += n * 60000; if (mode === "exam") paintClock(); }
+      else if (state === "paused") { leftWhenPaused = Math.max(0, leftWhenPaused + n * 60); }
+      else {
+        total = Math.max(60, total + n * 60);
+        minutesInput.value = String(Math.floor(total / 60));
+        secondsInput.value = String(total % 60);
+      }
+      if (state === "finished" && n > 0) { setState("idle"); start(); }
+      paint();
+      say(`${n > 0 ? "Added" : "Removed"} one minute`);
+    };
+
+    const paintClock = (from?: number) => {
+      if (!clockStart || !clockEnd) return;
+      const begin = from ?? Date.now() - 0;
+      if (from) clockStart.textContent = clockTime(new Date(begin));
+      const finish = inReading ? endsAt + total * 1000 : endsAt;
+      clockEnd.textContent = clockTime(new Date(finish));
+    };
+
+    // A 200ms interval is enough for a display measured in seconds, and because
+    // every frame recomputes from the clock, throttling in a background tab
+    // cannot make it drift.
+    const loop = () => { stop(); paint(); tick = window.setInterval(paint, 200); };
+    const stop = () => { if (tick) window.clearInterval(tick); tick = undefined; };
+    const say = (m: string) => { announce.textContent = m; };
+
+    // ---- fullscreen ----
+    const toggleFullscreen = async () => {
+      try {
+        if (document.fullscreenElement) await document.exitFullscreen();
+        else await root.requestFullscreen();
+      } catch { /* denied or unsupported; the page still works */ }
+    };
+
+    let cursorTimer: number | undefined;
+    root.addEventListener("mousemove", () => {
+      root.dataset.idleCursor = "false";
+      window.clearTimeout(cursorTimer);
+      cursorTimer = window.setTimeout(() => { root.dataset.idleCursor = "true"; }, 2500);
+    });
+
+    // ---- saved times, on this device only ----
+    const KEY = `spolvero.timer.${slug}`;
+    const readSaved = (): number[] => {
+      try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch { return []; }
+    };
+    const writeSaved = (v: number[]) => {
+      try { localStorage.setItem(KEY, JSON.stringify(v.slice(0, 8))); } catch {}
+    };
+    const paintSaved = () => {
+      const list = readSaved();
+      const empty = savedList.querySelector("[data-saved-empty]");
+      savedList.querySelectorAll("[data-saved-item]").forEach((n) => n.remove());
+      if (empty) (empty as HTMLElement).hidden = list.length > 0;
+      list.forEach((secs) => {
+        const li = document.createElement("li");
+        li.setAttribute("data-saved-item", "");
+        li.className = "inline-flex items-center gap-1 rounded-full border border-[var(--border)] pr-1 pl-3";
+        const use = document.createElement("button");
+        use.type = "button";
+        use.className = "py-1.5 text-sm font-semibold";
+        use.textContent = fmt(secs);
+        use.addEventListener("click", () => {
+          minutesInput.value = String(Math.floor(secs / 60));
+          secondsInput.value = String(secs % 60);
+          reset();
+        });
+        const del = document.createElement("button");
+        del.type = "button";
+        del.className = "grid size-6 place-items-center rounded-full text-tertiary hover:bg-[var(--muted)]";
+        del.setAttribute("aria-label", `Remove ${fmt(secs)}`);
+        del.textContent = "×";
+        del.addEventListener("click", () => { writeSaved(readSaved().filter((x) => x !== secs)); paintSaved(); });
+        li.append(use, del);
+        savedList.append(li);
+      });
+    };
+
+    // ---- wiring ----
+    startBtn.addEventListener("click", start);
+    pauseBtn.addEventListener("click", pause);
+    q("[data-reset]")?.addEventListener("click", reset);
+    q("[data-add]")?.addEventListener("click", () => addMinutes(1));
+    q("[data-fullscreen]")?.addEventListener("click", toggleFullscreen);
+    q("[data-save]")?.addEventListener("click", () => {
+      readInputs();
+      const list = readSaved();
+      if (!list.includes(total)) writeSaved([total, ...list]);
+      paintSaved();
+      say(`Saved ${fmt(total)}`);
+    });
+    muteBtn.addEventListener("click", () => {
+      muted = !muted;
+      muteBtn.setAttribute("aria-pressed", String(muted));
+      muteBtn.textContent = muted ? "Sound off" : "Sound on";
+    });
+
+    root.querySelectorAll<HTMLButtonElement>("[data-preset]").forEach((b) => {
+      b.addEventListener("click", () => {
+        root.querySelectorAll("[data-preset]").forEach((o) => o.setAttribute("aria-pressed", "false"));
+        b.setAttribute("aria-pressed", "true");
+        const secs = Number(b.dataset.preset);
+        minutesInput.value = String(Math.floor(secs / 60));
+        secondsInput.value = String(secs % 60);
+        if (b.dataset.lights) {
+          const [g, a, r] = b.dataset.lights.split(",").map(Number);
+          setLightInput("green", g); setLightInput("amber", a); setLightInput("red", r);
+        }
+        reset();
+      });
+    });
+
+    const clearPresets = () =>
+      root.querySelectorAll("[data-preset]").forEach((o) => o.setAttribute("aria-pressed", "false"));
+
+    [minutesInput, secondsInput, readingInput].forEach((el) =>
+      el?.addEventListener("change", () => {
+        // The pill must not claim a preset the boxes no longer match.
+        const secs = Number(minutesInput.value || 0) * 60 + Number(secondsInput.value || 0);
+        if (!root.querySelector(`[data-preset="${secs}"]`)) clearPresets();
+        if (state === "idle") reset();
+      }),
+    );
+    root.querySelectorAll<HTMLInputElement>("[data-light-input]").forEach((el) =>
+      el.addEventListener("change", () => { if (state === "idle") readInputs(); }),
+    );
+    labelInput?.addEventListener("input", () => { phase.textContent = labelInput.value; });
+
+    document.addEventListener("keydown", (e) => {
+      const target = e.target as HTMLElement;
+      if (target && /^(INPUT|SELECT|TEXTAREA)$/.test(target.tagName)) return;
+      switch (e.key.toLowerCase()) {
+        case " ": e.preventDefault(); state === "running" ? pause() : start(); break;
+        case "f": e.preventDefault(); toggleFullscreen(); break;
+        case "r": e.preventDefault(); reset(); break;
+        case "arrowup": e.preventDefault(); addMinutes(1); break;
+        case "arrowdown": e.preventDefault(); addMinutes(-1); break;
+        case "m": e.preventDefault(); (muteBtn as HTMLElement).click(); break;
+      }
+    });
+
+    // Never leave a wake lock or a stale title behind.
+    window.addEventListener("pagehide", () => { releaseAwake(); stop(); broadcast(false); });
+
+    // ---- first paint ----
+    minutesInput.value = String(Math.floor(total / 60));
+    secondsInput.value = String(total % 60);
+    const firstPreset = root.querySelector<HTMLButtonElement>(`[data-preset="${total}"]`);
+    firstPreset?.setAttribute("aria-pressed", "true");
+    if (mode === "speech" && firstPreset?.dataset.lights) {
+      const [g, a, r] = firstPreset.dataset.lights.split(",").map(Number);
+      (["green", "amber", "red"] as const).forEach((k, i) => setLightInput(k, [g, a, r][i]));
+    }
+    readInputs();
+    reset();
+    paintSaved();
+  }
+</script>

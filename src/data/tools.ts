@@ -166,8 +166,8 @@ export const webcamVariants: Variant[] = [
     slug: "zoom",
     label: "Zoom",
     h1: "Webcam test for Zoom",
-    title: "Webcam Test for Zoom — Check Your Camera Before the Call",
-    description: "Test your webcam before a Zoom call. See your resolution, frame rate and lighting, find out if you'll look sharp in HD, and fix problems in under a minute. Free, private, nothing uploaded.",
+    title: "Webcam Test for Zoom — Check Your Camera Fast",
+    description: "Test your webcam before a Zoom call. Check resolution, frame rate and lighting, and find out whether HD is actually on. Free and private — nothing uploaded.",
     intro:
       "Zoom sends 360p by default, so a good camera can still look soft to everyone else. Run the test below to see what your camera actually produces, then turn on HD in Zoom so it sends it.",
     answer:
@@ -189,8 +189,8 @@ export const webcamVariants: Variant[] = [
     slug: "teams",
     label: "Teams",
     h1: "Webcam test for Microsoft Teams",
-    title: "Webcam Test for Microsoft Teams — Check Your Camera Online",
-    description: "Test your camera before a Microsoft Teams meeting. Check resolution, frame rate and lighting in your browser, and fix a camera Teams can't see. Free and private — nothing is uploaded.",
+    title: "Webcam Test for Microsoft Teams — Free Check",
+    description: "Test your camera before a Teams meeting. Check resolution, frame rate and lighting, and fix a camera Teams cannot see. Free, private, nothing uploaded.",
     intro:
       "Teams is the most common place to meet a camera that works everywhere else and not there — usually because another app is holding it, or because Windows camera permissions are off. Test below, then use the fixes.",
     answer:
@@ -212,8 +212,8 @@ export const webcamVariants: Variant[] = [
     slug: "google-meet",
     label: "Google Meet",
     h1: "Camera test for Google Meet",
-    title: "Camera Test for Google Meet — Check Your Webcam in the Browser",
-    description: "Test your camera before a Google Meet call. Check resolution, frame rate and lighting in seconds, and fix camera permissions in Chrome. Free, private, nothing uploaded.",
+    title: "Camera Test for Google Meet — Free Browser Check",
+    description: "Test your camera before a Google Meet call. Check resolution, frame rate and lighting, and fix Chrome camera permissions. Free and private.",
     intro:
       "Google Meet runs in the same browser as this test, which makes it the easiest case of all: if your camera works on this page, it will work in Meet. If it doesn't, the fix is a browser permission.",
     answer:
@@ -235,8 +235,8 @@ export const webcamVariants: Variant[] = [
     slug: "mac",
     label: "Mac",
     h1: "Test your camera on a Mac",
-    title: "Camera Test for Mac and MacBook — Check Your Webcam Online",
-    description: "Test the FaceTime HD camera on your MacBook or an external webcam on macOS. Check resolution, frame rate and lighting in the browser, and fix macOS camera permissions. Free and private.",
+    title: "Mac Camera Test — Check Your MacBook Webcam",
+    description: "Test the camera on your MacBook or an external webcam on macOS. Check resolution, frame rate and lighting, and fix macOS permissions. Free and private.",
     intro:
       "macOS has no built-in camera test app — Photo Booth is the usual workaround, and it tells you nothing about resolution or frame rate. Run the test below, and use the macOS-specific fixes if the camera doesn't appear.",
     answer:
@@ -258,8 +258,8 @@ export const webcamVariants: Variant[] = [
     slug: "windows",
     label: "Windows",
     h1: "Test your webcam on Windows 11",
-    title: "Webcam Test for Windows 11 and Windows 10 — Free Online Check",
-    description: "Test your webcam on Windows 11 or Windows 10 in the browser. Check resolution, frame rate and lighting, and fix Windows camera permissions, privacy switches and driver problems. Nothing uploaded.",
+    title: "Webcam Test for Windows 11 — Free Online Check",
+    description: "Test your webcam on Windows 11 or 10 in the browser. Check resolution, frame rate and lighting, and fix permissions, privacy switches and drivers.",
     intro:
       "Windows has two layers between your camera and the browser — system privacy settings and the driver — and either can block it silently. Run the test below; if it fails, the fixes are in order of how often they work.",
     answer:
@@ -281,7 +281,7 @@ export const webcamVariants: Variant[] = [
     slug: "iphone",
     label: "iPhone",
     h1: "Test the camera on your iPhone",
-    title: "iPhone Camera Test — Check Your Front Camera in the Browser",
+    title: "iPhone Camera Test — Check Your Front Camera",
     description: "Test your iPhone or iPad front and rear camera in Safari or Chrome. Check resolution, frame rate and lighting before a video call. Free, private, nothing uploaded.",
     intro:
       "The iPhone Camera app tells you nothing about what a browser or a video call will actually get. This test uses the same camera path a web call does, and lets you switch between the front and rear camera.",
@@ -304,8 +304,8 @@ export const webcamVariants: Variant[] = [
     slug: "obs",
     label: "Streaming",
     h1: "Webcam test for streaming and OBS",
-    title: "Webcam Test for OBS and Streaming — Check Resolution and FPS",
-    description: "Check your webcam's real resolution and frame rate before you stream. See whether you're getting 1080p60, spot the lighting problems viewers will notice, and fix a camera OBS has locked. Free and private.",
+    title: "Webcam Test for OBS — Check Resolution and FPS",
+    description: "Check your webcam's real resolution and frame rate before you stream. See whether you are truly getting 1080p60, and fix a camera OBS has locked.",
     intro:
       "Streaming is the one case where 60fps and 1080p are worth chasing. This test measures the frame rate your camera is really delivering, not the number printed on the box.",
     answer:
@@ -327,8 +327,8 @@ export const webcamVariants: Variant[] = [
     slug: "fps",
     label: "Resolution and fps",
     h1: "Check your webcam's real resolution and fps",
-    title: "Webcam Resolution and FPS Test — What Your Camera Really Delivers",
-    description: "Find out your webcam's real resolution and frame rate, measured in the browser rather than read off the box. See whether that new 1080p camera is delivering 1080p. Free, private, nothing uploaded.",
+    title: "Webcam Resolution and FPS Test — Real Numbers",
+    description: "Find your webcam's real resolution and frame rate, measured in the browser rather than read off the box. See whether 1080p is really 1080p.",
     intro:
       "A webcam's box quotes its best case: brightest light, best software, highest bitrate. This test measures what your browser actually receives right now, which is the number that decides how you look on a call.",
     answer:

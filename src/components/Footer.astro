@@ -1,10 +1,11 @@
 ---
 import { products } from "@/data/products";
 import { tools } from "@/data/tools";
+import { timers } from "@/data/timers";
 
 const columns = [
   { title: "Apps", links: products.map((p) => ({ label: p.name, href: `/${p.slug}/` })) },
-  { title: "Tools", links: tools.filter((t) => t.status === "live").map((t) => ({ label: t.name, href: `/tools/${t.slug}/` })).concat([{ label: "All device tests", href: "/tools/" }]) },
+  { title: "Tools", links: tools.filter((t) => t.status === "live").map((t) => ({ label: t.name, href: `/tools/${t.slug}/` })).concat(timers.filter((t) => t.status === "live").map((t) => ({ label: t.name, href: `/tools/timers/${t.slug}/` }))).concat([{ label: "All tools", href: "/tools/" }]) },
   {
     title: "Studio",
     links: [

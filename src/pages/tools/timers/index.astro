@@ -1,0 +1,122 @@
+---
+import Base from "@/layouts/Base.astro";
+import Icon from "@/components/Icon.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import AdSlot from "@/components/AdSlot.astro";
+import Button from "@/components/ui/Button.astro";
+import Badge from "@/components/ui/Badge.astro";
+import { timers } from "@/data/timers";
+
+const live = timers.filter((t) => t.status === "live");
+const soon = timers.filter((t) => t.status === "soon");
+
+const title = "Free Online Timers for Classrooms and Speeches";
+const description =
+  "Big, calm timers built to be projected. Classroom countdown, Toastmasters speech lights and an exam clock. No ads in fullscreen, no sign-up.";
+const site = Astro.site!.toString();
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site },
+      { "@type": "ListItem", position: 2, name: "Tools", item: new URL("/tools/", site).toString() },
+      { "@type": "ListItem", position: 3, name: "Timers", item: new URL("/tools/timers/", site).toString() },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Spolvero timers",
+    description,
+    url: new URL("/tools/timers/", site).toString(),
+    hasPart: live.map((t) => ({
+      "@type": "SoftwareApplication",
+      name: t.name,
+      applicationCategory: "UtilitiesApplication",
+      operatingSystem: "Web browser",
+      url: new URL(`/tools/timers/${t.slug}/`, site).toString(),
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    })),
+  },
+];
+---
+
+<Base title={title} description={description} headerCta={{ label: "All tools", href: "/tools/" }}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="bg-secondary pt-12 pb-12 md:pt-16 md:pb-16">
+    <div class="container-page flex flex-col items-center text-center">
+      <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm font-semibold text-tertiary">
+        <a href="/tools/" class="hover:text-tertiary_hover">Tools</a>
+        <span aria-hidden="true">/</span>
+        <span class="text-brand-secondary">Timers</span>
+      </nav>
+      <h1 class="mt-5 max-w-3xl text-display-sm font-semibold text-primary md:text-display-lg">
+        Timers made to be seen from the back of the room
+      </h1>
+      <p class="mt-4 max-w-2xl text-md text-tertiary md:text-lg">
+        Huge digits, a calm chime, and a fullscreen view with no ads in it at all. Pick the one built for what you are
+        actually doing — the presets are already right.
+      </p>
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-2">
+        <Badge variant="success" size="lg">No ads in fullscreen</Badge>
+        <Badge variant="secondary" size="lg">No sign-up</Badge>
+        <Badge variant="secondary" size="lg">Works offline</Badge>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-secondary pb-14 md:pb-20">
+    <div class="container-page">
+      <ul class="grid gap-6 md:grid-cols-3">
+        {live.map((t) => (
+          <li data-reveal>
+            <a href={`/tools/timers/${t.slug}/`} class="group flex h-full flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring md:p-8">
+              <div class="flex items-start justify-between gap-4">
+                <span class="grid size-14 place-items-center rounded-2xl text-neutral-900" style={`background:${t.tint}`} aria-hidden="true">
+                  <Icon name={t.icon} class="size-7" />
+                </span>
+                <Badge variant="success" size="sm">Live</Badge>
+              </div>
+              <h2 class="mt-6 text-xl font-semibold text-primary">{t.name}</h2>
+              <p class="mt-1 text-md font-medium text-brand-secondary">{t.tagline}</p>
+              <p class="mt-3 text-md text-tertiary">{t.summary}</p>
+              <span class="mt-auto inline-flex items-center gap-1.5 pt-6 text-md font-semibold text-brand-secondary">
+                Open the timer <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mx-auto mt-12 max-w-4xl">
+        <AdSlot placement="in-content" />
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-secondary pb-14 md:pb-20">
+    <div class="container-page">
+      <SectionHeader eyebrow="Coming up" title="The rest of the set" lede="Same engine, presets built for each job." />
+      <ul class="mt-10 grid gap-6 md:mt-12 md:grid-cols-3">
+        {soon.map((t) => (
+          <li class="flex flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary" data-reveal>
+            <div class="flex items-start justify-between gap-3">
+              <span class="grid size-12 place-items-center rounded-2xl text-neutral-900" style={`background:${t.tint}`} aria-hidden="true">
+                <Icon name={t.icon} class="size-6" />
+              </span>
+              <Badge variant="secondary" size="sm">In design</Badge>
+            </div>
+            <h2 class="mt-6 text-lg font-semibold text-primary">{t.name}</h2>
+            <p class="mt-1.5 text-md text-tertiary">{t.summary}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="mt-12 flex justify-center" data-reveal>
+        <Button href="/tools/timers/classroom-timer/" variant="default" size="xl">Start with the classroom timer<Icon name="arrow" /></Button>
+      </div>
+    </div>
+  </section>
+</Base>

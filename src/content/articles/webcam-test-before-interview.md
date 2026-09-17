@@ -1,6 +1,6 @@
 ---
 title: "The five-minute camera check before a video interview"
-seoTitle: "Video Interview Camera Check: What to Test Before You Join"
+seoTitle: "Video Interview Camera Check: What to Test"
 description: "A short, ordered checklist for the minutes before a video interview — camera, light, framing, sound and the backup plan for when something fails anyway."
 published: "2026-09-17"
 updated: "2026-09-17"

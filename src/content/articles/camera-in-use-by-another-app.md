@@ -1,6 +1,6 @@
 ---
 title: "\"Camera is being used by another application\": how to find the app and get it back"
-seoTitle: "Camera Is Being Used by Another Application — Fix for Windows and Mac"
+seoTitle: "Camera Is Being Used by Another Application — Fix"
 description: "Something is holding your camera and will not let go. Here is how to identify which app it is on Windows and Mac, and what to do when nothing appears to be running."
 published: "2026-09-17"
 updated: "2026-09-17"

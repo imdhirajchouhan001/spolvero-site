@@ -1,7 +1,7 @@
 ---
 title: "Webcam blurry or grainy? It is almost never the camera"
-seoTitle: "Webcam Blurry or Grainy: Why It Happens and How to Fix It"
-description: "A grainy, soft or washed-out webcam picture usually comes down to light, not hardware. Here is what is actually happening inside the camera, and the fixes in order of impact."
+seoTitle: "Webcam Blurry or Grainy: Why, and How to Fix"
+description: "A grainy or soft webcam picture usually comes down to light, not hardware. What is happening inside the camera, and the fixes in order of impact."
 published: "2026-09-17"
 updated: "2026-09-17"
 answer: "A blurry or grainy webcam is nearly always a lighting problem, not a hardware one. In dim light a small sensor raises its gain, which adds visible grain, and lengthens its exposure, which adds motion blur and drops the frame rate. Adding light in front of your face fixes all three at once, and costs nothing."

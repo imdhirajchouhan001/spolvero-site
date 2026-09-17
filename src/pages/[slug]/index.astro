@@ -21,6 +21,9 @@ export function getStaticPaths() {
 }
 
 const { product: p } = Astro.props as { product: Product };
+// A product summary is written for the page, not for a search result; trim the
+// long ones so Google shows a whole sentence rather than cutting mid-clause.
+const metaDescription = p.summary.length > 160 ? `${p.summary.slice(0, 157).replace(/[\s,.;:—-]+$/, "")}…` : p.summary;
 const isLive = p.status === "live";
 const heroShots = p.screenshots.slice(0, 3);
 const others = products.filter((o) => o.slug !== p.slug);
@@ -40,7 +43,7 @@ const jsonLd = {
 
 <Base
   title={`${p.name}: ${p.kind} — Spolvero`}
-  description={p.summary}
+  description={metaDescription}
   image={ogImage}
   themeColor={p.accent}
   headerCta={isLive ? { label: "Download", href: p.playUrl! } : { label: "Get notified", href: "#notify" }}
