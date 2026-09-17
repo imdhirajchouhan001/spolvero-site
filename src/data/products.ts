@@ -46,7 +46,7 @@ const allProducts: Product[] = [
     platform: "Android",
     tagline: "Know what you pay before it's paid.",
     summary:
-      "See every subscription in one private list, get warned before each renewal, and split shared plans with your household. No bank login.",
+      "See every subscription in one private list — add them yourself, or let Unspend find them in your email receipts — get warned before each renewal, and split shared plans with your household. No bank login.",
     accent: "#0043ce",
     tint: "#e8eeff",
     icon: "/products/unspend/icon.webp",
@@ -61,8 +61,8 @@ const allProducts: Product[] = [
     ],
     features: [
       { icon: "wallet", title: "See what you actually pay", body: "Real monthly and yearly totals, with breakdowns by category, by person, and by rolling versus locked-in spending." },
-      { icon: "bell", title: "Never get charged by surprise", body: "Renewal reminders days before the money moves, and separate free-trial alerts so a trial never quietly becomes a bill." },
-      { icon: "zap", title: "Add one in about 20 seconds", body: "Pick from a catalogue of common services with price and billing cycle filled in, or add anything custom. Monthly or yearly billing." },
+      { icon: "bell", title: "Never get charged by surprise", body: "Two days before a renewal, and one day before a free trial converts, so a trial never quietly becomes a bill. Set your own lead times, or hold alerts until 8am." },
+      { icon: "zap", title: "Add one in about ten seconds", body: "Pick from a catalogue of common services and the price is filled in for you, or add anything custom. Monthly or yearly billing. Unspend can also read your email receipts and fill in what it finds, for you to check." },
       { icon: "users", title: "Built for households", body: "With Pro, assign who pays, split shared plans evenly, see each person's share and mark balances settled." },
     ],
     promise: {
@@ -72,6 +72,7 @@ const allProducts: Product[] = [
         "No bank or card connection, ever",
         "No sign-up needed to start",
         "Your subscriptions are stored on your phone",
+        "Email receipts are read on your phone: none is uploaded, and none is kept",
         "No analytics or trackers, and your data is never sold",
         "Ads are never personalised and never see your list",
         "Back up to a file you keep",
@@ -79,18 +80,19 @@ const allProducts: Product[] = [
     },
     pricing: {
       free: ["Unlimited subscriptions", "Monthly and yearly totals", "Renewal and free-trial reminders", "Backup to a file", "Occasional ads"],
-      pro: ["No ads", "Splitting and settle-up", "Share the list with family", "Requires signing in"],
+      pro: ["No ads", "Splitting and settle-up", "Share the list with family", "Cloud backup and sync to your own account", "A reminder schedule per subscription", "Requires signing in"],
       proNote: "See the price for your country in the app",
     },
     faqs: [
-      { q: "Does Unspend connect to my bank?", a: "No. Unspend never asks for bank details, card numbers or banking logins, and it can't move money. You add subscriptions yourself, which takes about 20 seconds each." },
+      { q: "Does Unspend connect to my bank?", a: "No. Unspend never asks for bank details, card numbers or banking logins, and it can't move money. You add subscriptions yourself, which takes about ten seconds each, or let it read your email receipts if you turn that on." },
       { q: "Do I need an account?", a: "No. Open the app and start adding subscriptions. Signing in with your email is optional, and needed for Pro." },
       { q: "Where is my data stored?", a: "On your phone, in storage only Unspend can read. Your subscriptions are never uploaded to us. If you sign in, your email address and name are stored with our sign-in provider, plus your household membership if you share with family." },
       { q: "Will Unspend cancel subscriptions for me?", a: "No. Unspend tracks and reminds. It never cancels or pays anything on your behalf." },
+      { q: "What does the email scan read?", a: "Only the last year, and only mail that looks like a receipt — Google does that filtering on its own servers, so the rest never reaches your phone. What it finds is filled in for you to check. Nothing is saved, and you can disconnect at any time in Settings or in your Google account. Google asks for broad mailbox access because it has no narrower permission to give." },
       { q: "Which billing cycles are supported?", a: "Monthly and yearly." },
       { q: "Does it convert between currencies?", a: "Not yet. Each subscription keeps the currency it's billed in, and totals add the amounts as entered. For the clearest total, track everything in one currency." },
       { q: "How do I move to a new phone?", a: "Export a backup file from Settings, then restore it on your new phone. The file is yours. Unspend never keeps a copy." },
-      { q: "How do I delete my account?", a: "From inside the app, or email spolvero.design@gmail.com from the address on your account. Account data is removed within 30 days." },
+      { q: "How do I delete my account?", a: "From inside the app, under Settings. It erases everything on the phone — subscriptions, people, payment methods and settings — and removes the account on our side in the same step. It cannot be undone." },
     ],
     policy: "unspend",
   },
@@ -161,7 +163,7 @@ const allProducts: Product[] = [
     ],
     features: [
       { icon: "book", title: "A number with a source", body: "Your target is worked out from published standards (EFSA, US IOM and ICMR-NIN) and every step is shown on screen." },
-      { icon: "utensils", title: "Food counts", body: "About a quarter of your water comes from food, so Enough takes it off. Your number is lower than most apps', and it tells you why." },
+      { icon: "utensils", title: "Food counts", body: "EFSA and the US IOM publish total water, about a quarter of which you eat rather than drink, so Enough takes it off. ICMR-NIN already counts drinks only, and nothing comes off it. Either way the arithmetic is on screen." },
       { icon: "clock", title: "Reminders that fit your day", body: "Reminders arrive only inside your waking hours, and Enough watches whether your phone is quietly blocking them." },
       { icon: "chart", title: "A history that tells the truth", body: "See which days you met your goal, fell short, or logged late, week by week." },
     ],
@@ -176,7 +178,7 @@ const allProducts: Product[] = [
       ],
     },
     faqs: [
-      { q: "Why is my target lower than other apps?", a: "Published guidance counts water from all sources, including food. Enough subtracts the share that comes from food, so what's left is what you actually need to drink." },
+      { q: "Why is my target lower than other apps?", a: "The EFSA and US IOM figures count water from all sources, including food, so Enough subtracts the share that comes from food and what's left is what you actually need to drink. ICMR-NIN is published as drinks only, so that one is used as it stands." },
       { q: "Which standard does it use?", a: "You can choose EFSA (2010), US IOM, or ICMR-NIN. India defaults to ICMR-NIN." },
       { q: "Is it medical advice?", a: "No. Enough is not a medical device. Talk to a doctor about your own needs." },
       { q: "When is it out?", a: "Soon on Google Play. Join the launch list and we'll email you when it's ready." },
@@ -293,7 +295,7 @@ const allProducts: Product[] = [
       { icon: "calculator", title: "Add or remove GST", body: "Add GST to a price or pull it back out of a total. Splits CGST and SGST within a state, IGST across state lines." },
       { icon: "percent", title: "Every current slab", body: "0%, 5%, 18% and 40%, plus 3%, 0.25% and the composition rates, with four rate keys you set once." },
       { icon: "search", title: "Look up any rate", body: "Find a product by name or HSN/SAC code and apply its rate. The app shows the date its rates came from." },
-      { icon: "history", title: "Memory and history", body: "Memory keys, markup, a running bill for multi-item totals, and your last 25 calculations." },
+      { icon: "history", title: "Memory and history", body: "Memory keys, markup, a running bill for multi-item totals, and your last 20 calculations." },
     ],
     promise: {
       title: "Type an amount. Tap a rate. Read the answer.",
