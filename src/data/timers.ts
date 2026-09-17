@@ -7,14 +7,16 @@
 export type TimerStatus = "live" | "soon";
 
 /** The three engine modes. Each page picks one. */
-export type TimerMode = "countdown" | "speech" | "exam";
+export type TimerMode = "countdown" | "speech" | "exam" | "interval";
 
 export type Preset = {
   label: string;
-  /** Total seconds. */
+  /** Total seconds. In interval mode this is derived and may be 0. */
   seconds: number;
   /** Speech mode only: seconds at which each light turns on. */
   lights?: { green: number; amber: number; red: number };
+  /** Interval mode only: one round of work, then rest, repeated. */
+  interval?: { work: number; rest: number; rounds: number; prepare?: number };
   note?: string;
 };
 
@@ -281,37 +283,139 @@ export const timers: Timer[] = [
     slug: "interval-timer",
     name: "Interval Timer",
     kind: "HIIT and circuits",
-    status: "soon",
-    mode: "countdown",
+    status: "live",
+    mode: "interval",
     icon: "zap",
     accent: "#ff6fa3",
     tint: "#ffe6ef",
     tagline: "Work, rest, repeat — on the gym TV.",
-    summary: "Rounds of work and rest with loud cues and big colour changes, for HIIT, EMOM and circuits.",
+    summary:
+      "Rounds of work and rest with loud cues and a full-screen colour change, so you know which phase you are in without looking closely.",
+    page: {
+      h1: "Interval timer for HIIT, EMOM and circuits",
+      title: "Interval Timer — Free HIIT, EMOM and Circuit Timer Online",
+      description:
+        "A free interval timer for HIIT, EMOM and circuit training. Set work, rest and rounds, then run it fullscreen with loud cues and a clear colour change.",
+      intro:
+        "Set your work, your rest and how many rounds. The screen turns one colour for work and another for rest, so you never have to squint at a number mid-set.",
+      answer:
+        "Set the work seconds, rest seconds and number of rounds below, then press Start. The screen is green while you work and amber while you rest, with a three-second lead-in so you are not caught mid-setup. A common starting point is 40 seconds of work to 20 of rest for eight rounds.",
+      defaultSeconds: 0,
+      presets: [
+        { label: "40/20 × 8", seconds: 0, interval: { work: 40, rest: 20, rounds: 8, prepare: 10 }, note: "Classic HIIT, eight minutes total" },
+        { label: "30/15 × 10", seconds: 0, interval: { work: 30, rest: 15, rounds: 10, prepare: 10 }, note: "Shorter efforts, more rounds" },
+        { label: "45/15 × 12", seconds: 0, interval: { work: 45, rest: 15, rounds: 12, prepare: 10 }, note: "Longer work, short recovery" },
+        { label: "60/30 × 8", seconds: 0, interval: { work: 60, rest: 30, rounds: 8, prepare: 10 }, note: "Circuit stations" },
+        { label: "EMOM × 10", seconds: 0, interval: { work: 60, rest: 0, rounds: 10, prepare: 10 }, note: "Every minute on the minute" },
+        { label: "90/60 × 6", seconds: 0, interval: { work: 90, rest: 60, rounds: 6, prepare: 15 }, note: "Strength intervals" },
+      ],
+      tips: [
+        { title: "Use the lead-in", body: "Every preset starts with a short prepare phase so you can put the phone down and get into position. Without it the first round is always the worst one." },
+        { title: "Rest is part of the work", body: "In interval training the rest ratio is what makes the effort repeatable. Cutting rest to finish sooner turns intervals into a slow continuous effort, which is a different session entirely." },
+        { title: "Turn the sound up for the gym", body: "Switch to the loud bell if the room is noisy. The cue fires at each transition, so you can keep your eyes on what you are doing rather than on the screen." },
+        { title: "EMOM means the clock does not wait", body: "In an EMOM the next round starts on the minute whether you have finished or not. Finishing early is the rest — that is the point of the format." },
+      ],
+      faqs: [
+        { q: "What is a good work-to-rest ratio?", a: "For general conditioning, 2:1 work to rest is a common starting point — 40 seconds on, 20 off. For harder efforts closer to sprinting, 1:2 or 1:3 lets you actually repeat the intensity. The right ratio depends on how hard the work interval is meant to be." },
+        { q: "What is EMOM?", a: "Every Minute On the Minute. You start a set of work at the top of each minute and rest for whatever is left. A preset for it is included, set as 60 seconds of work with no separate rest phase." },
+        { q: "Does the timer keep running if my screen locks?", a: "The page asks the browser to keep the display awake while a timer runs, so it should not lock. On iOS this is less reliable than on desktop — plugging the phone in helps." },
+        { q: "Can I use it on a TV?", a: "Yes. Open the page in the TV's browser or cast the tab, then go fullscreen. The colour change is designed to be read from across a room rather than close up." },
+        { q: "Will ads appear during a workout?", a: "No. Fullscreen carries no ads at all, and the interrupting formats stand down entirely while a timer is running." },
+        { q: "Can I save a session I use often?", a: "Yes. Saved settings stay on that device, with no account and nothing uploaded." },
+      ],
+    },
   },
   {
     slug: "tabata-timer",
     name: "Tabata Timer",
     kind: "20/10 intervals",
-    status: "soon",
-    mode: "countdown",
+    status: "live",
+    mode: "interval",
     icon: "target",
     accent: "#ffc83d",
     tint: "#fff4d9",
     tagline: "Eight rounds, twenty on, ten off.",
-    summary: "The standard Tabata protocol ready to go, with a countdown into the first round.",
+    summary:
+      "The Tabata protocol ready to run: twenty seconds of work, ten of rest, eight rounds, with a lead-in and clear colour changes.",
+    page: {
+      h1: "Tabata timer: 20 seconds on, 10 seconds off",
+      title: "Tabata Timer — Free 20/10 Interval Timer, 8 Rounds Online",
+      description:
+        "A free Tabata timer: 20 seconds of work, 10 seconds of rest, eight rounds, four minutes total. Loud cues, clear colours, fullscreen with no ads.",
+      intro:
+        "Twenty seconds of work, ten of rest, eight times through. Press start and put the phone down — the colour tells you which phase you are in.",
+      answer:
+        "A Tabata is eight rounds of 20 seconds of work and 10 seconds of rest, four minutes in total. The protocol comes from Izumi Tabata's 1996 study, where the work intervals were performed at close to maximum effort — which is what makes four minutes hard rather than short.",
+      defaultSeconds: 0,
+      presets: [
+        { label: "Tabata", seconds: 0, interval: { work: 20, rest: 10, rounds: 8, prepare: 10 }, note: "The standard protocol, four minutes" },
+        { label: "Double Tabata", seconds: 0, interval: { work: 20, rest: 10, rounds: 16, prepare: 10 }, note: "Eight minutes, two blocks' worth" },
+        { label: "Tabata 30/15", seconds: 0, interval: { work: 30, rest: 15, rounds: 8, prepare: 10 }, note: "Longer work, same ratio" },
+        { label: "Half Tabata", seconds: 0, interval: { work: 20, rest: 10, rounds: 4, prepare: 10 }, note: "Two minutes, for a finisher" },
+        { label: "20/20 × 8", seconds: 0, interval: { work: 20, rest: 20, rounds: 8, prepare: 10 }, note: "Even ratio, easier to repeat" },
+        { label: "Tabata × 4 blocks", seconds: 0, interval: { work: 20, rest: 10, rounds: 32, prepare: 15 }, note: "Sixteen minutes, change exercise each block" },
+      ],
+      tips: [
+        { title: "It only works at real intensity", body: "The original protocol used efforts near maximum. At a comfortable pace it is just four minutes of moving — the format does nothing on its own." },
+        { title: "Pick one movement per block", body: "Squats, burpees, rowing, bike. Switching exercises mid-block costs you the transitions, and ten seconds is not enough to change stations." },
+        { title: "Warm up first, properly", body: "Four minutes of near-maximum effort from cold is how people hurt themselves. Five to ten minutes of easy work beforehand is not optional." },
+        { title: "Eight rounds is the whole thing", body: "If you can comfortably do sixteen, the intensity was too low rather than the session too short. Go harder before you go longer." },
+      ],
+      faqs: [
+        { q: "How long is a Tabata?", a: "Four minutes: eight rounds of 20 seconds of work and 10 seconds of rest. A short lead-in is added here so you can get into position, which is not counted in the four." },
+        { q: "Where does the protocol come from?", a: "From research published by Izumi Tabata and colleagues in 1996, studying high-intensity intermittent training in speed skaters. The 20/10 × 8 structure comes from that work, performed at very high intensity." },
+        { q: "What exercises work best?", a: "Anything you can do safely at high intensity and stop instantly: bodyweight squats, burpees, mountain climbers, a stationary bike or a rower. Avoid complex lifts where fatigue makes technique unsafe." },
+        { q: "Can I do Tabata every day?", a: "It is demanding if you do it properly, so most people fit it two or three times a week alongside easier training. Daily near-maximum effort is a reliable route to being injured or exhausted." },
+        { q: "Is it the same as HIIT?", a: "Tabata is one specific HIIT protocol, not a synonym. HIIT covers any alternation of hard work and recovery; Tabata is the particular 20/10 × 8 structure from that study." },
+        { q: "Are there ads over the timer?", a: "No. Fullscreen shows the timer alone, and ads stand down entirely while it is running." },
+      ],
+    },
   },
   {
     slug: "debate-timer",
     name: "Debate Timer",
     kind: "Format presets",
-    status: "soon",
+    status: "live",
     mode: "speech",
     icon: "users",
     accent: "#4a4ac0",
     tint: "#eeeefb",
-    tagline: "British Parliamentary, LD, Worlds.",
-    summary: "Speech times and protected periods for each debating format, without setting them up by hand.",
+    tagline: "British Parliamentary, Worlds, LD.",
+    summary:
+      "Speech times and protected periods for the main debating formats, without setting them up by hand every round.",
+    page: {
+      h1: "Debate timer with format presets",
+      title: "Debate Timer — British Parliamentary, Worlds and LD Presets",
+      description:
+        "A free debate timer with presets for British Parliamentary, World Schools, Lincoln-Douglas and Policy. Protected time signalled, fullscreen, no ads on screen.",
+      intro:
+        "Pick the format and the speech times are already right, including the protected minutes at each end when points of information cannot be offered.",
+      answer:
+        "In British Parliamentary, speeches are seven minutes, with the first and last minute protected — no points of information may be offered during them. World Schools uses eight-minute substantive speeches and four-minute replies. Pick a format below and those points are set for you.",
+      defaultSeconds: 420,
+      presets: [
+        { label: "British Parl. 7 min", seconds: 420, lights: { green: 60, amber: 360, red: 420 }, note: "Protected first and last minute" },
+        { label: "Worlds substantive", seconds: 480, lights: { green: 60, amber: 420, red: 480 }, note: "8 minutes, protected first and last" },
+        { label: "Worlds reply", seconds: 240, lights: { green: 0, amber: 180, red: 240 }, note: "4 minutes, no points of information" },
+        { label: "LD constructive", seconds: 360, lights: { green: 0, amber: 300, red: 360 }, note: "Affirmative constructive, 6 minutes" },
+        { label: "Policy constructive", seconds: 480, lights: { green: 0, amber: 420, red: 480 }, note: "8 minutes" },
+        { label: "Cross-examination", seconds: 180, lights: { green: 0, amber: 150, red: 180 }, note: "3 minutes" },
+      ],
+      tips: [
+        { title: "Green marks the end of protected time", body: "In BP and Worlds the first minute is protected. Green here means points of information may now be offered, which is exactly when the room needs to know." },
+        { title: "Amber is the one-minute warning", body: "Amber falls a minute before the end, which in BP and Worlds is also when protected time resumes and offers must stop." },
+        { title: "Let it run past red", body: "The clock keeps counting so you can record the overrun. Most formats allow a short grace period, after which material is discounted rather than the speech being stopped." },
+        { title: "Put it where the speaker can see it", body: "A laptop on the table facing the floor does the job. Timing signals only work if the person speaking can act on them." },
+      ],
+      faqs: [
+        { q: "How long is a British Parliamentary speech?", a: "Seven minutes. The first and last minute are protected, meaning points of information may not be offered during them — so the window for offering runs from the one-minute mark to the six-minute mark." },
+        { q: "What are the World Schools times?", a: "Substantive speeches are eight minutes and reply speeches are four. As in BP, the first and last minute of substantive speeches are protected; no points of information are offered during reply speeches at all." },
+        { q: "What about Lincoln-Douglas?", a: "The standard structure is a six-minute affirmative constructive, three minutes of cross-examination, a seven-minute negative constructive, three more of cross-examination, then a four-minute first affirmative rebuttal, a six-minute negative rebuttal and a three-minute second affirmative rebuttal." },
+        { q: "How much overrun is allowed?", a: "It varies by format and tournament, but a grace period of around fifteen to twenty seconds is common, after which judges are told to disregard further material. Check your tournament's own rules." },
+        { q: "Can I set custom times?", a: "Yes. Every preset can be adjusted, and the three signal points can be set to whatever your league uses." },
+        { q: "Does it work without internet?", a: "Once the page has loaded, yes. It runs entirely in your browser, which matters in school halls with unreliable wifi." },
+      ],
+    },
   },
 ];
 
