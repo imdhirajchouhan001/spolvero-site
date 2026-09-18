@@ -3,6 +3,8 @@ import Base from "@/layouts/Base.astro";
 import VoiceRecorder from "@/components/audio/VoiceRecorder.astro";
 import Troubleshoot from "@/components/tools/Troubleshoot.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
+import PhotoCard from "@/components/sections/PhotoCard.astro";
+import { getPhoto } from "@/data/photos";
 import RelatedGuides from "@/components/RelatedGuides.astro";
 import Faq from "@/components/Faq.astro";
 import Icon from "@/components/Icon.astro";
@@ -193,6 +195,26 @@ const jsonLd = [
             </li>
           ))}
         </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- A photograph, well below the recorder itself. -->
+  <section class="bg-secondary pb-14 md:pb-20">
+    <div class="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <PhotoCard
+        photo={getPhoto("audio")!}
+        chip={{ label: "Audio uploaded", value: "0 bytes", icon: "lock" }}
+        ratio="wide"
+      />
+      <div data-reveal>
+        <SectionHeader
+          align="left"
+          eyebrow="Getting a clean take"
+          icon="message"
+          title="Most of what sounds amateur is *the room, not the mic*"
+          lede="Sitting closer and recording somewhere with soft furnishings does more for a voice recording than any microphone under a hundred pounds. The level meter here tells you when you have it right."
+        />
       </div>
     </div>
   </section>

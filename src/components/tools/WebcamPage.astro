@@ -5,6 +5,8 @@
 import WebcamTest from "@/components/tools/WebcamTest.astro";
 import Troubleshoot from "@/components/tools/Troubleshoot.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
+import PhotoCard from "@/components/sections/PhotoCard.astro";
+import { getPhoto } from "@/data/photos";
 import RelatedGuides from "@/components/RelatedGuides.astro";
 import AdSlot from "@/components/AdSlot.astro";
 import { adsenseClient, adsPreview } from "@/data/ads";
@@ -176,6 +178,27 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
     <p class="mx-auto mt-4 max-w-5xl text-sm text-tertiary" data-reveal>
       Above 1080p at 30fps there is nothing more to gain for a meeting: mainstream call apps will not send it.
     </p>
+  </div>
+</section>
+
+<!-- A photograph, placed well below the tool so it cannot affect what is
+     visible when the page opens. -->
+<section class="bg-secondary pb-14 md:pb-20">
+  <div class="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+    <PhotoCard
+      photo={getPhoto("webcam-test")!}
+      chip={{ label: "Video uploaded", value: "0 bytes", icon: "lock" }}
+      ratio="wide"
+    />
+    <div data-reveal>
+      <SectionHeader
+        align="left"
+        eyebrow="Before the call"
+        icon="camera"
+        title="Two minutes now beats *an apology later*"
+        lede="Most people discover a camera problem in the first thirty seconds of a meeting, in front of everyone. Checking beforehand costs nothing and takes about as long as opening the meeting link."
+      />
+    </div>
   </div>
 </section>
 

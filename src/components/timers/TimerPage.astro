@@ -3,6 +3,8 @@
 // tips, FAQs and reference table, so the pages are worth keeping apart.
 import Timer from "@/components/timers/Timer.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
+import PhotoCard from "@/components/sections/PhotoCard.astro";
+import { getPhoto } from "@/data/photos";
 import RelatedGuides from "@/components/RelatedGuides.astro";
 import Faq from "@/components/Faq.astro";
 import Icon from "@/components/Icon.astro";
@@ -94,6 +96,27 @@ const siblings = timers.filter((t) => t.slug !== timer.slug);
 
 <!-- Reference table: the citable part of the page -->
 <slot name="reference" />
+
+<!-- A photograph, deep in the page so the timer stays where it is. -->
+<section class="bg-secondary pb-14 md:pb-20">
+  <div class="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+    <div data-reveal>
+      <SectionHeader
+        align="left"
+        eyebrow="In the room"
+        icon="clock"
+        title="Built to be read from *the back row*"
+        lede="A timer that only works on the person running it is not doing the job. The digits scale to the screen, the colour changes before the end, and fullscreen shows nothing else at all."
+      />
+    </div>
+    <PhotoCard
+      photo={getPhoto("timers")!}
+      chip={{ label: "Ads in fullscreen", value: "None", icon: "eyeoff" }}
+      ratio="wide"
+      chipAt="top-right"
+    />
+  </div>
+</section>
 
 <!-- The promise that competitors with ad-funded fullscreen cannot copy -->
 <section class="bg-secondary pb-14 md:pb-20">

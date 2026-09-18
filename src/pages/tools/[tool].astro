@@ -4,6 +4,8 @@
 import Base from "@/layouts/Base.astro";
 import DeviceTest from "@/components/tools/DeviceTest.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
+import PhotoCard from "@/components/sections/PhotoCard.astro";
+import { getPhoto } from "@/data/photos";
 import RelatedGuides from "@/components/RelatedGuides.astro";
 import Faq from "@/components/Faq.astro";
 import Icon from "@/components/Icon.astro";
@@ -170,6 +172,26 @@ const jsonLd = [
           </li>
         ))}
       </ul>
+    </div>
+  </section>
+
+  <!-- A photograph, deep in the page so the test itself stays where it is. -->
+  <section class="bg-secondary pb-14 md:pb-20">
+    <div class="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <PhotoCard
+        photo={getPhoto("webcam-test")!}
+        chip={{ label: "Sent anywhere", value: "Nothing", icon: "lock" }}
+        ratio="wide"
+      />
+      <div data-reveal>
+        <SectionHeader
+          align="left"
+          eyebrow="Before it matters"
+          icon="check"
+          title="Find the problem now, *not mid-sentence*"
+          lede="Every one of these runs in the browser and checks one thing properly. Nothing is uploaded, nothing is recorded, and none of them need an account."
+        />
+      </div>
     </div>
   </section>
 

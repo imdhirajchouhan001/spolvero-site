@@ -28,6 +28,30 @@ export type Photo = {
 const utm = "?utm_source=spolvero&utm_medium=referral";
 
 export const photos: Record<string, Photo> = {
+  "webcam-test": {
+    id: "_SzvRwdFo6o",
+    url: "https://images.unsplash.com/photo-1628645339131-0c39c7527856",
+    alt: "Someone on a video call at a desk, holding a mug",
+    credit: "Helena Lopes",
+    creditUrl: `https://unsplash.com/@helenalopesph${utm}`,
+    unsplashUrl: `https://unsplash.com${utm}`,
+  },
+  timers: {
+    id: "zFSo6bnZJTw",
+    url: "https://images.unsplash.com/photo-1509062522246-3755977927d7",
+    alt: "A teacher presenting to a classroom of students",
+    credit: "Quilia",
+    creditUrl: `https://unsplash.com/@heyquilia${utm}`,
+    unsplashUrl: `https://unsplash.com${utm}`,
+  },
+  audio: {
+    id: "c1ZN57GfDB0",
+    url: "https://images.unsplash.com/photo-1478737270239-2f02b77fc618",
+    alt: "A studio condenser microphone, close up",
+    credit: "Jonathan Velasquez",
+    creditUrl: `https://unsplash.com/@jonathanvez${utm}`,
+    unsplashUrl: `https://unsplash.com${utm}`,
+  },
   studio: {
     id: "h7v_38e3iGE",
     url: "https://images.unsplash.com/photo-1487338875411-8880f74114a2",
