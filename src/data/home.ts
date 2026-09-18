@@ -10,6 +10,8 @@ export type Pillar = {
   body: string;
   icon: string;
   tint: string;
+  /** The saturated form of the tint, darkened per tile for the glyph. */
+  accent: string;
   href: string;
   cta: string;
   /** Short, true proof line. Never a claim the site cannot back up. */
@@ -24,6 +26,7 @@ export const pillars: Pillar[] = [
       "Small Android apps that each do one job and ask for as little as possible. No bank logins, no gallery access, and no account needed to start.",
     icon: "phone",
     tint: "#ffeadb",
+    accent: "#ff7e1d",
     href: "/apps/",
     cta: "See the apps",
     proof: "Unspend is live on Google Play",
@@ -35,6 +38,7 @@ export const pillars: Pillar[] = [
       "Browser tools that solve one problem and then get out of the way — device tests, timers built to be projected, and a voice recorder. No sign-up, nothing uploaded.",
     icon: "wrench",
     tint: "#e2f0ff",
+    accent: "#2e9bff",
     href: "/tools/",
     cta: "Open the tools",
     proof: "Twelve tools live, free forever",
@@ -46,6 +50,7 @@ export const pillars: Pillar[] = [
       "The same design work that goes into our own apps, for yours. Flows, screens, prototypes and a design system your developers can build from.",
     icon: "pen",
     tint: "#dff5ea",
+    accent: "#23b26d",
     href: "/studio/",
     cta: "Work with us",
     proof: "$20–30 an hour, worldwide",

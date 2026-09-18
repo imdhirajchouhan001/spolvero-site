@@ -10,6 +10,7 @@
 // anyone here; they used to sit sixth, below a privacy table about the apps.
 import Base from "@/layouts/Base.astro";
 import Icon from "@/components/Icon.astro";
+import { inkOn } from "@/lib/ink";
 import Screen from "@/components/Screen.astro";
 import NotifyForm from "@/components/NotifyForm.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
@@ -52,6 +53,7 @@ const toolSets = [
     href: "/tools/device-tests/",
     icon: "camera",
     tint: "#ffeadb",
+    accent: "#ff7e1d",
     count: liveDevice.length,
     blurb: "Camera, microphone, speakers, keyboard and screen — answered in seconds, with the fix underneath when the answer is no.",
   },
@@ -60,6 +62,7 @@ const toolSets = [
     href: "/tools/timers/",
     icon: "clock",
     tint: "#e2f0ff",
+    accent: "#2e9bff",
     count: liveTimers.length,
     blurb: "Big enough for the back of the room. Classroom countdowns, speech lights and an exam clock. Fullscreen is ad-free.",
   },
@@ -68,6 +71,7 @@ const toolSets = [
     href: "/tools/audio/",
     icon: "message",
     tint: "#dff5ea",
+    accent: "#23b26d",
     count: liveAudio.length,
     blurb: "Record, trim the ends and download MP3 or WAV. The audio never leaves the tab.",
   },
@@ -140,7 +144,7 @@ const toolSets = [
         {pillars.map((x) => (
           <li data-reveal>
             <a href={x.href} class="group flex h-full flex-col rounded-3xl bg-secondary p-6 transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring md:p-8">
-              <span class="grid size-14 place-items-center rounded-2xl text-neutral-900" style={`background:${x.tint}`} aria-hidden="true">
+              <span class="grid size-14 place-items-center rounded-2xl" style={`background:${x.tint};color:${inkOn(x.accent ?? "#26268f", x.tint)}`} aria-hidden="true">
                 <Icon name={x.icon} class="size-7" />
               </span>
               <p class="mt-6 text-sm font-semibold text-brand-secondary">{x.kind}</p>
@@ -171,7 +175,7 @@ const toolSets = [
           <li data-reveal>
             <a href={s.href} class="group flex h-full flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring md:p-8">
               <div class="flex items-start justify-between gap-4">
-                <span class="grid size-14 place-items-center rounded-2xl text-neutral-900" style={`background:${s.tint}`} aria-hidden="true">
+                <span class="grid size-14 place-items-center rounded-2xl" style={`background:${s.tint};color:${inkOn(s.accent ?? "#26268f", s.tint)}`} aria-hidden="true">
                   <Icon name={s.icon} class="size-7" />
                 </span>
                 <Badge variant="success" size="sm">{s.count} live</Badge>

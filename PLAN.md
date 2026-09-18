@@ -110,6 +110,20 @@ zero links does not help. Revisit at ~50K monthly visits, not before.
 fine across varied clusters — calculator.net and 10015.io both do. The dominant
 factors are age, links and per-page quality, in that order.
 
+**A tile's glyph takes its own accent, darkened until it reads.** Added 19
+September 2026. Each tool carries a pale `tint` and a saturated `accent`, but the
+glyph was drawn in one flat navy on every tile, so peach, mint and yellow cards
+all held the same blue-black icon and the colour did nothing.
+
+The accent cannot be used raw. Measured against its own tint, nine of fourteen
+pairs fall below the 3:1 that 1.4.11 asks of a meaningful graphic — `#ffc83d` on
+`#fff4d9` is 1.41, a yellow icon on a yellow card. `inkOn` in `src/lib/ink.ts`
+walks the accent down in lightness with hue and saturation held until it clears
+3.5, so orange stays orange and pink stays pink. Yellow lands on a deep amber,
+because a yellow dark enough to read is not yellow, and that is a property of
+yellow rather than a compromise. Add a tool with a tint and an accent and its
+glyph colour follows on its own.
+
 **Icons are Icons8 Material Sharp, drawn as CSS masks.** Replaced the Untitled UI
 stroke set on 19 September 2026 — it was thin and characterless, which is what
 Dhiraj meant by the icons being too simple. Gradient sets were tried first and

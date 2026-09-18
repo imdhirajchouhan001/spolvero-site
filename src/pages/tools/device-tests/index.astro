@@ -1,6 +1,7 @@
 ---
 import Base from "@/layouts/Base.astro";
 import Icon from "@/components/Icon.astro";
+import { inkOn } from "@/lib/ink";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Button from "@/components/ui/Button.astro";
 import Badge from "@/components/ui/Badge.astro";
@@ -73,7 +74,7 @@ const jsonLd = [{
           <li data-reveal>
             <a href={toolHref(t)} class="group flex h-full flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring md:p-8">
               <div class="flex items-start justify-between gap-4">
-                <span class="grid size-14 place-items-center rounded-2xl text-neutral-900" style={`background:${t.tint}`} aria-hidden="true">
+                <span class="grid size-14 place-items-center rounded-2xl" style={`background:${t.tint};color:${inkOn(t.accent ?? "#26268f", t.tint)}`} aria-hidden="true">
                   <Icon name={t.icon} class="size-7" />
                 </span>
                 <Badge variant="success" size="sm">Live</Badge>
