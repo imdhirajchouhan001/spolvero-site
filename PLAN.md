@@ -110,6 +110,25 @@ zero links does not help. Revisit at ~50K monthly visits, not before.
 fine across varied clusters — calculator.net and 10015.io both do. The dominant
 factors are age, links and per-page quality, in that order.
 
+**Icons are Icons8 Material Sharp, drawn as CSS masks.** Replaced the Untitled UI
+stroke set on 19 September 2026 — it was thin and characterless, which is what
+Dhiraj meant by the icons being too simple. Gradient sets were tried first and
+rejected: against the per-tool tints they came out muddy, and at the 16px of an
+eyebrow pill a gradient is mud regardless.
+
+The mask is the part worth remembering. Icons8 serves SVG only on a paid plan and
+the free tier is PNG, but this site colours icons from CSS in dozens of places —
+white on a navy button, white at 60% on the dark test stages, navy on a tint,
+green on a tick, several changing on hover. An `<img>` would have frozen every one
+of those. Each icon is instead a black glyph on transparency used as a mask over
+`background-color: currentColor`, so the alpha channel gives the shape and CSS
+gives the colour, exactly as an inline SVG behaves. No call site changed, and
+`text-*` classes and hover states all still work. If a paid plan is ever bought,
+swapping to real SVG is a change to `src/lib/icons.ts` alone.
+
+Attribution is one link in the footer, which Icons8's own licence names as the
+right form for a site using icons on most pages. No per-icon credit anywhere.
+
 **Corners are square, 2px, everywhere.** Changed 19 September 2026 on Dhiraj's
 call, reversing the large radii and pill buttons the Concentro reference brought
 in. The whole radius ladder in `global.css` and `theme.css` collapses to a single

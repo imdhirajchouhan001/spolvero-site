@@ -60,7 +60,14 @@ const columns = [
     </div>
     <div class="mt-12 flex flex-col-reverse justify-between gap-4 border-t border-brand-700 pt-8 md:mt-16 md:flex-row">
       <p class="text-md text-quaternary_on-brand">© 2026 Spolvero. All rights reserved.</p>
-      <p class="text-md text-quaternary_on-brand">Google Play is a trademark of Google LLC.</p>
+      <p class="text-md text-quaternary_on-brand">
+        Google Play is a trademark of Google LLC. Icons by
+        {/* The Icons8 free licence asks for a link on the pages using their work.
+            Their own guidance: "If that's most pages, a link in your footer is
+            fine." This footer is on every page, so this one link covers the site
+            and no icon needs a credit of its own. */}
+        <a href="https://icons8.com" rel="noopener" class="font-semibold text-secondary_on-brand underline hover:text-white">Icons8</a>.
+      </p>
     </div>
   </div>
 </footer>

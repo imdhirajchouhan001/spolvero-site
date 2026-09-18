@@ -1,12 +1,13 @@
 ---
-import { getIcon } from "@/lib/icons";
+// One icon. See src/lib/icons.ts for why these are CSS masks rather than images.
+import { maskCss } from "@/lib/icons";
 
 interface Props {
   name: string;
   class?: string;
+  [key: string]: unknown;
 }
-const { name, class: className = "size-5" } = Astro.props;
-const Cmp = getIcon(name);
+const { name, class: className = "size-5", ...rest } = Astro.props;
 ---
 
-<Cmp className={className} aria-hidden="true" />
+<span class:list={[className]} style={maskCss(name)} aria-hidden="true" {...rest}></span>
