@@ -350,14 +350,36 @@ import { recorderShortcuts } from "@/data/audio";
       const regions = RegionsPlugin.create();
       ws = WaveSurfer.create({
         container: q("[data-wave]")!,
-        height: 96,
-        waveColor: "rgba(255,255,255,0.35)",
-        progressColor: "#a78bfa",
+        height: 120,
+        // normalize scales the drawing to the take's own peak. Without it a quiet
+        // recording — which is most of them, since people sit too far from the
+        // microphone — renders as an almost flat line and looks broken.
+        normalize: true,
+        waveColor: "rgba(255,255,255,0.55)",
+        progressColor: "#c4b5fd",
         cursorColor: "#ffffff",
+        cursorWidth: 2,
+        barWidth: 2,
+        barGap: 1,
+        barRadius: 2,
         plugins: [regions],
       });
       await ws.loadBlob(blob);
-      region = regions.addRegion({ start: 0, end: ws.getDuration(), drag: false, resize: true, color: "rgba(167,139,250,0.18)" });
+      region = regions.addRegion({
+        start: 0,
+        end: ws.getDuration(),
+        drag: false,
+        resize: true,
+        color: "rgba(167,139,250,0.22)",
+      });
+      // The plugin's default handles are a 1px line, which is not an obvious grab
+      // target. Widen them and give them contrast against the dark stage.
+      root.querySelectorAll<HTMLElement>("[data-wave] [part*='region-handle']").forEach((h) => {
+        h.style.width = "8px";
+        h.style.background = "#c4b5fd";
+        h.style.borderRadius = "3px";
+        h.style.cursor = "ew-resize";
+      });
       const showTrim = () => {
         const d = region.end - region.start;
         trimInfo.textContent = `Selected ${fmt(d)} of ${fmt(ws.getDuration())}${

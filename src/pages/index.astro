@@ -8,6 +8,8 @@ import SectionHeader from "@/components/SectionHeader.astro";
 import Eyebrow from "@/components/sections/Eyebrow.astro";
 import Headline from "@/components/sections/Headline.astro";
 import StatCards from "@/components/sections/StatCards.astro";
+import PhotoCard from "@/components/sections/PhotoCard.astro";
+import { getPhoto } from "@/data/photos";
 import NumberedRows from "@/components/sections/NumberedRows.astro";
 import AdSlot from "@/components/AdSlot.astro";
 import Faq from "@/components/Faq.astro";
@@ -493,6 +495,16 @@ const homeJsonLd = {
           ))}
         </ul>
       </div>
+      <PhotoCard
+        photo={getPhoto("studio")!}
+        chip={{ label: "Hourly rate", value: "$20–30", icon: "wallet" }}
+        ratio="wide"
+        class="self-center"
+      />
+    </div>
+
+    <div class="container-page mt-12 grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div class="hidden lg:block"></div>
       <div class="self-center rounded-3xl bg-primary p-6 shadow-lg ring-1 ring-secondary md:p-10" data-reveal>
         <div class="flex items-center justify-between gap-4">
           <p class="text-lg font-semibold text-brand-secondary">Hourly rate</p>

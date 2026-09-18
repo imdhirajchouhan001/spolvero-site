@@ -15,6 +15,8 @@ import { BackgroundPattern } from "@/components/shared-assets/background-pattern
 import { getIcon } from "@/lib/icons";
 import { products, type Product } from "@/data/products";
 import Badge from "@/components/ui/Badge.astro";
+import PhotoCard from "@/components/sections/PhotoCard.astro";
+import { getPhoto } from "@/data/photos";
 import { getCollection } from "astro:content";
 
 export function getStaticPaths() {
@@ -31,6 +33,16 @@ const others = products.filter((o) => o.slug !== p.slug);
 
 // Guides that share a tag with this app, so every app page feeds the cluster.
 const allArticles = await getCollection("articles");
+// One photograph per app, with a chip carrying a number the page already claims.
+const photo = getPhoto(p.slug);
+const photoChip: Record<string, { label: string; value: string; icon: string }> = {
+  unspend: { label: "Bank logins required", value: "None", icon: "lock" },
+  exact: { label: "Photos uploaded", value: "Zero", icon: "eyeoff" },
+  enough: { label: "Account needed", value: "No", icon: "check" },
+  "gst-calculator": { label: "Works offline", value: "Always", icon: "zap" },
+  flash: { label: "Permissions requested", value: "None", icon: "shield" },
+};
+
 const related = (p.readingTags?.length
   ? allArticles.filter((a) => a.data.tags.some((t) => p.readingTags!.includes(t)))
   : []
@@ -235,6 +247,33 @@ const pageJsonLd = [
             </li>
           ))}
         </ul>
+      </div>
+    </section>
+  )}
+
+  {photo && (
+    <section class="bg-primary py-16 md:py-24">
+      <div class="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+        <PhotoCard photo={photo} chip={photoChip[p.slug]} ratio="wide" />
+        <div data-reveal>
+          <SectionHeader
+            align="left"
+            eyebrow="The short of it"
+            icon="lock"
+            title={p.promise.title}
+            lede={p.promise.body}
+          />
+          <ul class="mt-6 flex flex-col gap-3">
+            {p.promise.points.slice(0, 4).map((pt) => (
+              <li class="flex gap-3 text-md text-tertiary">
+                <span class="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-success-secondary text-fg-success-primary">
+                  <Icon name="check" class="size-3" />
+                </span>
+                {pt}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   )}

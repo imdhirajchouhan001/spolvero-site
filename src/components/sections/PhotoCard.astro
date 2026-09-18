@@ -27,8 +27,11 @@ const chipPos = {
 };
 
 // Unsplash serves a resized, optimised file from its own CDN when asked.
-const src = `${photo.url}&w=1200&q=75&fm=webp&fit=crop`;
-const srcset = [600, 900, 1200, 1600].map((w) => `${photo.url}&w=${w}&q=75&fm=webp&fit=crop ${w}w`).join(", ");
+// The stored URL carries no query string, so the first parameter needs "?" —
+// starting with "&" produces a URL that looks right and silently 404s.
+const params = (w: number) => `?w=${w}&q=75&fm=webp&fit=crop`;
+const src = `${photo.url}${params(1200)}`;
+const srcset = [600, 900, 1200, 1600].map((w) => `${photo.url}${params(w)} ${w}w`).join(", ");
 ---
 
 <figure class:list={["relative", className]}>
@@ -53,7 +56,7 @@ const srcset = [600, 900, 1200, 1600].map((w) => `${photo.url}&w=${w}&q=75&fm=we
           </span>
         )}
         <span>
-          <span class="block text-xs text-tertiary">{chip.label}</span>
+          <span class="block text-xs leading-tight text-tertiary">{chip.label}</span>
           <span class="block text-md font-semibold tabular-nums text-primary">{chip.value}</span>
         </span>
       </div>
@@ -61,8 +64,11 @@ const srcset = [600, 900, 1200, 1600].map((w) => `${photo.url}&w=${w}&q=75&fm=we
   </div>
 
   <figcaption class="mt-2 text-xs text-quaternary">
-    Photo by
-    <a href={photo.creditUrl} rel="noopener nofollow" class="underline hover:text-tertiary">{photo.credit}</a>
-    on <a href={photo.unsplashUrl} rel="noopener nofollow" class="underline hover:text-tertiary">Unsplash</a>
+    {/* Explicit entities: Astro collapses the whitespace between text and an
+        element here, which ran the words into the links. */}
+    Photo by&nbsp;<a href={photo.creditUrl} rel="noopener nofollow" class="underline hover:text-tertiary">{photo.credit}</a>&nbsp;on&nbsp;<a
+      href={photo.unsplashUrl}
+      rel="noopener nofollow"
+      class="underline hover:text-tertiary">Unsplash</a>
   </figcaption>
 </figure>
