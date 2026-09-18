@@ -60,17 +60,21 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
       <!-- Phase label: reading/writing in exam mode, paused everywhere. -->
       <p class="text-sm font-semibold tracking-wide text-white/60 uppercase" data-phase></p>
 
-      <!-- The ring and the digits. -->
-      <div class="relative grid place-items-center">
-        <svg class="timer-ring size-56 -rotate-90 md:size-72" viewBox="0 0 120 120" aria-hidden="true" data-ring-wrap>
-          <circle cx="60" cy="60" r="54" fill="none" stroke="currentColor" stroke-width="6" class="text-white/10" />
-          <circle
-            cx="60" cy="60" r="54" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"
-            class="text-[var(--timer-accent)] transition-[stroke-dashoffset] duration-200 ease-linear"
-            stroke-dasharray="339.29" stroke-dashoffset="0" data-ring
-          />
+      <!-- The digits set the size and the frame follows them, so a long time like
+           1:23:45 is never squeezed into a circle drawn for 5:00. pathLength
+           normalises the perimeter to 100, so progress is a plain percentage and
+           the shape can be any size. -->
+      <div class="timer-frame relative" data-ring-wrap>
+        <svg class="pointer-events-none absolute inset-0 size-full" preserveAspectRatio="none" viewBox="0 0 100 100" aria-hidden="true">
+          <rect x="1.5" y="1.5" width="97" height="97" rx="10" ry="10"
+                fill="none" stroke="currentColor" stroke-width="1.5" class="text-white/12" vector-effect="non-scaling-stroke" />
+          <rect x="1.5" y="1.5" width="97" height="97" rx="10" ry="10"
+                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                vector-effect="non-scaling-stroke"
+                class="text-[var(--timer-accent)] transition-[stroke-dashoffset] duration-200 ease-linear"
+                data-ring />
         </svg>
-        <p class="timer-digits absolute font-semibold tabular-nums" data-digits>5:00</p>
+        <p class="timer-digits font-semibold tabular-nums" data-digits>5:00</p>
       </div>
 
       <!-- Interval only: which round, and which phase. -->
@@ -212,6 +216,11 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
             <option value="none">No sound</option>
           </select>
         </label>
+
+        <label class="flex flex-col gap-1.5">
+          <span class="text-sm font-semibold text-secondary">Check it is audible</span>
+          <Button variant="outline" size="md" data-test-sound><Icon name="play" />Play the alarm now</Button>
+        </label>
       </div>
 
       <!-- Saved times, kept on this device only. -->
@@ -244,12 +253,14 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
   /* The digits scale with the stage, so the same markup is readable on a laptop
      and from the back of a classroom once fullscreen. */
   .timer-digits { font-size: clamp(3.5rem, 12vw, 7rem); line-height: 1; }
+  /* The frame hugs the digits with breathing room, so it grows when the time does. */
+  .timer-frame { display: grid; place-items: center; padding: clamp(1.5rem, 4vw, 3rem) clamp(2rem, 6vw, 4.5rem); }
 
   [data-timer]:fullscreen { border-radius: 0; border: 0; }
   [data-timer]:fullscreen [data-setup] { display: none; }
   [data-timer]:fullscreen .timer-stage { height: 100vh; justify-content: center; gap: 2vh; }
-  [data-timer]:fullscreen .timer-digits { font-size: 22vh; }
-  [data-timer]:fullscreen .timer-ring { width: 46vh; height: 46vh; }
+  [data-timer]:fullscreen .timer-digits { font-size: 24vh; }
+  [data-timer]:fullscreen .timer-frame { padding: 6vh 8vw; }
   [data-timer]:fullscreen [data-fs-note] { opacity: 1; }
 
   /* Controls get out of the way while a timer runs in fullscreen, and come back
@@ -298,7 +309,14 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
     const clockStart = q<HTMLElement>("[data-clock-start]");
     const clockEnd = q<HTMLElement>("[data-clock-end]");
 
-    const RING = 339.29;
+    // The frame's perimeter changes with the digits and the viewport, so it is
+    // measured rather than assumed. pathLength is not honoured on shape elements
+    // in every browser, which silently leaves the stroke drawn as a dashed line.
+    let RING = 0;
+    const measureRing = () => {
+      RING = ring.getTotalLength?.() || 0;
+      ring.style.strokeDasharray = String(RING);
+    };
     const pageTitle = document.title;
 
     let state: State = "idle";
@@ -470,13 +488,17 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
       let fraction: number;
 
       if (mode === "speech") {
-        const elapsed = state === "paused" ? leftWhenPaused : (now - startedAt) / 1000;
+        // Before a start there is no origin to count from, so an idle speech timer
+        // is zero rather than however long ago the epoch was.
+        const elapsed =
+          state === "idle" || !startedAt ? 0 : state === "paused" ? leftWhenPaused : (now - startedAt) / 1000;
         shown = elapsed;
         fraction = total > 0 ? Math.min(1, elapsed / total) : 0;
         paintLights(elapsed);
         if (elapsed >= total && state === "running") reachedEnd();
       } else {
-        const left = state === "paused" ? leftWhenPaused : (endsAt - now) / 1000;
+        const left =
+          state === "idle" || !endsAt ? total : state === "paused" ? leftWhenPaused : (endsAt - now) / 1000;
         shown = Math.max(0, left);
         const span = inReading ? readingTotal : total;
         fraction = span > 0 ? Math.max(0, Math.min(1, left / span)) : 0;
@@ -493,7 +515,10 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
       }
 
       digits.textContent = fmt(shown);
-      ring.style.strokeDashoffset = String(RING * (mode === "speech" ? fraction : 1 - fraction));
+      // An idle countdown shows a full frame — the time it is about to run —
+      // rather than an empty one, which reads as already finished.
+      const drawn = state === "idle" && mode !== "speech" ? 1 : mode === "speech" ? fraction : fraction;
+      ring.style.strokeDashoffset = String(RING * (1 - drawn));
 
       // Colour warns before the end without needing anyone to read the number.
       const warn = mode === "speech" ? fraction >= 0.8 : fraction <= 0.2;
@@ -774,6 +799,16 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
       paintSaved();
       say(`Saved ${fmt(total)}`);
     });
+    // The alarm only fires at zero, so without this there is no way to know the
+    // sound works until the timer has already run — which reads as "no sound".
+    q("[data-test-sound]")?.addEventListener("click", () => {
+      muted = false;
+      muteBtn.setAttribute("aria-pressed", "false");
+      muteBtn.textContent = "Sound on";
+      void playAlarm();
+      say("Playing the alarm");
+    });
+
     // Changing the sound plays it, so the choice is made by ear.
     soundSelect.addEventListener("change", () => { if (!muted) void playAlarm(); });
 
@@ -837,6 +872,13 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
 
     // Never leave a wake lock or a stale title behind.
     window.addEventListener("pagehide", () => { releaseAwake(); stop(); broadcast(false); });
+
+    measureRing();
+    if ("ResizeObserver" in window) {
+      const ro = new ResizeObserver(() => { measureRing(); paint(); });
+      ro.observe(root.querySelector<HTMLElement>(".timer-frame")!);
+    }
+    document.addEventListener("fullscreenchange", () => { measureRing(); paint(); });
 
     // ---- first paint ----
     minutesInput.value = String(Math.floor(total / 60));
