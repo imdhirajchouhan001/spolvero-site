@@ -109,6 +109,23 @@ zero links does not help. Revisit at ~50K monthly visits, not before.
 fine across varied clusters — calculator.net and 10015.io both do. The dominant
 factors are age, links and per-page quality, in that order.
 
+**The visual language is the Concentro reference, not headspace.** Changed 18
+September 2026 after Dhiraj shared two design boards. Soft periwinkle wash bands
+(`--color-wash`, `--color-wash-soft`) separating sections by tone rather than by
+rules, white cards, navy CTAs, outlined pill eyebrows above centred headings, and
+two-tone headlines where emphasis is carried by colour rather than weight. The
+neutral scale moved from warm to cool to match. This replaced the earlier warm
+cream direction — if the code and this document ever disagree again, the code was
+changed deliberately and the document is the thing that is stale.
+
+`--color-neutral-500` is pinned at `#5f667b`. Anything lighter drops small labels
+below AA on the wash band (`#6b7288` measured 3.93). Re-check contrast against
+white, `--color-wash-soft` and `--color-wash` before changing any neutral.
+
+**Section headers are one component.** `SectionHeader.astro` renders the eyebrow
+pill and the two-tone headline for all 29 call sites; wrap words in `*asterisks*`
+in a title to render them in the quiet colour. Restyle there, not per page.
+
 **No fabricated testimonials.** `testimonials` in `src/data/home.ts` is an empty
 array on purpose; the section renders nothing until real quotes exist. Invented
 endorsements mislead readers and are what an ad network's site review looks for.

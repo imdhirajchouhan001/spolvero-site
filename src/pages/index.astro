@@ -5,6 +5,10 @@ import Icon from "@/components/Icon.astro";
 import Screen from "@/components/Screen.astro";
 import NotifyForm from "@/components/NotifyForm.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
+import Eyebrow from "@/components/sections/Eyebrow.astro";
+import Headline from "@/components/sections/Headline.astro";
+import StatCards from "@/components/sections/StatCards.astro";
+import NumberedRows from "@/components/sections/NumberedRows.astro";
 import AdSlot from "@/components/AdSlot.astro";
 import Faq from "@/components/Faq.astro";
 import SplitText from "@/components/SplitText";
@@ -183,9 +187,16 @@ const homeJsonLd = {
   </section>
 
   <!-- Principles -->
-  <section class="bg-primary py-16 md:py-24">
+  <section class="py-16 md:py-24" style="background:var(--color-wash-soft)">
     <div class="container-page">
-      <SectionHeader eyebrow="How we build" title="Three promises in every app" lede="Whatever the app does, it's built the same way." />
+      <div class="flex flex-col items-center text-center" data-reveal>
+        <Eyebrow icon="shield">How we build</Eyebrow>
+        <Headline
+          class="mt-5"
+          text="Three promises in *every app we ship*"
+        />
+        <p class="mt-4 max-w-2xl text-lg text-tertiary">Whatever the app does, it's built the same way.</p>
+      </div>
       <ul class="mt-12 grid gap-10 md:mt-16 md:grid-cols-3 md:gap-8">
         {principles.map((x) => (
           <li class="flex flex-col items-center text-center" data-reveal>
@@ -201,7 +212,7 @@ const homeJsonLd = {
   <!-- Old way vs Spolvero way -->
   <section class="bg-primary pb-16 md:pb-24">
     <div class="container-page">
-      <SectionHeader eyebrow="Why Spolvero" title="Apps shouldn't cost you your privacy" lede="Many everyday apps ask for too much and explain too little. We build ours the other way round." />
+      <SectionHeader eyebrow="Why Spolvero" icon="lock" title="Apps shouldn't cost you *your privacy*" lede="Many everyday apps ask for too much and explain too little. We build ours the other way round." />
       <div class="mx-auto mt-12 max-w-5xl overflow-hidden rounded-3xl ring-1 ring-secondary md:mt-16" data-reveal>
         <table class="w-full border-collapse text-left">
           <caption class="sr-only">How typical apps compare with Spolvero apps</caption>
@@ -238,9 +249,9 @@ const homeJsonLd = {
   </section>
 
   <!-- Apps -->
-  <section id="apps" class="bg-secondary py-16 md:py-24">
+  <section id="apps" class="py-16 md:py-24" style="background:var(--color-wash-soft)">
     <div class="container-page">
-      <SectionHeader eyebrow="Our apps" title="Each one does one job well" lede="Tap any app to see how it works." />
+      <SectionHeader eyebrow="Our apps" icon="phone" title="Each one does *one job* well" lede="Tap any app to see how it works." />
 
       <!-- Featured (live) app -->
       <div class="mt-12 grid overflow-hidden rounded-3xl bg-primary shadow-xs ring-1 ring-secondary md:mt-16 lg:grid-cols-2" data-reveal>
@@ -411,10 +422,35 @@ const homeJsonLd = {
     </div>
   </section>
 
+  <!-- Impact, as the stepped cards from the reference rather than a flat row -->
+  <section class="py-16 md:py-24" style="background:var(--color-wash)">
+    <div class="container-page grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+      <StatCards
+        stats={[
+          { value: stats[0].value, label: stats[0].label, icon: "phone", tint: "var(--color-cielo-tint)" },
+          { value: stats[1].value, label: stats[1].label, icon: "wrench", tint: "var(--color-verde-tint)" },
+          { value: stats[2].value, label: stats[2].label, icon: "book", tint: "var(--color-giallo-tint)" },
+          { value: stats[3].value, label: stats[3].label, icon: "lock", tint: "var(--color-rosa-tint)" },
+        ]}
+      />
+      <div data-reveal>
+        <Eyebrow icon="chart">Where things stand</Eyebrow>
+        <Headline class="mt-5" align="left" text="What we have *actually shipped*" />
+        <p class="mt-4 max-w-md text-lg text-tertiary">
+          Small numbers, honestly counted. One app on Google Play, thirteen free tool pages that need no account, and a
+          growing set of guides — each written to answer a question rather than to fill a page.
+        </p>
+        <div class="mt-8">
+          <Button href="/tools/" variant="default" size="xl">Try a tool<Icon name="arrow" /></Button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- On the drawing board -->
   <section id="next" class="bg-primary pt-16 pb-16 md:pt-20 md:pb-24">
     <div class="container-page">
-      <SectionHeader eyebrow="Coming up" title="On the drawing board" lede="Beyond apps, this is what we're sketching next. Nothing to download yet." />
+      <SectionHeader eyebrow="Coming up" icon="pen" title="On the *drawing board*" lede="Beyond apps, this is what we're sketching next. Nothing to download yet." />
       <ul class="mt-12 grid gap-6 md:mt-16 md:grid-cols-3">
         {categories.map((c) => {
           const Card = "href" in c && c.href ? "a" : "div";
@@ -444,10 +480,10 @@ const homeJsonLd = {
   </section>
 
   <!-- Studio -->
-  <section id="studio" class="bg-secondary py-16 md:py-24">
+  <section id="studio" class="py-16 md:py-24" style="background:var(--color-wash-soft)">
     <div class="container-page grid gap-12 lg:grid-cols-2 lg:gap-16">
       <div>
-        <SectionHeader align="left" eyebrow="Design studio" title="The design behind our apps, for yours" lede="We work with founders and teams anywhere in the world, from the first sketch to a design system your developers can build from." />
+        <SectionHeader align="left" eyebrow="Design studio" icon="palette" title="The design behind our apps, *for yours*" lede="We work with founders and teams anywhere in the world, from the first sketch to a design system your developers can build from." />
         <ul class="mt-8 flex flex-col gap-4" data-reveal>
           {services.map((s) => (
             <li class="flex gap-3">
@@ -479,16 +515,10 @@ const homeJsonLd = {
 
     <!-- How we work -->
     <div class="container-page mt-20 md:mt-24">
-      <SectionHeader eyebrow="How we work" title="From first call to launch in three steps" />
-      <ol class="mt-12 grid gap-6 md:mt-16 md:grid-cols-3">
-        {steps.map((s, i) => (
-          <li class="relative flex flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary md:p-8" data-reveal>
-            <span class="grid size-12 place-items-center rounded-full bg-brand-solid text-lg font-semibold text-white" aria-hidden="true">{i + 1}</span>
-            <h3 class="mt-6 text-xl font-semibold text-primary"><span class="sr-only">Step {i + 1}: </span>{s.title}</h3>
-            <p class="mt-2 text-md text-tertiary">{s.body}</p>
-          </li>
-        ))}
-      </ol>
+      <SectionHeader eyebrow="How we work" icon="target" title="From first call to launch in *three steps*" />
+      <div class="mx-auto mt-12 max-w-4xl md:mt-16">
+        <NumberedRows items={steps.map((s) => ({ title: s.title, body: s.body }))} />
+      </div>
     </div>
   </section>
 
@@ -496,7 +526,7 @@ const homeJsonLd = {
   <section id="studio-faq" class="bg-primary py-16 md:py-24">
     <div class="container-page grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-16">
       <div>
-        <SectionHeader align="left" eyebrow="Design studio" title="Questions from clients" lede="Anything else about working with us?" />
+        <SectionHeader align="left" eyebrow="Design studio" icon="help" title="Questions *from clients*" lede="Anything else about working with us?" />
         <div class="mt-6" data-reveal>
           <Button href="/contact/?topic=design" variant="outline" size="lg">Ask us directly</Button>
         </div>
@@ -510,7 +540,7 @@ const homeJsonLd = {
   {testimonials.length > 0 && (
     <section id="testimonials" class="bg-primary py-16 md:py-24">
       <div class="container-page">
-        <SectionHeader eyebrow="In their words" title="What people say" />
+        <SectionHeader eyebrow="In their words" icon="quote" title="What *people say*" />
         <ul class="mt-12 grid gap-6 md:mt-16 md:grid-cols-3">
           {testimonials.map((t) => (
             <li class="flex flex-col rounded-3xl bg-secondary p-6 md:p-8" data-reveal>
@@ -530,7 +560,7 @@ const homeJsonLd = {
   <section id="about-faq" class="bg-primary py-16 md:py-24">
     <div class="container-page grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-16">
       <div>
-        <SectionHeader align="left" eyebrow="About Spolvero" title="The short version" lede="What we are, and how the whole thing pays for itself." />
+        <SectionHeader align="left" eyebrow="About Spolvero" icon="book" title="The *short version*" lede="What we are, and how the whole thing pays for itself." />
         <div class="mt-6" data-reveal>
           <Button href="/contact/" variant="outline" size="lg">Ask us something</Button>
         </div>

@@ -1,0 +1,68 @@
+---
+// A photograph with a floating data chip over it, as used on the reference's
+// "For Buyers" and "For Sellers" rows. The chip is what stops the image being
+// decoration — it carries a real number from the page it sits on.
+//
+// Images come from Unsplash and are hot-linked from images.unsplash.com rather
+// than copied into the repo, which is what the Unsplash API terms require.
+// Attribution is rendered underneath; both are non-optional under those terms.
+import Icon from "@/components/Icon.astro";
+import type { Photo } from "@/data/photos";
+
+interface Props {
+  photo: Photo;
+  /** The floating chip. Omit it and the image stands alone. */
+  chip?: { label: string; value: string; icon?: string };
+  /** Which corner the chip sits in. */
+  chipAt?: "bottom-left" | "top-right";
+  ratio?: "square" | "wide" | "tall";
+  class?: string;
+}
+const { photo, chip, chipAt = "bottom-left", ratio = "wide", class: className } = Astro.props;
+
+const ratios = { square: "aspect-square", wide: "aspect-[4/3]", tall: "aspect-[3/4]" };
+const chipPos = {
+  "bottom-left": "bottom-4 left-4 md:bottom-6 md:left-6",
+  "top-right": "top-4 right-4 md:top-6 md:right-6",
+};
+
+// Unsplash serves a resized, optimised file from its own CDN when asked.
+const src = `${photo.url}&w=1200&q=75&fm=webp&fit=crop`;
+const srcset = [600, 900, 1200, 1600].map((w) => `${photo.url}&w=${w}&q=75&fm=webp&fit=crop ${w}w`).join(", ");
+---
+
+<figure class:list={["relative", className]}>
+  <div class:list={["relative overflow-hidden rounded-3xl bg-[var(--muted)]", ratios[ratio]]}>
+    <img
+      src={src}
+      srcset={srcset}
+      sizes="(min-width: 1024px) 40vw, 100vw"
+      alt={photo.alt}
+      width="1200"
+      height="900"
+      loading="lazy"
+      decoding="async"
+      class="size-full object-cover"
+    />
+
+    {chip && (
+      <div class:list={["absolute flex items-center gap-3 rounded-2xl bg-[var(--card)]/95 px-4 py-3 shadow-lg backdrop-blur", chipPos[chipAt]]}>
+        {chip.icon && (
+          <span class="grid size-8 shrink-0 place-items-center rounded-xl bg-[var(--muted)] text-primary" aria-hidden="true">
+            <Icon name={chip.icon} class="size-4" />
+          </span>
+        )}
+        <span>
+          <span class="block text-xs text-tertiary">{chip.label}</span>
+          <span class="block text-md font-semibold tabular-nums text-primary">{chip.value}</span>
+        </span>
+      </div>
+    )}
+  </div>
+
+  <figcaption class="mt-2 text-xs text-quaternary">
+    Photo by
+    <a href={photo.creditUrl} rel="noopener nofollow" class="underline hover:text-tertiary">{photo.credit}</a>
+    on <a href={photo.unsplashUrl} rel="noopener nofollow" class="underline hover:text-tertiary">Unsplash</a>
+  </figcaption>
+</figure>

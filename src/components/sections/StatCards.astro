@@ -1,0 +1,38 @@
+---
+// The stacked, offset stat cards from the reference: each one a white card with
+// a tinted icon tile, stepped horizontally so they read as a series rather than
+// a row, with a connecting rule behind them.
+import Icon from "@/components/Icon.astro";
+
+interface Props {
+  stats: { value: string; label: string; icon?: string; tint?: string }[];
+  class?: string;
+}
+const { stats, class: className } = Astro.props;
+const offsets = ["lg:ml-0", "lg:ml-8", "lg:ml-16", "lg:ml-24"];
+---
+
+<ul class:list={["relative flex flex-col gap-4", className]}>
+  <span class="pointer-events-none absolute top-8 bottom-8 left-7 hidden w-px bg-border-secondary lg:block" aria-hidden="true"></span>
+  {stats.map((s, i) => (
+    <li
+      class:list={[
+        "relative flex items-center gap-4 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-lg md:p-5",
+        offsets[i % offsets.length],
+      ]}
+      data-reveal
+    >
+      <span
+        class="grid size-12 shrink-0 place-items-center rounded-2xl text-neutral-900"
+        style={`background:${s.tint ?? "var(--muted)"}`}
+        aria-hidden="true"
+      >
+        <Icon name={s.icon ?? "chart"} class="size-6" />
+      </span>
+      <span>
+        <span class="block text-display-xs font-semibold tracking-tight text-primary md:text-display-sm">{s.value}</span>
+        <span class="block text-md text-tertiary">{s.label}</span>
+      </span>
+    </li>
+  ))}
+</ul>

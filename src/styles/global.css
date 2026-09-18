@@ -27,18 +27,18 @@
      warms the whole site in one place. Anchored on a cream ground and a
      warm near-black rather than pure white and slate.
      ------------------------------------------------------------------ */
-  --color-neutral-25: #fdfbfa;
-  --color-neutral-50: #f9f4f2;
-  --color-neutral-100: #f2ebe7;
-  --color-neutral-200: #e7ded8;
-  --color-neutral-300: #d6cac2;
-  --color-neutral-400: #a9a09a;
-  --color-neutral-500: #746c66;
-  --color-neutral-600: #6b6560;
-  --color-neutral-700: #56514c;
-  --color-neutral-800: #44423f;
-  --color-neutral-900: #2d2c2b;
-  --color-neutral-950: #1c1b1a;
+  --color-neutral-25: #fcfcfe;
+  --color-neutral-50: #f7f8fc;
+  --color-neutral-100: #eef1f8;
+  --color-neutral-200: #e2e6f0;
+  --color-neutral-300: #cbd1e0;
+  --color-neutral-400: #9aa2b7;
+  --color-neutral-500: #5f667b;
+  --color-neutral-600: #565d70;
+  --color-neutral-700: #434959;
+  --color-neutral-800: #2f3441;
+  --color-neutral-900: #1b1f2b;
+  --color-neutral-950: #10131c;
 
   /* Larger corners, used on cards and sections. */
   --radius-4xl: 2rem;
@@ -56,6 +56,12 @@
   --color-brand-800: rgb(16 16 87);
   --color-brand-900: rgb(12 12 72);
   --color-brand-950: rgb(7 7 47);
+
+  /* The wash behind a whole section, as in the reference layouts. Light enough
+     to carry body text, distinct enough to separate one section from the next. */
+  --color-wash: #e4e8fb;
+  --color-wash-soft: #eef1fd;
+  --color-wash-mint: #e8f5ec;
 
   /* Fresco pigments: small, flat accents. One per tool, plus decorative shapes.
      Each is paired with a tint light enough to carry text at AA. */

@@ -1,0 +1,36 @@
+---
+// Two-tone headline, as used throughout the reference: the sentence carries its
+// emphasis by colour rather than weight, so a long line still reads as one
+// thought while the words that matter stand forward.
+//
+// Pass the text with the quiet words wrapped in asterisks:
+//   "The *platform* emerged as a pivotal tool, *optimising logistics*"
+interface Props {
+  text: string;
+  as?: "h1" | "h2" | "h3";
+  align?: "center" | "left";
+  size?: "sm" | "md" | "lg";
+  class?: string;
+}
+const { text, as: Tag = "h2", align = "center", size = "md", class: className } = Astro.props as Props;
+
+const sizes: Record<NonNullable<Props["size"]>, string> = {
+  sm: "text-display-xs md:text-display-sm",
+  md: "text-display-sm md:text-display-md",
+  lg: "text-display-md md:text-display-lg",
+};
+
+// Odd segments were wrapped in asterisks and take the quiet colour.
+const parts: string[] = text.split("*");
+---
+
+<Tag
+  class:list={[
+    "font-semibold tracking-tight text-balance text-primary",
+    sizes[size],
+    align === "center" && "text-center",
+    className,
+  ]}
+>
+  {parts.map((p: string, i: number) => (i % 2 === 1 ? <span class="text-quaternary">{p}</span> : p))}
+</Tag>

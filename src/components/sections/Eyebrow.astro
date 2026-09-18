@@ -1,0 +1,21 @@
+---
+// The small pill that sits above a section heading in the reference layouts:
+// an outlined capsule with an icon, centred, announcing what the section is.
+import Icon from "@/components/Icon.astro";
+
+interface Props {
+  icon?: string;
+  class?: string;
+}
+const { icon = "sparkles", class: className } = Astro.props;
+---
+
+<span
+  class:list={[
+    "inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--card)] px-3.5 py-1.5 text-sm font-medium text-secondary shadow-xs",
+    className,
+  ]}
+>
+  <Icon name={icon} class="size-4 text-brand-secondary" />
+  <slot />
+</span>

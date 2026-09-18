@@ -1,4 +1,15 @@
 ---
+// The section header, in the reference's treatment: an outlined pill announcing
+// the section, then a headline that carries its emphasis by colour rather than
+// weight, then the lede.
+//
+// The API is unchanged, so all 29 existing call sites inherit the new look
+// without being touched. Two optional additions:
+//   · `icon`  — the glyph in the pill, defaulting to something neutral
+//   · `title` may wrap words in *asterisks* to render them in the quiet colour,
+//     e.g. "Three promises in *every app we ship*"
+import Icon from "@/components/Icon.astro";
+
 interface Props {
   eyebrow?: string;
   title: string;
@@ -6,13 +17,57 @@ interface Props {
   align?: "left" | "center";
   onBrand?: boolean;
   id?: string;
+  icon?: string;
   class?: string;
 }
-const { eyebrow, title, lede, align = "center", onBrand = false, id, class: className } = Astro.props;
+const {
+  eyebrow,
+  title,
+  lede,
+  align = "center",
+  onBrand = false,
+  id,
+  icon = "sparkles",
+  class: className,
+} = Astro.props;
+
+// Odd segments were wrapped in asterisks and take the quieter colour.
+const parts: string[] = title.split("*");
 ---
 
-<div class:list={["flex max-w-3xl flex-col", align === "center" && "mx-auto items-center text-center", className]} data-reveal>
-  {eyebrow && <span class:list={["text-sm font-semibold md:text-md", onBrand ? "text-secondary_on-brand" : "text-brand-secondary"]}>{eyebrow}</span>}
-  <h2 id={id} class:list={["mt-3 text-display-sm font-semibold md:text-display-md", onBrand ? "text-primary_on-brand" : "text-primary"]}>{title}</h2>
-  {lede && <p class:list={["mt-4 text-lg md:mt-5 md:text-xl", onBrand ? "text-tertiary_on-brand" : "text-tertiary"]}>{lede}</p>}
+<div
+  class:list={["flex max-w-3xl flex-col", align === "center" && "mx-auto items-center text-center", className]}
+  data-reveal
+>
+  {eyebrow && (
+    <span
+      class:list={[
+        "inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium",
+        onBrand
+          ? "border-white/20 bg-white/10 text-secondary_on-brand"
+          : "border-[var(--border)] bg-[var(--card)] text-secondary shadow-xs",
+      ]}
+    >
+      <Icon name={icon} class:list={["size-4", onBrand ? "text-white/70" : "text-brand-secondary"]} />
+      {eyebrow}
+    </span>
+  )}
+
+  <h2
+    id={id}
+    class:list={[
+      "mt-5 text-display-sm font-semibold tracking-tight text-balance md:text-display-md",
+      onBrand ? "text-primary_on-brand" : "text-primary",
+    ]}
+  >
+    {parts.map((p: string, i: number) =>
+      i % 2 === 1 ? <span class={onBrand ? "text-white/55" : "text-quaternary"}>{p}</span> : p,
+    )}
+  </h2>
+
+  {lede && (
+    <p class:list={["mt-4 text-lg md:mt-5 md:text-xl", onBrand ? "text-tertiary_on-brand" : "text-tertiary"]}>
+      {lede}
+    </p>
+  )}
 </div>

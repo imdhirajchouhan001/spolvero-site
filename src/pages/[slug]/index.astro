@@ -226,7 +226,7 @@ const pageJsonLd = [
   {p.useCases && (
     <section class="bg-primary py-16 md:py-24">
       <div class="container-page">
-        <SectionHeader eyebrow="Who it's for" title={`When people reach for ${p.name}`} />
+        <SectionHeader eyebrow="Who it's for" icon="users" title={`When people reach for ${p.name}`} />
         <ul class="mx-auto mt-12 grid max-w-5xl gap-6 md:mt-16 md:grid-cols-2">
           {p.useCases.map((u) => (
             <li class="rounded-3xl bg-secondary p-6 md:p-8" data-reveal>
@@ -243,7 +243,7 @@ const pageJsonLd = [
   {p.versus && (
     <section class="bg-secondary py-16 md:py-24">
       <div class="container-page">
-        <SectionHeader eyebrow="The difference" title={p.versus.title} />
+        <SectionHeader eyebrow="The difference" icon="split" title={p.versus.title} />
         <div class="mx-auto mt-12 max-w-5xl overflow-hidden rounded-3xl ring-1 ring-secondary md:mt-16" data-reveal>
           <table class="w-full border-collapse text-left">
             <caption class="sr-only">{p.versus.title}</caption>
@@ -281,7 +281,7 @@ const pageJsonLd = [
   {p.gettingStarted && (
     <section class="bg-primary py-16 md:py-24">
       <div class="container-page">
-        <SectionHeader eyebrow="Getting started" title="Useful within a minute" />
+        <SectionHeader eyebrow="Getting started" icon="play" title="Useful within a minute" />
         <ol class="mx-auto mt-12 grid max-w-5xl gap-6 md:mt-16 md:grid-cols-3">
           {p.gettingStarted.map((g, i) => (
             <li class="flex flex-col rounded-3xl bg-secondary p-6 md:p-8" data-reveal>
@@ -313,7 +313,7 @@ const pageJsonLd = [
   {p.pricing && (
     <section class="bg-primary pb-16 md:pb-24">
       <div class="container-page">
-        <SectionHeader eyebrow="Pricing" title="Free, with Pro" lede="Everything you need is free. Pro is there if you want more." />
+        <SectionHeader eyebrow="Pricing" icon="wallet" title="Free, with Pro" lede="Everything you need is free. Pro is there if you want more." />
         <div class="mt-12 grid gap-8 md:mt-16 md:grid-cols-2">
           {[{ name: "Free", note: "Forever", items: p.pricing.free, pro: false }, { name: "Pro", note: p.pricing.proNote, items: p.pricing.pro, pro: true }].map((plan) => (
             <div class:list={["flex flex-col rounded-3xl p-6 shadow-lg md:p-8", plan.pro ? "bg-brand-section" : "bg-primary ring-1 ring-secondary"]} data-reveal>
@@ -380,7 +380,7 @@ const pageJsonLd = [
   {related.length > 0 && (
     <section class="bg-secondary py-16 md:py-24">
       <div class="container-page">
-        <SectionHeader eyebrow="Related reading" title="Guides worth a look" />
+        <SectionHeader eyebrow="Related reading" icon="book" title="Guides worth a look" />
         <ul class="mx-auto mt-12 grid max-w-5xl gap-6 md:mt-16 md:grid-cols-3">
           {related.map((a) => (
             <li data-reveal>

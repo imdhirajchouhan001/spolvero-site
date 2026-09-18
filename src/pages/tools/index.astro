@@ -64,7 +64,7 @@ const jsonLd = [{
 
   <section class="bg-secondary py-14 md:py-20">
     <div class="container-page">
-      <SectionHeader eyebrow="Live now" title="Ready to use" />
+      <SectionHeader eyebrow="Live now" icon="zap" title="Ready *to use*" />
       <ul class="mt-10 grid gap-6 md:mt-12 lg:grid-cols-2">
         {live.map((t) => (
           <li data-reveal>
@@ -99,9 +99,9 @@ const jsonLd = [{
     </div>
   </section>
 
-  <section class="bg-secondary py-14 md:py-20">
+  <section class="py-14 md:py-20" style="background:var(--color-wash-soft)">
     <div class="container-page">
-      <SectionHeader eyebrow="Coming up" title="The rest of the set" lede="Each one built the same way: one job, no account, nothing uploaded." />
+      <SectionHeader eyebrow="Coming up" icon="pen" title="The rest *of the set*" lede="Each one built the same way: one job, no account, nothing uploaded." />
       <ul class="mt-10 grid gap-6 md:mt-12 md:grid-cols-2 lg:grid-cols-4">
         {soon.map((t) => (
           <li class="flex flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary" data-reveal>
