@@ -3,6 +3,7 @@ import Base from "@/layouts/Base.astro";
 import VoiceRecorder from "@/components/audio/VoiceRecorder.astro";
 import Troubleshoot from "@/components/tools/Troubleshoot.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
+import RelatedGuides from "@/components/RelatedGuides.astro";
 import Faq from "@/components/Faq.astro";
 import Icon from "@/components/Icon.astro";
 import AdSlot from "@/components/AdSlot.astro";
@@ -240,6 +241,8 @@ const jsonLd = [
       <div data-reveal><Faq id="recorder-faq" items={v.faqs} /></div>
     </div>
   </section>
+
+  <RelatedGuides tool="/tools/voice-recorder/" />
 
   <!-- Related -->
   <section class="bg-secondary pb-16 md:pb-24">

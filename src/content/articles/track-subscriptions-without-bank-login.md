@@ -6,6 +6,7 @@ published: "2026-09-18"
 updated: "2026-09-18"
 answer: "You do not need to connect a bank to find your subscriptions. Search your email for receipt keywords, check the subscription lists that Google Play, the App Store and PayPal already keep for you, and read one card statement end to end. Those three passes find almost everything, and none of them require giving an app your banking credentials."
 tool: "/unspend/"
+tools: ["/unspend/"]
 toolCta: "See Unspend"
 tags: ["Privacy", "Money"]
 minutes: 7

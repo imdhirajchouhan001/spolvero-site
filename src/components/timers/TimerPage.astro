@@ -3,6 +3,7 @@
 // tips, FAQs and reference table, so the pages are worth keeping apart.
 import Timer from "@/components/timers/Timer.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
+import RelatedGuides from "@/components/RelatedGuides.astro";
 import Faq from "@/components/Faq.astro";
 import Icon from "@/components/Icon.astro";
 import AdSlot from "@/components/AdSlot.astro";
@@ -136,6 +137,8 @@ const siblings = timers.filter((t) => t.slug !== timer.slug);
     </div>
   </div>
 </section>
+
+<RelatedGuides tool={`/tools/timers/${timer.slug}/`} />
 
 <!-- Sibling timers -->
 <section class="bg-secondary pb-16 md:pb-24">

@@ -6,6 +6,7 @@ published: "2026-09-17"
 updated: "2026-09-17"
 answer: "Start with the indicator light: on a Mac it is wired to the camera's power and cannot be turned off in software, so a dark light means the camera is off. On Windows it is usually firmware-controlled and very hard to bypass, but not guaranteed. Check which apps have camera permission, look for processes you do not recognise, and cover the lens when you are not using it."
 tool: "/tools/webcam-test/"
+tools: ["/tools/webcam-test/"]
 toolCta: "See what your camera sees"
 tags: ["Privacy", "Security"]
 minutes: 6

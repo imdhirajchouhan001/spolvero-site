@@ -61,16 +61,18 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
       <p class="text-sm font-semibold tracking-wide text-white/60 uppercase" data-phase></p>
 
       <!-- The digits set the size and the frame follows them, so a long time like
-           1:23:45 is never squeezed into a circle drawn for 5:00. pathLength
-           normalises the perimeter to 100, so progress is a plain percentage and
-           the shape can be any size. -->
+           1:23:45 is never squeezed into a circle drawn for 5:00.
+
+           The rect's geometry and the viewBox are both written in script from the
+           element's real pixel size, so one user unit is one pixel. Stretching a
+           fixed 100×100 viewBox into a box that is not square scales x and y by
+           different amounts, and a dash measured in user units then renders
+           unevenly — the progress bunches on the short edges and the ring ends up
+           lying about how much time is left. -->
       <div class="timer-frame relative" data-ring-wrap>
-        <svg class="pointer-events-none absolute inset-0 size-full" preserveAspectRatio="none" viewBox="0 0 100 100" aria-hidden="true">
-          <rect x="1.5" y="1.5" width="97" height="97" rx="10" ry="10"
-                fill="none" stroke="currentColor" stroke-width="1.5" class="text-white/12" vector-effect="non-scaling-stroke" />
-          <rect x="1.5" y="1.5" width="97" height="97" rx="10" ry="10"
-                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                vector-effect="non-scaling-stroke"
+        <svg class="pointer-events-none absolute inset-0 size-full" viewBox="0 0 100 100" aria-hidden="true" data-ring-svg>
+          <rect fill="none" stroke="currentColor" stroke-width="1.5" class="text-white/12" data-ring-track />
+          <rect fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
                 class="text-[var(--timer-accent)] transition-[stroke-dashoffset] duration-200 ease-linear"
                 data-ring />
         </svg>
@@ -312,8 +314,29 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
     // The frame's perimeter changes with the digits and the viewport, so it is
     // measured rather than assumed. pathLength is not honoured on shape elements
     // in every browser, which silently leaves the stroke drawn as a dashed line.
+    const ringSvg = root.querySelector("[data-ring-svg]") as SVGSVGElement | null;
+    const ringTrack = root.querySelector("[data-ring-track]") as SVGRectElement | null;
     let RING = 0;
+
+    /** Re-anchors the frame to real pixels, then measures its perimeter. */
     const measureRing = () => {
+      const box = ringSvg?.getBoundingClientRect();
+      if (ringSvg && box && box.width > 1 && box.height > 1) {
+        const w = Math.round(box.width);
+        const h = Math.round(box.height);
+        ringSvg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+        const inset = 2;
+        const radius = Math.max(0, Math.min(28, h / 2 - inset, w / 2 - inset));
+        [ringTrack, ring as unknown as SVGRectElement].forEach((el) => {
+          if (!el) return;
+          el.setAttribute("x", String(inset));
+          el.setAttribute("y", String(inset));
+          el.setAttribute("width", String(Math.max(1, w - inset * 2)));
+          el.setAttribute("height", String(Math.max(1, h - inset * 2)));
+          el.setAttribute("rx", String(radius));
+          el.setAttribute("ry", String(radius));
+        });
+      }
       RING = ring.getTotalLength?.() || 0;
       ring.style.strokeDasharray = String(RING);
     };

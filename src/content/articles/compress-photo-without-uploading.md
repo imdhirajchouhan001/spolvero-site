@@ -6,6 +6,7 @@ published: "2026-09-18"
 updated: "2026-09-18"
 answer: "Your phone and computer can already compress photos without uploading anything. On iPhone, Files or Shortcuts; on Android, the Photos app or a resize option in the share sheet; on a Mac, Preview's Export; on Windows, Paint or Photos. Reducing dimensions usually beats reducing quality — halving the width cuts the file to roughly a quarter with no visible artefacts."
 tool: "/exact/"
+tools: ["/exact/"]
 toolCta: "See Exact Photo"
 tags: ["Privacy", "Photos"]
 minutes: 7

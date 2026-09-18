@@ -26,6 +26,10 @@ const articles = defineCollection({
     answer: z.string(),
     /** Which tool page this article sends readers to. */
     tool: z.string().default("/tools/webcam-test/"),
+    /** Every tool page this article should surface on. The `tool` above is where
+     *  the article's own call to action points; this is the reverse link, so a
+     *  tool page can show the guides written about it. */
+    tools: z.array(z.string()).default([]),
     toolCta: z.string().default("Test your camera"),
     tags: z.array(z.string()).default([]),
     /** Rough read time in minutes. */

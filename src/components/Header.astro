@@ -60,40 +60,75 @@ const { cta = { label: "Contact us", href: "/contact/" }, label, labelHref } = A
     class="invisible fixed inset-x-0 top-18 z-40 max-h-[calc(100vh-4.5rem)] -translate-y-3 overflow-y-auto border-b border-secondary bg-secondary opacity-0 shadow-lg transition duration-200"
     data-menu-panel
   >
-    <div class="container-page grid gap-8 py-8 md:grid-cols-2 lg:grid-cols-4 lg:py-10">
-      {navGroups.map((g) => (
-        <div>
-          <div class="flex items-baseline justify-between gap-2 border-b border-secondary pb-3">
-            <a href={g.href} class="text-md font-semibold text-primary hover:text-brand-secondary">{g.label}</a>
-            <a href={g.footer?.href ?? g.href} class="text-sm font-semibold text-brand-secondary hover:underline">All</a>
-          </div>
-          <p class="mt-3 text-sm text-tertiary">{g.blurb}</p>
-          <ul class="mt-3 flex flex-col">
-            {g.items.map((it) => (
-              <li>
-                <a href={it.href} class="flex items-center justify-between gap-3 rounded-xl px-2 py-2.5 transition hover:bg-primary">
-                  <span class="min-w-0">
-                    <span class="block truncate text-md font-semibold text-primary">{it.label}</span>
-                    {it.note && <span class="block truncate text-sm text-tertiary">{it.note}</span>}
-                  </span>
-                  {it.status === "live"
-                    ? <Badge variant="success" size="sm">Live</Badge>
-                    : <Badge variant="secondary" size="sm">Soon</Badge>}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+    <div class="container-page py-8 lg:py-10">
+      <div class="grid gap-8 lg:grid-cols-3">
+        {navGroups.map((g) => (
+          <div>
+            <div class="flex items-baseline justify-between gap-2 border-b border-secondary pb-3">
+              <a href={g.href} class="text-md font-semibold text-primary hover:text-brand-secondary">{g.label}</a>
+              <a href={g.footer?.href ?? g.href} class="text-sm font-semibold text-brand-secondary hover:underline">All</a>
+            </div>
+            <p class="mt-3 text-sm text-tertiary">{g.blurb}</p>
 
-      <div class="lg:col-span-4">
-        <ul class="flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-secondary pt-6">
-          {navLinks.map((l) => (
-            <li><a href={l.href} class="text-md font-semibold text-primary hover:text-brand-secondary">{l.label}</a></li>
-          ))}
-          <li class="sm:hidden"><a href={cta.href} class="text-md font-semibold text-brand-secondary">{cta.label}</a></li>
-        </ul>
+            {/* Categories, where a flat list would not survive the tool count */}
+            {g.categories && (
+              <div class="mt-4 flex flex-col gap-5">
+                {g.categories.map((c) => (
+                  <div>
+                    <a href={c.href} class="flex items-baseline gap-2 text-sm font-semibold text-primary hover:text-brand-secondary">
+                      {c.label}
+                      <span class="text-xs font-normal text-quaternary">{c.count}</span>
+                    </a>
+                    <ul class="mt-1.5 flex flex-col">
+                      {c.featured.map((it) => (
+                        <li>
+                          <a href={it.href} class="flex items-center justify-between gap-3 rounded-lg px-2 py-1.5 transition hover:bg-primary">
+                            <span class="truncate text-md text-secondary">{it.label}</span>
+                            {it.status === "soon" && <Badge variant="secondary" size="sm">Soon</Badge>}
+                          </a>
+                        </li>
+                      ))}
+                      {c.count > c.featured.length && (
+                        <li>
+                          <a href={c.href} class="block rounded-lg px-2 py-1.5 text-md font-semibold text-brand-secondary hover:underline">
+                            {c.count - c.featured.length} more
+                          </a>
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* A plain list, where the group is small enough to show whole */}
+            {g.items && (
+              <ul class="mt-3 flex flex-col">
+                {g.items.map((it) => (
+                  <li>
+                    <a href={it.href} class="flex items-center justify-between gap-3 rounded-xl px-2 py-2.5 transition hover:bg-primary">
+                      <span class="min-w-0">
+                        <span class="block truncate text-md font-semibold text-primary">{it.label}</span>
+                        {it.note && <span class="block truncate text-sm text-tertiary">{it.note}</span>}
+                      </span>
+                      {it.status === "live"
+                        ? <Badge variant="success" size="sm">Live</Badge>
+                        : <Badge variant="secondary" size="sm">Soon</Badge>}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
       </div>
+
+      <ul class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-secondary pt-6">
+        {navLinks.map((l) => (
+          <li><a href={l.href} class="text-md font-semibold text-primary hover:text-brand-secondary">{l.label}</a></li>
+        ))}
+        <li class="sm:hidden"><a href={cta.href} class="text-md font-semibold text-brand-secondary">{cta.label}</a></li>
+      </ul>
     </div>
   </div>
 

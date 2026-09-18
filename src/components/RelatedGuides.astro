@@ -1,0 +1,56 @@
+---
+// The reverse of an article's own CTA: a tool page showing the guides written
+// about it. Without this the linking is one-directional, which wastes the
+// articles as a route into the tools and leaves each tool page a dead end.
+import { getCollection } from "astro:content";
+import Icon from "@/components/Icon.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Badge from "@/components/ui/Badge.astro";
+
+interface Props {
+  /** Path of the tool this page is for, e.g. "/tools/voice-recorder/". */
+  tool: string;
+  /** Falls back to matching on these tags when nothing declares the tool. */
+  tags?: string[];
+  title?: string;
+  limit?: number;
+}
+const { tool, tags = [], title = "Guides worth reading", limit = 3 } = Astro.props;
+
+const normalise = (s: string) => s.replace(/\/+$/, "");
+const here = normalise(tool);
+
+const all = await getCollection("articles");
+const declared = all.filter((a) => a.data.tools.some((t) => normalise(t) === here) || normalise(a.data.tool) === here);
+const byTag = tags.length ? all.filter((a) => a.data.tags.some((t) => tags.includes(t))) : [];
+
+// Declared matches first, then tag matches, without repeats.
+const seen = new Set<string>();
+const related = [...declared, ...byTag].filter((a) => !seen.has(a.id) && seen.add(a.id)).slice(0, limit);
+---
+
+{related.length > 0 && (
+  <section class="bg-secondary pb-14 md:pb-20">
+    <div class="container-page">
+      <SectionHeader eyebrow="Related reading" title={title} />
+      <ul class="mx-auto mt-10 grid max-w-5xl gap-6 md:mt-12 md:grid-cols-3">
+        {related.map((a) => (
+          <li data-reveal>
+            <a
+              href={`/articles/${a.id}/`}
+              class="group flex h-full flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring"
+            >
+              {a.data.tags[0] && <Badge variant="secondary" size="sm">{a.data.tags[0]}</Badge>}
+              <h3 class="mt-3 text-lg font-semibold text-primary">{a.data.title}</h3>
+              <p class="mt-2 text-md text-tertiary">{a.data.description}</p>
+              <span class="mt-auto inline-flex items-center gap-1.5 pt-5 text-md font-semibold text-brand-secondary">
+                {a.data.minutes} min read
+                <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}

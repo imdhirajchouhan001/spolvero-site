@@ -5,6 +5,7 @@
 import WebcamTest from "@/components/tools/WebcamTest.astro";
 import Troubleshoot from "@/components/tools/Troubleshoot.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
+import RelatedGuides from "@/components/RelatedGuides.astro";
 import AdSlot from "@/components/AdSlot.astro";
 import { adsenseClient, adsPreview } from "@/data/ads";
 import Faq from "@/components/Faq.astro";
@@ -224,6 +225,8 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
     )}
   </div>
 </section>
+
+<RelatedGuides tool={variantSlug ? `/tools/webcam-test/${variantSlug}/` : "/tools/webcam-test/"} tags={["Troubleshooting", "Lighting"]} />
 
 <!-- Same tool, other situations -->
 <section class="bg-secondary py-14 md:py-20">

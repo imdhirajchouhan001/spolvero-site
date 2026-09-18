@@ -6,6 +6,7 @@ published: "2026-09-17"
 updated: "2026-09-17"
 answer: "A blurry or grainy webcam is nearly always a lighting problem, not a hardware one. In dim light a small sensor raises its gain, which adds visible grain, and lengthens its exposure, which adds motion blur and drops the frame rate. Adding light in front of your face fixes all three at once, and costs nothing."
 tool: "/tools/webcam-test/"
+tools: ["/tools/webcam-test/"]
 toolCta: "Check your picture quality"
 tags: ["Image quality", "Lighting"]
 minutes: 7

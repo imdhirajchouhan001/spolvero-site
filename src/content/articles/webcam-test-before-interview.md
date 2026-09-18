@@ -6,6 +6,7 @@ published: "2026-09-17"
 updated: "2026-09-17"
 answer: "Join the call five minutes early from the same browser and the same network you will use, with every other camera app closed. Check in this order: camera works, light is in front of you, camera is at eye level, sound works, and you know what you will do if the connection drops."
 tool: "/tools/webcam-test/"
+tools: ["/tools/webcam-test/", "/tools/mic-test/", "/tools/speaker-test/"]
 toolCta: "Run the check now"
 tags: ["Interviews", "Checklist"]
 minutes: 5

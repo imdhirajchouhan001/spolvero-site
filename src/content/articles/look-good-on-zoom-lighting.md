@@ -6,6 +6,7 @@ published: "2026-09-17"
 updated: "2026-09-17"
 answer: "Three changes cover almost all of it: put your main light in front of you rather than behind, raise the camera to eye level, and sit closer to the light than to the background. Together they matter more than the camera you own, and none of them costs anything."
 tool: "/tools/webcam-test/zoom"
+tools: ["/tools/webcam-test/", "/tools/webcam-test/zoom/"]
 toolCta: "See how you look now"
 tags: ["Lighting", "Zoom"]
 minutes: 6

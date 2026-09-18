@@ -12,7 +12,7 @@ Facts, not estimates. Check them again rather than trusting this list once it ag
 | | |
 | --- | --- |
 | Domain created | **24 August 2026** — it was 24 days old when this plan was written |
-| Pages live | 42 built, 40 in the sitemap |
+| Pages live | 48 built |
 | Backlinks | **Zero** |
 | AdSense | Site status "Getting ready" — **not approved, so revenue is £0** |
 | Ad units | 5 created and wired; they return `unfilled` until approval |
@@ -20,9 +20,8 @@ Facts, not estimates. Check them again rather than trusting this list once it ag
 
 Tools live: webcam test (+8 long-tail variants), mic, speaker, keyboard, dead
 pixel · classroom, speech, exam clock, interval, Tabata, debate timers · voice
-recorder.
-Apps: Unspend live on Play; Exact, Enough, GST Calculator in progress;
-`flashlight` exists on GitHub but is not on the site yet.
+recorder. 13 guides, each linked from the tools it is about and back again.
+Apps: Unspend live on Play; Exact, Enough, GST Calculator and Flash in progress.
 
 ---
 
@@ -118,6 +117,16 @@ endorsements mislead readers and are what an ad network's site review looks for.
 both interrupting formats stand down while a timer runs. This is a promise made on
 the pages themselves, and competitors with ad-funded fullscreen cannot copy it.
 
+**Two levels of navigation, never three.** The menu shows a category and a few
+tools; the rest live on that category's hub, which is also the page worth ranking.
+Long-tail variants never appear in the menu. Listing every tool worked at eleven
+and would be unusable at fifty.
+
+**Every tool carries its guides, and every guide carries its tool.** Articles
+declare `tools:` in their front matter, and `RelatedGuides.astro` renders the
+reverse link on tool pages. One-directional linking wasted the articles as a route
+into the tools and left each tool page a dead end.
+
 **No audio of unverified provenance.** `public/sounds/` ships empty with a README
 naming licences safe for commercial use. The timer falls back to synthesis.
 
@@ -162,7 +171,6 @@ A one-year horizon before meaningful revenue is the correct expectation.
 - [ ] Start the weekly two hours: Toastmasters clubs, debate leagues, r/Teachers
 - [ ] List on AlternativeTo and Product Hunt
 - [ ] Decide whether anyone else can do the community posting
-- [ ] Add `flashlight` to the site as "soon"
 - [ ] Write the GST and water-tracker guides — both need facts confirmed first
 - [ ] Recorder follow-ups: live transcript, silence removal, loudness normalise,
       and the format pages (WhatsApp to MP3, iPhone ringtone, remove silence)

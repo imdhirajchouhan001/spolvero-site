@@ -6,6 +6,7 @@ published: "2026-09-17"
 updated: "2026-09-17"
 answer: "For video calls, 1280×720 at 30fps is enough — Zoom, Teams and Google Meet all cap most calls at 720p regardless of your camera. 1080p is worth it for streaming and recording. 4K webcams are almost never worth it, because no mainstream meeting app will send that resolution."
 tool: "/tools/webcam-test/fps"
+tools: ["/tools/webcam-test/", "/tools/webcam-test/fps/"]
 toolCta: "Check what yours delivers"
 tags: ["Buying advice", "Resolution"]
 minutes: 6
