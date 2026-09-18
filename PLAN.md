@@ -123,6 +123,21 @@ changed deliberately and the document is the thing that is stale.
 below AA on the wash band (`#6b7288` measured 3.93). Re-check contrast against
 white, `--color-wash-soft` and `--color-wash` before changing any neutral.
 
+**Screenshots are whole device captures; the mockup draws only the shell.**
+Fixed 18 September 2026. `iphone-mockup.tsx` used to draw its own status bar —
+clock, wifi, signal, battery — and its own home indicator, then inset the
+screenshot below all of that. Every screenshot on this site is a full capture
+that already has those, so each phone showed the time twice and the app's own
+colour stopped short of the top behind a band of flat white. The image now fills
+the whole screen area and the mockup's status bar and home bar are gone.
+
+It also hardcoded `width="750" height="1624"` on the image and a matching
+`scale(0.00133333 0.000615764)`, so anything that was not exactly 750×1624 got
+letterboxed inside its own frame. It uses `preserveAspectRatio="none"` now:
+these captures come from several devices and differ by up to five percent, and at
+the size a mockup is viewed a five percent stretch is invisible where a cropped
+tab bar is not. Export at whatever size the device gives; it will fit.
+
 **Every long page alternates surfaces; the cycle lives in `src/lib/bands.ts`.**
 Added 18 September 2026, extended the same day to the tool, timer and recorder
 pages, which were the worst of it — ten sections deep without changing colour
@@ -269,10 +284,11 @@ A one-year horizon before meaningful revenue is the correct expectation.
         replaced and its stale sixth removed, GST got its first three and a new
         icon. Every app now has real screenshots; no card falls back to the drawn
         keypad mock any more.
-      · **Held back:** the GST invoice-preview screen. It shows a mobile number
-        and a street address under the Spolvero.Design heading. Publishing those
-        is Dhiraj's call, not an assumption to make — either confirm it, or send
-        a re-export with dummy contact details.
+      · The GST invoice-preview screen carried a real mobile number and street
+        address. Both are painted out in the panel's own #262626 and replaced
+        with "+91 00000 00000" and "Your address here". If that screen is ever
+        re-exported, redact it again before it ships — the screenshot is the only
+        place on the site those details ever appeared.
       · `public/products/baseline/icon.webp` and `public/products/astro/icon.webp`
         (both fall back to the monogram tile)
 - [ ] Write the GST and water-tracker guides — both need facts confirmed first

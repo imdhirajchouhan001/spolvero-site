@@ -478,6 +478,7 @@ const allProducts: Product[] = [
       { src: "/products/gst/01.webp", alt: "Calculator keypad with a row of add-GST rates above a row for extracting GST from a total, and a running grand total of four items", caption: "Add GST, or pull it back out" },
       { src: "/products/gst/02.webp", alt: "The same calculator in a second colour theme, teal and gold instead of blue and orange", caption: "Pick a theme that suits your eyes" },
       { src: "/products/gst/03.webp", alt: "History sheet listing the last 25 calculations, each showing the sum that produced it and a tap-to-reload action", caption: "The last 25, ready to reload" },
+      { src: "/products/gst/04.webp", alt: "Invoice preview built from cart items, showing each line's base and GST, then the subtotal with CGST and SGST split out", caption: "An invoice, straight from the cart" },
     ],
     features: [
       { icon: "calculator", title: "Add or remove GST", body: "Add GST to a price or pull it back out of a total. Splits CGST and SGST within a state, IGST across state lines." },
