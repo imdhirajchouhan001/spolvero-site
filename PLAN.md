@@ -110,6 +110,18 @@ zero links does not help. Revisit at ~50K monthly visits, not before.
 fine across varied clusters — calculator.net and 10015.io both do. The dominant
 factors are age, links and per-page quality, in that order.
 
+**Corners are square, 2px, everywhere.** Changed 19 September 2026 on Dhiraj's
+call, reversing the large radii and pill buttons the Concentro reference brought
+in. The whole radius ladder in `global.css` and `theme.css` collapses to a single
+2px, so cards, inputs and chips cannot disagree about how square they are.
+`--radius-full` is untouched on purpose: ticks, status dots, avatars and the timer
+ring are circles rather than rounded rectangles, and squaring those would be a
+different decision. Two things keep their own rounding — the Google Play badge,
+whose corner radius is part of Google's badge spec, and the app icon tiles, which
+are product artwork. To reverse it, restore the ladder in `global.css` and swap
+the pill components back to `rounded-full`; the note in that file lists the old
+values.
+
 **The visual language is the Concentro reference, not headspace.** Changed 18
 September 2026 after Dhiraj shared two design boards. Soft periwinkle wash bands
 (`--color-wash`, `--color-wash-soft`) separating sections by tone rather than by

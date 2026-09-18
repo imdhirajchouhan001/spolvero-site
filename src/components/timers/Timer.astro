@@ -112,7 +112,7 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
         {presets.map((p) => (
           <button
             type="button"
-            class="rounded-full border border-[var(--border)] px-3.5 py-2 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--muted)] aria-pressed:border-transparent aria-pressed:bg-[var(--primary)] aria-pressed:text-[var(--primary-foreground)]"
+            class="rounded-sm border border-[var(--border)] px-3.5 py-2 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--muted)] aria-pressed:border-transparent aria-pressed:bg-[var(--primary)] aria-pressed:text-[var(--primary-foreground)]"
             data-preset={p.seconds}
             data-lights={p.lights ? `${p.lights.green},${p.lights.amber},${p.lights.red}` : undefined}
             data-interval={p.interval ? `${p.interval.work},${p.interval.rest},${p.interval.rounds},${p.interval.prepare ?? 0}` : undefined}

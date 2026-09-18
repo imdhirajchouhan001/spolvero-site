@@ -15,7 +15,7 @@ const baseClasses: Record<Theme, { root?: string; addon?: string; icon?: string 
         addon: "rounded-full ring-1 ring-inset",
     },
     modern: {
-        root: "rounded-[10px] bg-primary text-secondary shadow-xs ring-1 ring-inset ring-primary hover:bg-secondary",
+        root: "rounded-sm bg-primary text-secondary shadow-xs ring-1 ring-inset ring-primary hover:bg-secondary",
         addon: "flex items-center rounded-md bg-primary shadow-xs ring-1 ring-inset ring-primary",
         icon: "text-utility-neutral-500",
     },
