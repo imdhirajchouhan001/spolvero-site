@@ -1,38 +1,41 @@
 ---
+// The homepage.
+//
+// It used to run to fifteen sections and carry the apps, the studio, the company
+// FAQ and the roadmap, because none of those had a page of its own. They do now —
+// /apps/, /studio/, /about/ — and this page went back to one job: say what
+// Spolvero is, then send you to the right place.
+//
+// Order is deliberate. Tools come before apps because the tools are what brings
+// anyone here; they used to sit sixth, below a privacy table about the apps.
 import Base from "@/layouts/Base.astro";
-import AppIcon from "@/components/AppIcon.astro";
 import Icon from "@/components/Icon.astro";
 import Screen from "@/components/Screen.astro";
 import NotifyForm from "@/components/NotifyForm.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
-import Eyebrow from "@/components/sections/Eyebrow.astro";
-import Headline from "@/components/sections/Headline.astro";
-import StatCards from "@/components/sections/StatCards.astro";
-import PhotoCard from "@/components/sections/PhotoCard.astro";
-import { getPhoto } from "@/data/photos";
-import NumberedRows from "@/components/sections/NumberedRows.astro";
 import AdSlot from "@/components/AdSlot.astro";
-import Faq from "@/components/Faq.astro";
 import SplitText from "@/components/SplitText";
 import Button from "@/components/ui/Button.astro";
-import { GooglePlayButton } from "@/components/base/buttons/app-store-buttons";
 import Badge from "@/components/ui/Badge.astro";
 import { BadgeGroup } from "@/components/base/badges/badge-groups";
-import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
 import { BackgroundPattern } from "@/components/shared-assets/background-patterns";
 import { getIcon } from "@/lib/icons";
-import { products, categories, getProduct } from "@/data/products";
-import { tools } from "@/data/tools";
+import { products, getProduct } from "@/data/products";
+import { deviceTests, audioTools, toolHref } from "@/data/tools";
 import { timers } from "@/data/timers";
-import { pillars, stats, testimonials, companyFaqs } from "@/data/home";
+import { pillars } from "@/data/home";
 import { getCollection } from "astro:content";
 
 const live = products.filter((p) => p.status === "live");
-const liveTools = tools.filter((t) => t.status === "live");
+const liveDevice = deviceTests.filter((t) => t.status === "live");
 const liveTimers = timers.filter((t) => t.status === "live");
+const liveAudio = audioTools.filter((t) => t.status === "live");
+const liveTotal = liveDevice.length + liveTimers.length + liveAudio.length;
+
 const latestArticles = (await getCollection("articles"))
   .sort((a, b) => new Date(b.data.published).getTime() - new Date(a.data.published).getTime())
   .slice(0, 3);
+
 // Centre of the fan sits in the middle; every product here needs at least one screenshot.
 const fan = [
   { p: getProduct("enough")!, i: 0 },
@@ -40,69 +43,48 @@ const fan = [
   { p: getProduct("exact")!, i: 0 },
 ];
 const fanCentre = (fan.length - 1) / 2;
-const [featured, ...rest] = products;
+const featured = products[0];
 
-const principles = [
-  { icon: "lock", title: "Private by default", body: "Your data stays on your phone. No bank logins, no gallery access, no account needed to start." },
-  { icon: "eyeoff", title: "Ads that know their place", body: "Free apps may show ads, but nothing you type or track in our apps is ever shared with an ad network." },
-  { icon: "quote", title: "Numbers you can check", body: "Every figure shows where it came from, and our apps say plainly what they can't prove." },
+// The three sets, named by what a visitor wants rather than by how they are built.
+const toolSets = [
+  {
+    label: "Device tests",
+    href: "/tools/device-tests/",
+    icon: "camera",
+    tint: "#ffeadb",
+    count: liveDevice.length,
+    blurb: "Camera, microphone, speakers, keyboard and screen — answered in seconds, with the fix underneath when the answer is no.",
+  },
+  {
+    label: "Timers",
+    href: "/tools/timers/",
+    icon: "clock",
+    tint: "#e2f0ff",
+    count: liveTimers.length,
+    blurb: "Big enough for the back of the room. Classroom countdowns, speech lights and an exam clock. Fullscreen is ad-free.",
+  },
+  {
+    label: "Audio",
+    href: "/tools/audio/",
+    icon: "message",
+    tint: "#dff5ea",
+    count: liveAudio.length,
+    blurb: "Record, trim the ends and download MP3 or WAV. The audio never leaves the tab.",
+  },
 ];
-
-// Every "Spolvero way" line must stay true for all apps in src/data/products.ts.
-const comparison = [
-  { old: "Asks for your bank login, whole photo gallery or an account first", ours: "Asks only for what the job needs, and you can start without an account" },
-  { old: "Sends what you enter to its own servers", ours: "Keeps what you enter on your phone by default" },
-  { old: "Uses what you do in the app to target ads", ours: "Ads never see what you put into the app" },
-  { old: "Gives you numbers with no explanation", ours: "Shows where its numbers come from" },
-  { old: "Puts the main feature behind a paywall", ours: "The main job is free; upgrades are optional" },
-];
-
-const steps = [
-  { title: "Discover", body: "A call about your product, users and goals. You get a written scope and quote before any work starts." },
-  { title: "Design", body: "Flows, screens and a clickable prototype, reviewed with you as we go, plus a design system to keep it consistent." },
-  { title: "Hand off and launch", body: "Developer-ready Figma files and assets, plus store screenshots and listing copy if you need them." },
-];
-
-const studioFaqs = [
-  { q: "How much does a project cost?", a: "We charge $20–30 an hour depending on scope. You get a written quote with an estimate of hours before anything starts, so there are no surprises." },
-  { q: "How long does a project take?", a: "It depends on the size of the product. We agree a timeline in the quote and keep you updated as we go." },
-  { q: "What do I get at the end?", a: "Figma files with every screen and state, a clickable prototype, a component library or design system, and exported assets ready for your developers." },
-  { q: "Who owns the designs?", a: "You do. Once the project is paid, the final designs are yours to use however you like." },
-  { q: "Will you sign an NDA?", a: "Yes. Send it over with your first message and we'll sign it before you share any details." },
-  { q: "Do you work with clients outside India?", a: "Yes. We work with founders and teams anywhere in the world, over email and video calls." },
-  { q: "Can you also design my website or brand?", a: "Yes. Along with app design we do landing pages, product websites, and naming, logo, colour and type." },
-];
-
-const services = [
-  "UI and UX for iOS and Android apps",
-  "Flows, prototypes and design systems",
-  "Landing pages and product websites",
-  "Name, logo, colour and type",
-  "Store listings and screenshots",
-];
-const homeJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: companyFaqs.map((f) => ({
-    "@type": "Question",
-    name: f.q,
-    acceptedAnswer: { "@type": "Answer", text: f.a },
-  })),
-};
 ---
 
 <Base
   title="Spolvero — Small Apps, Free Web Tools and Design Studio"
   description="Spolvero is an independent studio: private-by-default Android apps, free browser tools that never upload your data, and UI/UX design work for others."
 >
-  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(homeJsonLd)} />
   <!-- Hero -->
   <section class="relative overflow-hidden bg-primary pt-16 md:pt-24">
     <BackgroundPattern pattern="grid" size="lg" className="absolute top-0 left-1/2 hidden -translate-x-1/2 text-border-secondary opacity-70 md:block" />
     <BackgroundPattern pattern="grid" size="md" className="absolute top-0 left-1/2 -translate-x-1/2 text-border-secondary opacity-70 md:hidden" />
 
     <div class="relative container-page flex flex-col items-center text-center">
-      <a href="#apps" class="rounded-full outline-focus-ring focus-visible:outline-2 focus-visible:outline-offset-2" data-reveal>
+      <a href="/apps/" class="rounded-full outline-focus-ring focus-visible:outline-2 focus-visible:outline-offset-2" data-reveal>
         <BadgeGroup addonText={`${products.length} apps`} color="brand" theme="modern" size="lg" iconTrailing={getIcon("arrow")}>
           {`${live.length} live on Google Play, more on the way`}
         </BadgeGroup>
@@ -127,8 +109,8 @@ const homeJsonLd = {
       </p>
 
       <div class="mt-8 flex w-full flex-col-reverse items-stretch gap-3 sm:w-auto sm:flex-row sm:items-start md:mt-12" data-reveal>
-        <Button href="/contact/?topic=design" variant="outline" size="xl"><Icon name="pen" />Hire us for design</Button>
-        <Button href="#apps" variant="default" size="xl">See our apps</Button>
+        <Button href="/studio/" variant="outline" size="xl"><Icon name="pen" />Hire us for design</Button>
+        <Button href="/tools/" variant="default" size="xl">Try a free tool</Button>
       </div>
 
       <div class="relative mt-16 h-[380px] w-full max-w-5xl md:mt-20 md:h-[520px]" data-fan aria-label="Screens from Spolvero apps">
@@ -146,7 +128,7 @@ const homeJsonLd = {
     <div class="relative h-px bg-border-secondary"></div>
   </section>
 
-  <!-- What Spolvero actually is: three things, said plainly and early -->
+  <!-- The three routes off this page. Nothing here explains itself twice. -->
   <section id="what-we-do" class="bg-primary py-16 md:py-24">
     <div class="container-page">
       <SectionHeader
@@ -162,7 +144,7 @@ const homeJsonLd = {
                 <Icon name={x.icon} class="size-7" />
               </span>
               <p class="mt-6 text-sm font-semibold text-brand-secondary">{x.kind}</p>
-              <h3 class="mt-1 text-xl font-semibold text-primary">{x.title}</h3>
+              <h2 class="mt-1 text-xl font-semibold text-primary">{x.title}</h2>
               <p class="mt-3 text-md text-tertiary">{x.body}</p>
               <p class="mt-4 text-sm font-medium text-secondary">{x.proof}</p>
               <span class="mt-auto inline-flex items-center gap-1.5 pt-6 text-md font-semibold text-brand-secondary">
@@ -172,169 +154,47 @@ const homeJsonLd = {
           </li>
         ))}
       </ul>
-
-      <dl class="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-6 border-t border-secondary pt-10 md:mt-16 md:grid-cols-4" data-reveal>
-        {stats.map((x) => (
-          <div class="text-center">
-            <dt class="sr-only">{x.label}</dt>
-            <dd>
-              <span class="block text-display-sm font-semibold text-primary md:text-display-md">{x.value}</span>
-              <span class="mt-1 block text-md font-medium text-secondary">{x.label}</span>
-              <span class="mt-0.5 block text-sm text-tertiary">{x.note}</span>
-            </dd>
-          </div>
-        ))}
-      </dl>
     </div>
   </section>
 
-  <!-- Principles -->
-  <section class="py-16 md:py-24" style="background:var(--color-wash-soft)">
+  <!-- Free tools: the pages that bring people to the site at all, so they lead. -->
+  <section id="tools" class="py-16 md:py-24" style="background:var(--color-wash-soft)">
     <div class="container-page">
-      <div class="flex flex-col items-center text-center" data-reveal>
-        <Eyebrow icon="shield">How we build</Eyebrow>
-        <Headline
-          class="mt-5"
-          text="Three promises in *every app we ship*"
-        />
-        <p class="mt-4 max-w-2xl text-lg text-tertiary">Whatever the app does, it's built the same way.</p>
-      </div>
-      <ul class="mt-12 grid gap-10 md:mt-16 md:grid-cols-3 md:gap-8">
-        {principles.map((x) => (
-          <li class="flex flex-col items-center text-center" data-reveal>
-            <FeaturedIcon icon={getIcon(x.icon)} size="lg" color="brand" theme="light" />
-            <h3 class="mt-4 text-lg font-semibold text-primary md:mt-5 md:text-xl">{x.title}</h3>
-            <p class="mt-1 text-md text-tertiary md:mt-2">{x.body}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
-
-  <!-- Old way vs Spolvero way -->
-  <section class="bg-primary pb-16 md:pb-24">
-    <div class="container-page">
-      <SectionHeader eyebrow="Why Spolvero" icon="lock" title="Apps shouldn't cost you *your privacy*" lede="Many everyday apps ask for too much and explain too little. We build ours the other way round." />
-      <div class="mx-auto mt-12 max-w-5xl overflow-hidden rounded-3xl ring-1 ring-secondary md:mt-16" data-reveal>
-        <table class="w-full border-collapse text-left">
-          <caption class="sr-only">How typical apps compare with Spolvero apps</caption>
-          <thead>
-            <tr class="bg-secondary">
-              <th scope="col" class="w-1/2 px-4 py-4 text-sm font-semibold text-tertiary md:px-6">Many apps</th>
-              <th scope="col" class="w-1/2 bg-brand-section px-4 py-4 text-sm font-semibold text-primary_on-brand md:px-6">Spolvero apps</th>
-            </tr>
-          </thead>
-          <tbody>
-            {comparison.map((row) => (
-              <tr class="border-t border-secondary">
-                <td class="px-4 py-5 align-top md:px-6">
-                  <span class="flex gap-3 text-md text-tertiary">
-                    <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-error-secondary text-fg-error-primary"><Icon name="close" class="size-3.5" /></span>
-                    {row.old}
-                  </span>
-                </td>
-                <td class="bg-brand-primary px-4 py-5 align-top md:px-6">
-                  <span class="flex gap-3 text-md font-medium text-primary">
-                    <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-success-secondary text-fg-success-primary"><Icon name="check" class="size-3.5" /></span>
-                    {row.ours}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div class="mt-10 flex justify-center" data-reveal>
-        <Button href="#apps" variant="default" size="xl">See our apps<Icon name="arrow" /></Button>
-      </div>
-    </div>
-  </section>
-
-  <!-- Apps -->
-  <section id="apps" class="py-16 md:py-24" style="background:var(--color-wash-soft)">
-    <div class="container-page">
-      <SectionHeader eyebrow="Our apps" icon="phone" title="Each one does *one job* well" lede="Tap any app to see how it works." />
-
-      <!-- Featured (live) app -->
-      <div class="mt-12 grid overflow-hidden rounded-3xl bg-primary shadow-xs ring-1 ring-secondary md:mt-16 lg:grid-cols-2" data-reveal>
-        <div class="flex flex-col p-6 md:p-12">
-          <div class="flex items-center gap-4">
-            <AppIcon product={featured} size={56} />
-            <div>
-              <p class="text-xl font-semibold text-primary">{featured.name}</p>
-              <p class="text-md text-tertiary">{featured.kind} · {featured.platform}</p>
-            </div>
-          </div>
-          <div class="mt-6"><Badge variant="success" size="md">Live on Google Play</Badge></div>
-          <h3 class="mt-4 text-display-xs font-semibold text-primary md:text-display-sm">{featured.tagline}</h3>
-          <p class="mt-4 text-lg text-tertiary">{featured.summary}</p>
-          <ul class="mt-6 flex flex-col gap-4">
-            {featured.promise.points.slice(0, 3).map((pt) => (
-              <li class="flex gap-3">
-                <FeaturedIcon icon={getIcon("check")} size="sm" color="success" theme="light" />
-                <span class="pt-1 text-md text-tertiary">{pt}</span>
-              </li>
-            ))}
-          </ul>
-          <div class="mt-8 flex flex-wrap items-center gap-4 md:mt-auto md:pt-10">
-            <GooglePlayButton href={featured.playUrl} size="lg" />
-            <Button href={`/${featured.slug}/`} variant="link" size="lg">Learn more<Icon name="arrow" /></Button>
-          </div>
-        </div>
-        <div class="relative flex min-h-[340px] justify-center gap-4 overflow-hidden bg-brand-primary px-6 pt-12 md:pt-16">
-          <BackgroundPattern pattern="circle" size="md" className="absolute top-0 left-1/2 -translate-x-1/2 text-brand-200" />
-          <Screen product={featured} shot={featured.screenshots[0]} class="relative w-[46%] max-w-[240px] self-start" />
-          <Screen product={featured} shot={featured.screenshots[1]} class="relative mt-16 w-[46%] max-w-[240px] self-start" />
-        </div>
-      </div>
-
-      <!-- Other apps -->
-      <ul class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {rest.map((p) => (
+      <SectionHeader
+        eyebrow="Free tools"
+        icon="wrench"
+        title={`${liveTotal} tools, *free forever*`}
+        lede="No sign-up, nothing uploaded, and no feature held back. Ads on the page pay for them, never the person using them."
+      />
+      <ul class="mt-12 grid gap-6 md:mt-16 md:grid-cols-3">
+        {toolSets.map((s) => (
           <li data-reveal>
-            <a href={`/${p.slug}/`} class="group flex h-full flex-col overflow-hidden rounded-3xl bg-primary shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
-              <div class="flex flex-col gap-4 p-6">
-                <div class="flex items-start justify-between gap-3">
-                  <AppIcon product={p} size={48} />
-                  <Badge variant="secondary" size="sm">Coming soon</Badge>
-                </div>
-                <div>
-                  <p class="text-lg font-semibold text-primary">{p.name}</p>
-                  <p class="text-sm text-tertiary">{p.kind}</p>
-                </div>
-                <p class="text-md text-tertiary">{p.tagline}</p>
-                <span class="inline-flex items-center gap-1.5 text-md font-semibold text-brand-secondary">
-                  Learn more <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+            <a href={s.href} class="group flex h-full flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring md:p-8">
+              <div class="flex items-start justify-between gap-4">
+                <span class="grid size-14 place-items-center rounded-2xl text-neutral-900" style={`background:${s.tint}`} aria-hidden="true">
+                  <Icon name={s.icon} class="size-7" />
                 </span>
+                <Badge variant="success" size="sm">{s.count} live</Badge>
               </div>
-              <div class="relative mt-auto flex h-52 justify-center overflow-hidden" style={`background:${p.tint}`}>
-                {p.screenshots.length ? (
-                  <Screen product={p} shot={p.screenshots[0]} class="absolute top-6 w-[52%] max-w-[190px] transition-transform duration-500 group-hover:-translate-y-2" />
-                ) : (
-                  <div class="absolute top-6 grid w-[52%] max-w-[190px] grid-cols-3 gap-1.5 rounded-t-3xl bg-[#1f1f24] p-3 pt-12 transition-transform duration-500 group-hover:-translate-y-2" aria-hidden="true">
-                    <span class="absolute top-3 right-3 text-xl font-semibold text-white">₹1,180</span>
-                    {["7", "8", "9", "4", "5", "6", "1", "2", "3", "5%", "18%", "40%"].map((k) => (
-                      <span class:list={["grid h-8 place-items-center rounded-md text-xs font-medium text-white", !k.includes("%") && "bg-white/10"]} style={k.includes("%") ? `background:${p.accent}` : undefined}>{k}</span>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <h2 class="mt-6 text-xl font-semibold text-primary">{s.label}</h2>
+              <p class="mt-3 text-md text-tertiary">{s.blurb}</p>
+              <span class="mt-auto inline-flex items-center gap-1.5 pt-6 text-md font-semibold text-brand-secondary">
+                Open {s.label.toLowerCase()} <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+              </span>
             </a>
           </li>
         ))}
-        <li data-reveal>
-          <a href="/contact/?topic=design" class="group flex h-full flex-col justify-between rounded-3xl border-2 border-dashed border-primary bg-primary p-6 transition hover:border-brand">
-            <FeaturedIcon icon={getIcon("sparkles")} size="lg" color="brand" theme="modern" />
-            <div class="mt-10">
-              <p class="text-xl font-semibold text-primary">Have an app idea?</p>
-              <p class="mt-2 text-md text-tertiary">We design apps for other people too, from the first sketch to the store listing.</p>
-              <span class="mt-5 inline-flex items-center gap-1.5 text-md font-semibold text-brand-secondary">
-                Talk to us <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
-              </span>
-            </div>
-          </a>
-        </li>
       </ul>
+      <ul class="mx-auto mt-10 flex max-w-3xl flex-wrap justify-center gap-2" data-reveal>
+        {[...liveDevice, ...liveAudio].map((t) => (
+          <li>
+            <a href={toolHref(t)} class="inline-flex rounded-full bg-primary px-4 py-2 text-sm font-semibold text-secondary ring-1 ring-secondary transition hover:bg-primary_hover">{t.name}</a>
+          </li>
+        ))}
+      </ul>
+      <div class="mt-10 flex justify-center" data-reveal>
+        <Button href="/tools/" variant="outline" size="lg">Every free tool<Icon name="arrow" /></Button>
+      </div>
     </div>
   </section>
 
@@ -344,54 +204,24 @@ const homeJsonLd = {
     </div>
   </div>
 
-  <!-- Free tools: the pages that bring people to the site at all -->
-  <section id="tools" class="bg-primary py-16 md:py-24">
+  <!-- Apps, as a teaser. The full set lives on /apps/. -->
+  <section id="apps" class="bg-primary py-16 md:py-24">
     <div class="container-page">
-      <SectionHeader
-        eyebrow="Free tools"
-        title="Useful in the browser, free forever"
-        lede="No sign-up, nothing uploaded, and no feature held back. Ads on the page pay for them, never the person using them."
-      />
-      <ul class="mt-12 grid gap-6 md:mt-16 md:grid-cols-2">
-        {liveTools.map((t) => (
-          <li data-reveal>
-            <a href={`/tools/${t.slug}/`} class="group flex h-full flex-col rounded-3xl bg-secondary p-6 transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring md:p-8">
-              <div class="flex items-start justify-between gap-4">
-                <span class="grid size-14 place-items-center rounded-2xl text-neutral-900" style={`background:${t.tint}`} aria-hidden="true">
-                  <Icon name={t.icon} class="size-7" />
-                </span>
-                <Badge variant="success" size="sm">Live</Badge>
-              </div>
-              <h3 class="mt-6 text-xl font-semibold text-primary">{t.name}</h3>
-              <p class="mt-1 text-md font-medium text-brand-secondary">{t.tagline}</p>
-              <p class="mt-3 text-md text-tertiary">{t.summary}</p>
-              <span class="mt-auto inline-flex items-center gap-1.5 pt-6 text-md font-semibold text-brand-secondary">
-                Open the tool <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
-              </span>
-            </a>
-          </li>
-        ))}
-        <li data-reveal>
-          <a href="/tools/timers/" class="group flex h-full flex-col rounded-3xl bg-secondary p-6 transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring md:p-8">
-            <div class="flex items-start justify-between gap-4">
-              <span class="grid size-14 place-items-center rounded-2xl text-neutral-900" style="background:#e2f0ff" aria-hidden="true">
-                <Icon name="clock" class="size-7" />
-              </span>
-              <Badge variant="success" size="sm">{liveTimers.length} live</Badge>
-            </div>
-            <h3 class="mt-6 text-xl font-semibold text-primary">Timers</h3>
-            <p class="mt-1 text-md font-medium text-brand-secondary">Big enough for the back of the room.</p>
-            <p class="mt-3 text-md text-tertiary">
-              A classroom countdown, Toastmasters speech lights and an exam clock. Fullscreen carries no ads at all.
-            </p>
-            <span class="mt-auto inline-flex items-center gap-1.5 pt-6 text-md font-semibold text-brand-secondary">
-              See the timers <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
-            </span>
-          </a>
-        </li>
-      </ul>
-      <div class="mt-10 flex justify-center" data-reveal>
-        <Button href="/tools/" variant="outline" size="lg">Every free tool<Icon name="arrow" /></Button>
+      <SectionHeader eyebrow="Our apps" icon="phone" title="Each one does *one job* well" lede={`${products.length} apps built here, ${live.length} live on Google Play so far.`} />
+      <div class="mt-12 grid items-center gap-10 rounded-3xl bg-secondary p-6 md:mt-16 md:p-12 lg:grid-cols-2" data-reveal>
+        <div>
+          <Badge variant="success" size="md">Live on Google Play</Badge>
+          <h3 class="mt-4 text-display-xs font-semibold text-primary md:text-display-sm">{featured.name} — {featured.tagline}</h3>
+          <p class="mt-4 text-lg text-tertiary">{featured.summary}</p>
+          <div class="mt-8 flex flex-wrap items-center gap-3">
+            <Button href={`/${featured.slug}/`} variant="default" size="xl">About {featured.name}<Icon name="arrow" /></Button>
+            <Button href="/apps/" variant="outline" size="xl">All {products.length} apps</Button>
+          </div>
+        </div>
+        <div class="flex justify-center gap-4">
+          <Screen product={featured} shot={featured.screenshots[0]} class="w-[46%] max-w-[220px] self-start" />
+          <Screen product={featured} shot={featured.screenshots[1]} class="mt-10 w-[46%] max-w-[220px] self-start" />
+        </div>
       </div>
     </div>
   </section>
@@ -409,7 +239,7 @@ const homeJsonLd = {
           <li data-reveal>
             <a href={`/articles/${a.id}/`} class="group flex h-full flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
               <p class="text-sm font-semibold text-brand-secondary">{a.data.tags[0] ?? "Guide"}</p>
-              <h3 class="mt-2 text-lg font-semibold text-primary">{a.data.title}</h3>
+              <h2 class="mt-2 text-lg font-semibold text-primary">{a.data.title}</h2>
               <p class="mt-2 text-md text-tertiary">{a.data.description}</p>
               <span class="mt-auto inline-flex items-center gap-1.5 pt-5 text-md font-semibold text-brand-secondary">
                 Read <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
@@ -420,165 +250,6 @@ const homeJsonLd = {
       </ul>
       <div class="mt-10 flex justify-center" data-reveal>
         <Button href="/articles/" variant="outline" size="lg">All guides<Icon name="arrow" /></Button>
-      </div>
-    </div>
-  </section>
-
-  <!-- Impact, as the stepped cards from the reference rather than a flat row -->
-  <section class="py-16 md:py-24" style="background:var(--color-wash)">
-    <div class="container-page grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-      <StatCards
-        stats={[
-          { value: stats[0].value, label: stats[0].label, icon: "phone", tint: "var(--color-cielo-tint)" },
-          { value: stats[1].value, label: stats[1].label, icon: "wrench", tint: "var(--color-verde-tint)" },
-          { value: stats[2].value, label: stats[2].label, icon: "book", tint: "var(--color-giallo-tint)" },
-          { value: stats[3].value, label: stats[3].label, icon: "lock", tint: "var(--color-rosa-tint)" },
-        ]}
-      />
-      <div data-reveal>
-        <Eyebrow icon="chart">Where things stand</Eyebrow>
-        <Headline class="mt-5" align="left" text="What we have *actually shipped*" />
-        <p class="mt-4 max-w-md text-lg text-tertiary">
-          Small numbers, honestly counted. One app on Google Play, thirteen free tool pages that need no account, and a
-          growing set of guides — each written to answer a question rather than to fill a page.
-        </p>
-        <div class="mt-8">
-          <Button href="/tools/" variant="default" size="xl">Try a tool<Icon name="arrow" /></Button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- On the drawing board -->
-  <section id="next" class="bg-primary pt-16 pb-16 md:pt-20 md:pb-24">
-    <div class="container-page">
-      <SectionHeader eyebrow="Coming up" icon="pen" title="On the *drawing board*" lede="Beyond apps, this is what we're sketching next. Nothing to download yet." />
-      <ul class="mt-12 grid gap-6 md:mt-16 md:grid-cols-3">
-        {categories.map((c) => {
-          const Card = "href" in c && c.href ? "a" : "div";
-          return (
-            <li data-reveal>
-              <Card
-                href={"href" in c ? c.href : undefined}
-                class:list={["group flex h-full flex-col rounded-3xl bg-secondary p-6 md:p-8", "href" in c && c.href && "transition hover:bg-primary_hover focus-visible:outline-2 focus-visible:outline-focus-ring"]}
-              >
-                <div class="flex items-start justify-between">
-                  <FeaturedIcon icon={getIcon(c.icon)} size="lg" color="brand" theme="modern" />
-                  <Badge  size="sm">{"href" in c && c.href ? "Live now" : "In design"}</Badge>
-                </div>
-                <h3 class="mt-8 text-xl font-semibold text-primary">{c.title}</h3>
-                <p class="mt-2 text-md text-tertiary">{c.body}</p>
-                {"href" in c && c.href && (
-                  <span class="mt-4 inline-flex items-center gap-1.5 text-md font-semibold text-brand-secondary">
-                    Open the tools <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
-                  </span>
-                )}
-              </Card>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  </section>
-
-  <!-- Studio -->
-  <section id="studio" class="py-16 md:py-24" style="background:var(--color-wash-soft)">
-    <div class="container-page grid gap-12 lg:grid-cols-2 lg:gap-16">
-      <div>
-        <SectionHeader align="left" eyebrow="Design studio" icon="palette" title="The design behind our apps, *for yours*" lede="We work with founders and teams anywhere in the world, from the first sketch to a design system your developers can build from." />
-        <ul class="mt-8 flex flex-col gap-4" data-reveal>
-          {services.map((s) => (
-            <li class="flex gap-3">
-              <FeaturedIcon icon={getIcon("check")} size="sm" color="brand" theme="light" />
-              <span class="pt-1 text-lg text-tertiary">{s}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <PhotoCard
-        photo={getPhoto("studio")!}
-        chip={{ label: "Hourly rate", value: "$20–30", icon: "wallet" }}
-        ratio="wide"
-        class="self-center"
-      />
-    </div>
-
-    <div class="container-page mt-12 grid gap-12 lg:grid-cols-2 lg:gap-16">
-      <div class="hidden lg:block"></div>
-      <div class="self-center rounded-3xl bg-primary p-6 shadow-lg ring-1 ring-secondary md:p-10" data-reveal>
-        <div class="flex items-center justify-between gap-4">
-          <p class="text-lg font-semibold text-brand-secondary">Hourly rate</p>
-          <Badge variant="default" size="md">Worldwide</Badge>
-        </div>
-        <p class="mt-4 text-display-lg font-semibold text-primary md:text-display-xl">$20–30<span class="text-xl font-medium text-tertiary md:text-display-xs"> / hour</span></p>
-        <p class="mt-4 text-md text-tertiary">Depending on scope. You get a written quote before any work starts.</p>
-        <div class="mt-8 border-t border-secondary pt-8">
-          <ul class="flex flex-col gap-4">
-            {[{ i: "phone", t: "App design" }, { i: "browser", t: "Websites" }, { i: "palette", t: "Branding" }].map((x) => (
-              <li class="flex items-center gap-3 text-md font-semibold text-secondary">
-                <FeaturedIcon icon={getIcon(x.i)} size="md" color="gray" theme="modern" /> {x.t}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <Button href="/contact/?topic=design" variant="default" size="xl" class="mt-8 w-full">Tell us about your project<Icon name="arrow" /></Button>
-      </div>
-    </div>
-
-    <!-- How we work -->
-    <div class="container-page mt-20 md:mt-24">
-      <SectionHeader eyebrow="How we work" icon="target" title="From first call to launch in *three steps*" />
-      <div class="mx-auto mt-12 max-w-4xl md:mt-16">
-        <NumberedRows items={steps.map((s) => ({ title: s.title, body: s.body }))} />
-      </div>
-    </div>
-  </section>
-
-  <!-- Studio FAQ -->
-  <section id="studio-faq" class="bg-primary py-16 md:py-24">
-    <div class="container-page grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-16">
-      <div>
-        <SectionHeader align="left" eyebrow="Design studio" icon="help" title="Questions *from clients*" lede="Anything else about working with us?" />
-        <div class="mt-6" data-reveal>
-          <Button href="/contact/?topic=design" variant="outline" size="lg">Ask us directly</Button>
-        </div>
-      </div>
-      <div data-reveal>
-        <Faq id="studio-faq-list" items={studioFaqs} />
-      </div>
-    </div>
-  </section>
-
-  {testimonials.length > 0 && (
-    <section id="testimonials" class="bg-primary py-16 md:py-24">
-      <div class="container-page">
-        <SectionHeader eyebrow="In their words" icon="quote" title="What *people say*" />
-        <ul class="mt-12 grid gap-6 md:mt-16 md:grid-cols-3">
-          {testimonials.map((t) => (
-            <li class="flex flex-col rounded-3xl bg-secondary p-6 md:p-8" data-reveal>
-              <blockquote class="text-lg text-primary">“{t.quote}”</blockquote>
-              <div class="mt-auto pt-6">
-                <p class="text-md font-semibold text-primary">{t.name}</p>
-                <p class="text-sm text-tertiary">{t.role}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  )}
-
-  <!-- About Spolvero. Separate from the studio FAQ, and feeds FAQPage schema. -->
-  <section id="about-faq" class="bg-primary py-16 md:py-24">
-    <div class="container-page grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-16">
-      <div>
-        <SectionHeader align="left" eyebrow="About Spolvero" icon="book" title="The *short version*" lede="What we are, and how the whole thing pays for itself." />
-        <div class="mt-6" data-reveal>
-          <Button href="/contact/" variant="outline" size="lg">Ask us something</Button>
-        </div>
-      </div>
-      <div data-reveal>
-        <Faq id="company-faq" items={companyFaqs} />
       </div>
     </div>
   </section>

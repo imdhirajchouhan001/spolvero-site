@@ -9,15 +9,15 @@ export function getStaticPaths() {
 }
 
 const { variant: v } = Astro.props as { variant: Variant };
-const url = new URL(`/tools/webcam-test/${v.slug}/`, Astro.site).toString();
+const url = new URL(`/tools/device-tests/webcam-test/${v.slug}/`, Astro.site).toString();
 // Which row of the requirements table to highlight, where the page has a matching app.
 const highlights: Record<string, string> = { zoom: "Zoom", teams: "Microsoft Teams", "google-meet": "Google Meet", obs: "Twitch / OBS" };
 const jsonLd = webcamJsonLd({ url, name: `Spolvero Webcam Test — ${v.label}`, description: v.description, faqs: v.faqs, site: Astro.site!.toString(), crumb: v.label });
 ---
 
-<Base title={v.title} description={v.description} headerCta={{ label: "All webcam tests", href: "/tools/webcam-test/" }}
+<Base title={v.title} description={v.description} headerCta={{ label: "All webcam tests", href: "/tools/device-tests/webcam-test/" }}
   headerLabel={`Webcam Test · ${v.label}`}
-  headerLabelHref={`/tools/webcam-test/${v.slug}/`}>
+  headerLabelHref={`/tools/device-tests/webcam-test/${v.slug}/`}>
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
   <WebcamPage
     h1={v.h1}

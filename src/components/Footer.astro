@@ -1,17 +1,25 @@
 ---
 import { products } from "@/data/products";
-import { tools } from "@/data/tools";
-import { timers } from "@/data/timers";
+import { tools, toolHref } from "@/data/tools";
 
 const columns = [
-  { title: "Apps", links: products.map((p) => ({ label: p.name, href: `/${p.slug}/` })) },
-  { title: "Tools", links: tools.filter((t) => t.status === "live").map((t) => ({ label: t.name, href: `/tools/${t.slug}/` })).concat(timers.filter((t) => t.status === "live").map((t) => ({ label: t.name, href: `/tools/timers/${t.slug}/` }))).concat([{ label: "All tools", href: "/tools/" }]) },
+  { title: "Apps", links: [...products.map((p) => ({ label: p.name, href: `/${p.slug}/` })), { label: "All apps", href: "/apps/" }] },
+  {
+    title: "Tools",
+    links: [
+      { label: "Device tests", href: "/tools/device-tests/" },
+      { label: "Timers", href: "/tools/timers/" },
+      { label: "Audio", href: "/tools/audio/" },
+      ...tools.filter((t) => t.status === "live").map((t) => ({ label: t.name, href: toolHref(t) })),
+      { label: "All tools", href: "/tools/" },
+    ],
+  },
   {
     title: "Studio",
     links: [
-      { label: "Design services", href: "/#studio" },
+      { label: "Design services", href: "/studio/" },
       { label: "Start a project", href: "/contact/?topic=design" },
-      { label: "Coming up", href: "/#next" },
+      { label: "About Spolvero", href: "/about/" },
     ],
   },
   {

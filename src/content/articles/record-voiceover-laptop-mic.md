@@ -5,8 +5,8 @@ description: "Seven changes that improve a laptop-mic recording more than new ha
 published: "2026-09-18"
 updated: "2026-09-18"
 answer: "Get closer to the microphone, record in a soft room rather than an empty one, and set your level so the meter sits mid-range with peaks short of the top. Those three changes do more for a laptop-mic recording than any microphone under £100, because most of what makes a recording sound amateur is the room and the distance, not the capsule."
-tool: "/tools/voice-recorder/"
-tools: ["/tools/voice-recorder/", "/tools/mic-test/"]
+tool: "/tools/audio/voice-recorder/"
+tools: ["/tools/audio/voice-recorder/", "/tools/device-tests/mic-test/"]
 toolCta: "Open the voice recorder"
 tags: ["Audio", "Recording"]
 minutes: 7
@@ -45,7 +45,7 @@ Watch the meter while you speak at your normal recording volume. You want it sit
 
 The important asymmetry: **quiet can be fixed afterwards, clipping cannot.** When in doubt, record a little quieter than feels right.
 
-Our [voice recorder](/tools/voice-recorder/) shows a live meter that turns amber when you clip, so you can find the right distance before recording rather than after.
+Our [voice recorder](/tools/audio/voice-recorder/) shows a live meter that turns amber when you clip, so you can find the right distance before recording rather than after.
 
 ## 4. Turn off the processing
 

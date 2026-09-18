@@ -92,9 +92,36 @@ import { recorderShortcuts } from "@/data/audio";
         </label>
       </div>
 
-      <!-- Export: named by what you will do with the file, not by codec -->
+      <!-- Clean-up, applied to the trimmed selection just before it is encoded -->
       <div class="mt-5 hidden border-t border-[var(--border)] pt-5" data-export>
-        <p class="text-sm font-semibold text-secondary">Download</p>
+        <p class="text-sm font-semibold text-secondary">Before you download</p>
+        <div class="mt-3 flex flex-col gap-3">
+          <label class="flex items-start gap-3">
+            <input type="checkbox" data-trim-silence checked class="mt-0.5 size-4 shrink-0 rounded border-[var(--border)] text-brand-solid focus:ring-2 focus:ring-[var(--ring)]" />
+            <span class="text-md text-secondary">
+              Cut the silence off both ends
+              <span class="block text-sm text-tertiary">Removes the fumbling before you start and the reach for the stop button. Pauses in the middle are left alone.</span>
+            </span>
+          </label>
+          <label class="flex items-start gap-3">
+            <input type="checkbox" data-normalise class="mt-0.5 size-4 shrink-0 rounded border-[var(--border)] text-brand-solid focus:ring-2 focus:ring-[var(--ring)]" />
+            <span class="text-md text-secondary">
+              Set the loudness to
+              <select
+                data-target
+                aria-label="Loudness target"
+                class="ml-1 rounded-lg border border-[var(--border)] bg-[var(--card)] px-2 py-1 text-sm text-[var(--foreground)] outline-none focus:ring-2 focus:ring-[var(--ring)]"
+              >
+                <option value="-16">−16 LUFS — podcasts and spoken word</option>
+                <option value="-14">−14 LUFS — Spotify and YouTube</option>
+              </select>
+              <span class="block text-sm text-tertiary">Measured with ITU-R BS.1770-4, the same standard the platforms use. One gain across the whole take — nothing is compressed.</span>
+            </span>
+          </label>
+        </div>
+        <p class="mt-3 text-sm text-tertiary" data-cleanup-info></p>
+
+        <p class="mt-5 text-sm font-semibold text-secondary">Download</p>
         <div class="mt-3 flex flex-wrap items-center gap-2">
           <Button variant="default" size="lg" data-dl="mp3">
             <Icon name="arrow" />MP3 — to send
@@ -147,6 +174,10 @@ import { recorderShortcuts } from "@/data/audio";
     const exportRow = q("[data-export]")!;
     const dlStatus = q("[data-dl-status]")!;
     const trimInfo = q("[data-trim-info]")!;
+    const cleanupInfo = q("[data-cleanup-info]")!;
+    const trimSilenceBox = q<HTMLInputElement>("[data-trim-silence]")!;
+    const normaliseBox = q<HTMLInputElement>("[data-normalise]")!;
+    const targetSel = q<HTMLSelectElement>("[data-target]")!;
     const announce = q("[data-announce]")!;
     const btn = {
       record: q("[data-record]")!, pause: q("[data-pause]")!, stop: q("[data-stop]")!,
@@ -413,9 +444,53 @@ import { recorderShortcuts } from "@/data/audio";
       setTimeout(() => URL.revokeObjectURL(url), 10_000);
     };
 
+    /**
+     * Silence trim first, loudness second: measuring before the dead air is gone
+     * drags the gated reading down and the file comes out too loud.
+     */
+    async function cleanUp(input: AudioBuffer): Promise<AudioBuffer> {
+      const { trimSilence, normaliseTo } = await import("@/lib/audio-cleanup");
+      const ctx = new AudioContext();
+      const notes: string[] = [];
+      let buf = input;
+
+      if (trimSilenceBox.checked) {
+        const t = trimSilence(buf, ctx);
+        buf = t.buffer;
+        const cut = t.removedStart + t.removedEnd;
+        notes.push(cut > 0.05 ? `Cut ${cut.toFixed(1)}s of silence off the ends.` : "No silence worth cutting at the ends.");
+      }
+
+      if (normaliseBox.checked) {
+        const target = Number(targetSel.value);
+        const n = normaliseTo(buf, target, ctx);
+        buf = n.buffer;
+        if (n.measured === null) {
+          notes.push("Too short to measure loudness, so it was left as recorded.");
+        } else if (n.limited) {
+          notes.push(`Measured ${n.measured.toFixed(1)} LUFS. Raised by ${n.gainDb.toFixed(1)} dB to ${n.reached!.toFixed(1)} LUFS — going the rest of the way would have clipped, so it stopped at −1 dBFS.`);
+        } else {
+          notes.push(`Measured ${n.measured.toFixed(1)} LUFS, ${n.gainDb >= 0 ? "raised" : "lowered"} by ${Math.abs(n.gainDb).toFixed(1)} dB to ${target} LUFS.`);
+        }
+      }
+
+      cleanupInfo.textContent = notes.join(" ");
+      if (notes.length) say(notes.join(" "));
+      return buf;
+    }
+
     async function exportAs(kind: "mp3" | "wav") {
-      const buf = sliceBuffer();
-      if (!buf) return;
+      const sliced = sliceBuffer();
+      if (!sliced) return;
+      dlStatus.textContent = "Working on it…";
+      let buf: AudioBuffer;
+      try {
+        buf = await cleanUp(sliced);
+      } catch {
+        // The clean-up is a convenience. Losing it must never cost the recording.
+        cleanupInfo.textContent = "The clean-up could not run, so the file below is exactly as recorded.";
+        buf = sliced;
+      }
       dlStatus.textContent = kind === "wav" ? "Writing the file…" : "Encoding on your device…";
       try {
         if (kind === "wav") {
@@ -486,6 +561,7 @@ import { recorderShortcuts } from "@/data/audio";
       levelHint.textContent = "The bar moves when the microphone hears you";
       dlStatus.textContent = "";
       trimInfo.textContent = "";
+      cleanupInfo.textContent = "";
       btn.pause.textContent = "Pause";
       setState("idle");
       say("Cleared. Ready to record again.");

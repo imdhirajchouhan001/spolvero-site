@@ -1,0 +1,113 @@
+---
+// The design studio.
+//
+// This is the page that has to convert, so it gets its own URL, its own title and
+// its own FAQPage schema instead of being a section the homepage scrolls past.
+import Base from "@/layouts/Base.astro";
+import Icon from "@/components/Icon.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Button from "@/components/ui/Button.astro";
+import Badge from "@/components/ui/Badge.astro";
+import Faq from "@/components/Faq.astro";
+import StudioPitch from "@/components/sections/StudioPitch.astro";
+import { studioFaqs } from "@/data/studio";
+
+const title = "App and Product Design Studio — $20–30/hr, Worldwide";
+const description =
+  "UI and UX design for apps, websites and brands. Flows, prototypes and a design system your developers can build from. Written quote before any work starts.";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: Astro.site!.toString() },
+      { "@type": "ListItem", position: 2, name: "Design studio", item: new URL("/studio/", Astro.site).toString() },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Product and app design",
+    serviceType: "UI and UX design",
+    provider: { "@id": `${Astro.site!.toString()}#organization` },
+    areaServed: "Worldwide",
+    url: new URL("/studio/", Astro.site).toString(),
+    offers: {
+      "@type": "Offer",
+      priceSpecification: {
+        "@type": "UnitPriceSpecification",
+        minPrice: "20",
+        maxPrice: "30",
+        priceCurrency: "USD",
+        unitCode: "HUR",
+      },
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: studioFaqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+];
+---
+
+<Base
+  title={title}
+  description={description}
+  headerLabel="Design studio"
+  headerLabelHref="/studio/"
+  headerCta={{ label: "Start a project", href: "/contact/?topic=design" }}
+>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="bg-secondary pt-14 pb-14 md:pt-20 md:pb-20">
+    <div class="container-page flex flex-col items-center text-center">
+      <nav aria-label="Breadcrumb" class="text-sm font-semibold text-brand-secondary">Design studio</nav>
+      <h1 class="mt-5 max-w-3xl text-display-sm font-semibold text-primary md:text-display-lg">The design behind our apps, for yours</h1>
+      <p class="mt-4 max-w-2xl text-lg text-tertiary md:text-xl">
+        We work with founders and teams anywhere in the world, from the first sketch to a design system your developers
+        can build from.
+      </p>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-2">
+        <Badge variant="success" size="lg">$20–30 an hour</Badge>
+        <Badge variant="secondary" size="lg">Written quote first</Badge>
+        <Badge variant="secondary" size="lg">You own the files</Badge>
+      </div>
+      <div class="mt-8"><Button href="/contact/?topic=design" variant="default" size="xl">Tell us about your project<Icon name="arrow" /></Button></div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-24" style="background:var(--color-wash-soft)">
+    <StudioPitch withHeader={false} />
+  </section>
+
+  <section class="bg-primary py-16 md:py-24">
+    <div class="container-page grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-16">
+      <div>
+        <SectionHeader align="left" eyebrow="Design studio" icon="help" title="Questions *from clients*" lede="Anything else about working with us?" />
+        <div class="mt-6" data-reveal>
+          <Button href="/contact/?topic=design" variant="outline" size="lg">Ask us directly</Button>
+        </div>
+      </div>
+      <div data-reveal>
+        <Faq id="studio-faq-list" items={studioFaqs} />
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-24" style="background:var(--color-wash)">
+    <div class="container-page flex flex-col items-center text-center">
+      <h2 class="max-w-2xl text-display-xs font-semibold text-primary md:text-display-sm">See what we build for ourselves</h2>
+      <p class="mt-3 max-w-xl text-lg text-tertiary">The apps and free tools on this site are the same work, with us as the client.</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <Button href="/apps/" variant="default" size="xl">Our apps<Icon name="arrow" /></Button>
+        <Button href="/tools/" variant="outline" size="xl">Free tools</Button>
+      </div>
+    </div>
+  </section>
+</Base>

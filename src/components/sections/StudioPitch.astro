@@ -1,0 +1,74 @@
+---
+// The design-studio offer: what we do, the rate, and the three steps.
+//
+// Used whole on /studio/. The homepage links here rather than inlining it, which
+// is what stopped the homepage being a sales page and a tool directory at once.
+import Icon from "@/components/Icon.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Button from "@/components/ui/Button.astro";
+import Badge from "@/components/ui/Badge.astro";
+import PhotoCard from "@/components/sections/PhotoCard.astro";
+import NumberedRows from "@/components/sections/NumberedRows.astro";
+import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
+import { getPhoto } from "@/data/photos";
+import { getIcon } from "@/lib/icons";
+import { services, steps } from "@/data/studio";
+
+interface Props {
+  /** /studio/ carries the h1 in its own hero, so the header here is optional. */
+  withHeader?: boolean;
+}
+const { withHeader = true } = Astro.props;
+---
+
+<div class="container-page grid gap-12 lg:grid-cols-2 lg:gap-16">
+  <div>
+    {withHeader && (
+      <SectionHeader align="left" eyebrow="Design studio" icon="palette" title="The design behind our apps, *for yours*" lede="We work with founders and teams anywhere in the world, from the first sketch to a design system your developers can build from." />
+    )}
+    <ul class:list={["flex flex-col gap-4", withHeader && "mt-8"]} data-reveal>
+      {services.map((s) => (
+        <li class="flex gap-3">
+          <FeaturedIcon icon={getIcon("check")} size="sm" color="brand" theme="light" />
+          <span class="pt-1 text-lg text-tertiary">{s}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+  <PhotoCard
+    photo={getPhoto("studio")!}
+    chip={{ label: "Hourly rate", value: "$20–30", icon: "wallet" }}
+    ratio="wide"
+    class="self-center"
+  />
+</div>
+
+<div class="container-page mt-12 grid gap-12 lg:grid-cols-2 lg:gap-16">
+  <div class="hidden lg:block"></div>
+  <div class="self-center rounded-3xl bg-primary p-6 shadow-lg ring-1 ring-secondary md:p-10" data-reveal>
+    <div class="flex items-center justify-between gap-4">
+      <p class="text-lg font-semibold text-brand-secondary">Hourly rate</p>
+      <Badge variant="default" size="md">Worldwide</Badge>
+    </div>
+    <p class="mt-4 text-display-lg font-semibold text-primary md:text-display-xl">$20–30<span class="text-xl font-medium text-tertiary md:text-display-xs"> / hour</span></p>
+    <p class="mt-4 text-md text-tertiary">Depending on scope. You get a written quote before any work starts.</p>
+    <div class="mt-8 border-t border-secondary pt-8">
+      <ul class="flex flex-col gap-4">
+        {[{ i: "phone", t: "App design" }, { i: "browser", t: "Websites" }, { i: "palette", t: "Branding" }].map((x) => (
+          <li class="flex items-center gap-3 text-md font-semibold text-secondary">
+            <FeaturedIcon icon={getIcon(x.i)} size="md" color="gray" theme="modern" /> {x.t}
+          </li>
+        ))}
+      </ul>
+    </div>
+    <Button href="/contact/?topic=design" variant="default" size="xl" class="mt-8 w-full">Tell us about your project<Icon name="arrow" /></Button>
+  </div>
+</div>
+
+<!-- How we work -->
+<div class="container-page mt-20 md:mt-24">
+  <SectionHeader eyebrow="How we work" icon="target" title="From first call to launch in *three steps*" />
+  <div class="mx-auto mt-12 max-w-4xl md:mt-16">
+    <NumberedRows items={steps.map((s) => ({ title: s.title, body: s.body }))} />
+  </div>
+</div>

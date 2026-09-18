@@ -49,7 +49,7 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
       <span aria-hidden="true">/</span>
       {crumb ? (
         <>
-          <a href="/tools/webcam-test/" class="hover:text-tertiary_hover">Webcam test</a>
+          <a href="/tools/device-tests/webcam-test/" class="hover:text-tertiary_hover">Webcam test</a>
           <span aria-hidden="true">/</span>
           <span class="text-brand-secondary">{crumb}</span>
         </>
@@ -249,7 +249,7 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
   </div>
 </section>
 
-<RelatedGuides tool={variantSlug ? `/tools/webcam-test/${variantSlug}/` : "/tools/webcam-test/"} tags={["Troubleshooting", "Lighting"]} />
+<RelatedGuides tool={variantSlug ? `/tools/device-tests/webcam-test/${variantSlug}/` : "/tools/device-tests/webcam-test/"} tags={["Troubleshooting", "Lighting"]} />
 
 <!-- Same tool, other situations -->
 <section class="bg-secondary py-14 md:py-20">
@@ -258,7 +258,7 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
     <ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       {otherVariants.map((v) => (
         <li data-reveal>
-          <a href={`/tools/webcam-test/${v.slug}/`} class="flex items-center justify-between gap-3 rounded-2xl bg-primary p-4 shadow-xs ring-1 ring-secondary transition hover:bg-primary_hover">
+          <a href={`/tools/device-tests/webcam-test/${v.slug}/`} class="flex items-center justify-between gap-3 rounded-2xl bg-primary p-4 shadow-xs ring-1 ring-secondary transition hover:bg-primary_hover">
             <span class="text-md font-semibold text-primary">{v.label}</span>
             <Icon name="arrow" class="size-5 text-fg-quaternary" />
           </a>
@@ -266,7 +266,7 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
       ))}
       {crumb && (
         <li data-reveal>
-          <a href="/tools/webcam-test/" class="flex items-center justify-between gap-3 rounded-2xl bg-primary p-4 shadow-xs ring-1 ring-secondary transition hover:bg-primary_hover">
+          <a href="/tools/device-tests/webcam-test/" class="flex items-center justify-between gap-3 rounded-2xl bg-primary p-4 shadow-xs ring-1 ring-secondary transition hover:bg-primary_hover">
             <span class="text-md font-semibold text-primary">General webcam test</span>
             <Icon name="arrow" class="size-5 text-fg-quaternary" />
           </a>

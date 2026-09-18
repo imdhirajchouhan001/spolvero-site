@@ -1,0 +1,106 @@
+---
+// The apps grid: the live app given a full-width card, the rest as tiles, and a
+// "have an app idea?" card that routes to the studio.
+//
+// Lifted out of the homepage when /apps/ became a real page. Both read it, so the
+// cards cannot drift apart.
+import AppIcon from "@/components/AppIcon.astro";
+import Icon from "@/components/Icon.astro";
+import Screen from "@/components/Screen.astro";
+import Button from "@/components/ui/Button.astro";
+import Badge from "@/components/ui/Badge.astro";
+import { GooglePlayButton } from "@/components/base/buttons/app-store-buttons";
+import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
+import { BackgroundPattern } from "@/components/shared-assets/background-patterns";
+import { getIcon } from "@/lib/icons";
+import { products } from "@/data/products";
+
+interface Props {
+  /** h2 on the homepage, where a section header sits above it; h1 lives on /apps/. */
+  headingLevel?: 2 | 3;
+}
+const { headingLevel = 3 } = Astro.props;
+const Heading = `h${headingLevel}` as "h2" | "h3";
+const [featured, ...rest] = products;
+---
+
+<!-- Featured (live) app -->
+<div class="grid overflow-hidden rounded-3xl bg-primary shadow-xs ring-1 ring-secondary lg:grid-cols-2" data-reveal>
+  <div class="flex flex-col p-6 md:p-12">
+    <div class="flex items-center gap-4">
+      <AppIcon product={featured} size={56} />
+      <div>
+        <p class="text-xl font-semibold text-primary">{featured.name}</p>
+        <p class="text-md text-tertiary">{featured.kind} · {featured.platform}</p>
+      </div>
+    </div>
+    <div class="mt-6"><Badge variant="success" size="md">Live on Google Play</Badge></div>
+    <Heading class="mt-4 text-display-xs font-semibold text-primary md:text-display-sm">{featured.tagline}</Heading>
+    <p class="mt-4 text-lg text-tertiary">{featured.summary}</p>
+    <ul class="mt-6 flex flex-col gap-4">
+      {featured.promise.points.slice(0, 3).map((pt) => (
+        <li class="flex gap-3">
+          <FeaturedIcon icon={getIcon("check")} size="sm" color="success" theme="light" />
+          <span class="pt-1 text-md text-tertiary">{pt}</span>
+        </li>
+      ))}
+    </ul>
+    <div class="mt-8 flex flex-wrap items-center gap-4 md:mt-auto md:pt-10">
+      <GooglePlayButton href={featured.playUrl} size="lg" />
+      <Button href={`/${featured.slug}/`} variant="link" size="lg">Learn more<Icon name="arrow" /></Button>
+    </div>
+  </div>
+  <div class="relative flex min-h-[340px] justify-center gap-4 overflow-hidden bg-brand-primary px-6 pt-12 md:pt-16">
+    <BackgroundPattern pattern="circle" size="md" className="absolute top-0 left-1/2 -translate-x-1/2 text-brand-200" />
+    <Screen product={featured} shot={featured.screenshots[0]} class="relative w-[46%] max-w-[240px] self-start" />
+    <Screen product={featured} shot={featured.screenshots[1]} class="relative mt-16 w-[46%] max-w-[240px] self-start" />
+  </div>
+</div>
+
+<!-- Other apps -->
+<ul class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+  {rest.map((p) => (
+    <li data-reveal>
+      <a href={`/${p.slug}/`} class="group flex h-full flex-col overflow-hidden rounded-3xl bg-primary shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
+        <div class="flex flex-col gap-4 p-6">
+          <div class="flex items-start justify-between gap-3">
+            <AppIcon product={p} size={48} />
+            <Badge variant="secondary" size="sm">Coming soon</Badge>
+          </div>
+          <div>
+            <Heading class="text-lg font-semibold text-primary">{p.name}</Heading>
+            <p class="text-sm text-tertiary">{p.kind}</p>
+          </div>
+          <p class="text-md text-tertiary">{p.tagline}</p>
+          <span class="inline-flex items-center gap-1.5 text-md font-semibold text-brand-secondary">
+            Learn more <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+          </span>
+        </div>
+        <div class="relative mt-auto flex h-52 justify-center overflow-hidden" style={`background:${p.tint}`}>
+          {p.screenshots.length ? (
+            <Screen product={p} shot={p.screenshots[0]} class="absolute top-6 w-[52%] max-w-[190px] transition-transform duration-500 group-hover:-translate-y-2" />
+          ) : (
+            <div class="absolute top-6 grid w-[52%] max-w-[190px] grid-cols-3 gap-1.5 rounded-t-3xl bg-[#1f1f24] p-3 pt-12 transition-transform duration-500 group-hover:-translate-y-2" aria-hidden="true">
+              <span class="absolute top-3 right-3 text-xl font-semibold text-white">₹1,180</span>
+              {["7", "8", "9", "4", "5", "6", "1", "2", "3", "5%", "18%", "40%"].map((k) => (
+                <span class:list={["grid h-8 place-items-center rounded-md text-xs font-medium text-white", !k.includes("%") && "bg-white/10"]} style={k.includes("%") ? `background:${p.accent}` : undefined}>{k}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </a>
+    </li>
+  ))}
+  <li data-reveal>
+    <a href="/studio/" class="group flex h-full flex-col justify-between rounded-3xl border-2 border-dashed border-primary bg-primary p-6 transition hover:border-brand">
+      <FeaturedIcon icon={getIcon("sparkles")} size="lg" color="brand" theme="modern" />
+      <div class="mt-10">
+        <Heading class="text-xl font-semibold text-primary">Have an app idea?</Heading>
+        <p class="mt-2 text-md text-tertiary">We design apps for other people too, from the first sketch to the store listing.</p>
+        <span class="mt-5 inline-flex items-center gap-1.5 text-md font-semibold text-brand-secondary">
+          Talk to us <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+        </span>
+      </div>
+    </a>
+  </li>
+</ul>

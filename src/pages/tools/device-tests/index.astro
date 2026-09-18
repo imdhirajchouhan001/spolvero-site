@@ -1,0 +1,127 @@
+---
+import Base from "@/layouts/Base.astro";
+import Icon from "@/components/Icon.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Button from "@/components/ui/Button.astro";
+import Badge from "@/components/ui/Badge.astro";
+import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
+import { getIcon } from "@/lib/icons";
+import { deviceTests, webcamVariants, toolHref } from "@/data/tools";
+
+const live = deviceTests.filter((t) => t.status === "live");
+const soon = deviceTests.filter((t) => t.status === "soon");
+
+const title = "Free Device Tests — Check Webcam, Mic, Speaker and Screen";
+const description =
+  "Browser tools that check your camera, microphone, speakers, keyboard and screen. No sign-up, no downloads, and nothing you test is uploaded.";
+
+const jsonLd = [{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: Astro.site!.toString() },
+    { "@type": "ListItem", position: 2, name: "Tools", item: new URL("/tools/", Astro.site).toString() },
+    { "@type": "ListItem", position: 3, name: "Device tests", item: new URL("/tools/device-tests/", Astro.site).toString() },
+  ],
+}, {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Spolvero device tests",
+  description,
+  url: new URL("/tools/device-tests/", Astro.site).toString(),
+  hasPart: deviceTests
+    .filter((t) => t.status === "live")
+    .map((t) => ({
+      "@type": "SoftwareApplication",
+      name: t.name,
+      applicationCategory: "UtilitiesApplication",
+      operatingSystem: "Web browser",
+      url: new URL(toolHref(t), Astro.site).toString(),
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    })),
+}];
+---
+
+<Base title={title} description={description} headerCta={{ label: "Contact us", href: "/contact/" }}
+  headerLabel="Device tests"
+  headerLabelHref="/tools/device-tests/">
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="relative overflow-hidden bg-secondary pt-14 pb-14 md:pt-20 md:pb-20">
+    <div class="relative container-page flex flex-col items-center text-center">
+      <nav aria-label="Breadcrumb" class="text-sm font-semibold text-brand-secondary">
+        <a href="/tools/" class="hover:underline">Tools</a> <span class="text-quaternary" aria-hidden="true">/</span> Device tests
+      </nav>
+      <h1 class="mt-5 max-w-3xl text-display-sm font-semibold text-primary md:text-display-lg">Check your gear before the call starts</h1>
+      <p class="mt-4 max-w-2xl text-lg text-tertiary md:text-xl">
+        Small browser tools that tell you whether your camera, microphone, speakers, keyboard and screen actually work —
+        and what to do when they don't. Nothing to install, and nothing you test leaves your device.
+      </p>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-2">
+        <Badge variant="success" size="lg">Nothing uploaded</Badge>
+        <Badge variant="secondary" size="lg">No sign-up</Badge>
+        <Badge variant="secondary" size="lg">Free</Badge>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-secondary py-14 md:py-20">
+    <div class="container-page">
+      <SectionHeader eyebrow="Live now" icon="zap" title="Ready *to use*" />
+      <ul class="mt-10 grid gap-6 md:mt-12 lg:grid-cols-2">
+        {live.map((t) => (
+          <li data-reveal>
+            <a href={toolHref(t)} class="group flex h-full flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring md:p-8">
+              <div class="flex items-start justify-between gap-4">
+                <span class="grid size-14 place-items-center rounded-2xl text-neutral-900" style={`background:${t.tint}`} aria-hidden="true">
+                  <Icon name={t.icon} class="size-7" />
+                </span>
+                <Badge variant="success" size="sm">Live</Badge>
+              </div>
+              <h2 class="mt-6 text-xl font-semibold text-primary">{t.name}</h2>
+              <p class="mt-1 text-md font-medium text-brand-secondary">{t.tagline}</p>
+              <p class="mt-3 text-md text-tertiary">{t.summary}</p>
+              <span class="mt-6 inline-flex items-center gap-1.5 text-md font-semibold text-brand-secondary">
+                Open the test <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+              </span>
+            </a>
+          </li>
+        ))}
+        <li class="flex flex-col justify-center rounded-3xl border-2 border-dashed border-primary p-6 md:p-8" data-reveal>
+          <h2 class="text-lg font-semibold text-primary">Testing for a specific app?</h2>
+          <p class="mt-2 text-md text-tertiary">The webcam test has a page for each place people use it.</p>
+          <ul class="mt-5 flex flex-wrap gap-2">
+            {webcamVariants.map((v) => (
+              <li>
+                <a href={`/tools/device-tests/webcam-test/${v.slug}/`} class="inline-flex rounded-full bg-secondary px-3 py-1.5 text-sm font-semibold text-secondary transition hover:bg-primary_hover">{v.label}</a>
+              </li>
+            ))}
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="py-14 md:py-20" style="background:var(--color-wash-soft)">
+    <div class="container-page">
+      <SectionHeader eyebrow="Coming up" icon="pen" title="The rest *of the set*" lede="Each one built the same way: one job, no account, nothing uploaded." />
+      <ul class="mt-10 grid gap-6 md:mt-12 md:grid-cols-2 lg:grid-cols-4">
+        {soon.map((t) => (
+          <li class="flex flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary" data-reveal>
+            <div class="flex items-start justify-between gap-3">
+              <span class="grid size-12 place-items-center rounded-2xl text-neutral-900" style={`background:${t.tint}`} aria-hidden="true">
+                <Icon name={t.icon} class="size-6" />
+              </span>
+              <Badge variant="secondary" size="sm">In design</Badge>
+            </div>
+            <h2 class="mt-6 text-lg font-semibold text-primary">{t.name}</h2>
+            <p class="mt-1.5 text-md text-tertiary">{t.summary}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="mt-12 flex justify-center" data-reveal>
+        <Button href="/tools/device-tests/webcam-test/" variant="default" size="xl">Start with the webcam test<Icon name="arrow" /></Button>
+      </div>
+    </div>
+  </section>
+</Base>

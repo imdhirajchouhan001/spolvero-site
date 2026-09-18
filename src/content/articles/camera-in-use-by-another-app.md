@@ -5,8 +5,8 @@ description: "Something is holding your camera and will not let go. Here is how 
 published: "2026-09-17"
 updated: "2026-09-17"
 answer: "This error means another program already holds the camera. On Windows, hover the camera indicator in the taskbar corner to see which app it is; on Mac, open Control Centre while the green camera light is on. Quit that app fully — closing its window is often not enough — then reload the page or restart the app that needs the camera."
-tool: "/tools/webcam-test/"
-tools: ["/tools/webcam-test/", "/tools/mic-test/"]
+tool: "/tools/device-tests/webcam-test/"
+tools: ["/tools/device-tests/webcam-test/", "/tools/device-tests/mic-test/"]
 toolCta: "Check the camera is free"
 tags: ["Troubleshooting", "Windows", "macOS"]
 minutes: 5

@@ -1,0 +1,72 @@
+---
+// The three promises, and the table of what most apps do instead.
+//
+// These are claims about the apps, not about the site, which is why they moved off
+// the homepage and onto /about/ — they sat between "what we do" and the tools and
+// pushed the tools, the pages that actually bring people here, six sections down.
+import Icon from "@/components/Icon.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Eyebrow from "@/components/sections/Eyebrow.astro";
+import Headline from "@/components/sections/Headline.astro";
+import Button from "@/components/ui/Button.astro";
+import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
+import { getIcon } from "@/lib/icons";
+import { principles, comparison } from "@/data/home";
+---
+
+<section class="py-16 md:py-24" style="background:var(--color-wash-soft)">
+  <div class="container-page">
+    <div class="flex flex-col items-center text-center" data-reveal>
+      <Eyebrow icon="shield">How we build</Eyebrow>
+      <Headline class="mt-5" text="Three promises in *every app we ship*" />
+      <p class="mt-4 max-w-2xl text-lg text-tertiary">Whatever the app does, it's built the same way.</p>
+    </div>
+    <ul class="mt-12 grid gap-10 md:mt-16 md:grid-cols-3 md:gap-8">
+      {principles.map((x) => (
+        <li class="flex flex-col items-center text-center" data-reveal>
+          <FeaturedIcon icon={getIcon(x.icon)} size="lg" color="brand" theme="light" />
+          <h3 class="mt-4 text-lg font-semibold text-primary md:mt-5 md:text-xl">{x.title}</h3>
+          <p class="mt-1 text-md text-tertiary md:mt-2">{x.body}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<section class="bg-primary py-16 md:py-24">
+  <div class="container-page">
+    <SectionHeader eyebrow="Why Spolvero" icon="lock" title="Apps shouldn't cost you *your privacy*" lede="Many everyday apps ask for too much and explain too little. We build ours the other way round." />
+    <div class="mx-auto mt-12 max-w-5xl overflow-hidden rounded-3xl ring-1 ring-secondary md:mt-16" data-reveal>
+      <table class="w-full border-collapse text-left">
+        <caption class="sr-only">How typical apps compare with Spolvero apps</caption>
+        <thead>
+          <tr class="bg-secondary">
+            <th scope="col" class="w-1/2 px-4 py-4 text-sm font-semibold text-tertiary md:px-6">Many apps</th>
+            <th scope="col" class="w-1/2 bg-brand-section px-4 py-4 text-sm font-semibold text-primary_on-brand md:px-6">Spolvero apps</th>
+          </tr>
+        </thead>
+        <tbody>
+          {comparison.map((row) => (
+            <tr class="border-t border-secondary">
+              <td class="px-4 py-5 align-top md:px-6">
+                <span class="flex gap-3 text-md text-tertiary">
+                  <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-error-secondary text-fg-error-primary"><Icon name="close" class="size-3.5" /></span>
+                  {row.old}
+                </span>
+              </td>
+              <td class="bg-brand-primary px-4 py-5 align-top md:px-6">
+                <span class="flex gap-3 text-md font-medium text-primary">
+                  <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-success-secondary text-fg-success-primary"><Icon name="check" class="size-3.5" /></span>
+                  {row.ours}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-10 flex justify-center" data-reveal>
+      <Button href="/apps/" variant="default" size="xl">See our apps<Icon name="arrow" /></Button>
+    </div>
+  </div>
+</section>

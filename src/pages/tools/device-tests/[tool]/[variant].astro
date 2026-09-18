@@ -4,7 +4,7 @@
 import Base from "@/layouts/Base.astro";
 import DeviceTestPage from "@/components/tools/DeviceTestPage.astro";
 import { deviceTestJsonLd } from "@/components/tools/schema";
-import { deviceVariants, tools, type Tool, type Variant } from "@/data/tools";
+import { deviceVariants, tools, type Tool, type Variant, toolHref } from "@/data/tools";
 
 export function getStaticPaths() {
   return tools
@@ -19,7 +19,7 @@ export function getStaticPaths() {
 
 const { tool, variant: v } = Astro.props as { tool: Tool; variant: Variant };
 const site = Astro.site!.toString();
-const url = new URL(`/tools/${tool.slug}/${v.slug}/`, site).toString();
+const url = new URL(`${toolHref(tool)}${v.slug}/`, site).toString();
 const jsonLd = deviceTestJsonLd({
   tool, url, site,
   name: `Spolvero ${tool.name} — ${v.label}`,
@@ -32,9 +32,9 @@ const jsonLd = deviceTestJsonLd({
 <Base
   title={v.title}
   description={v.description}
-  headerCta={{ label: `All ${tool.name.toLowerCase()}s`, href: `/tools/${tool.slug}/` }}
+  headerCta={{ label: `All ${tool.name.toLowerCase()}s`, href: toolHref(tool) }}
   headerLabel={`${tool.name} · ${v.label}`}
-  headerLabelHref={`/tools/${tool.slug}/${v.slug}/`}
+  headerLabelHref={`${toolHref(tool)}${v.slug}/`}
 >
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
   <DeviceTestPage

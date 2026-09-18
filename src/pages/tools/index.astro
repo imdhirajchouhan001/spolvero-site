@@ -1,58 +1,88 @@
 ---
+// The tools directory.
+//
+// Deliberately short. This page's job is to name the categories and send you into
+// one of them; the category hubs are the pages worth ranking, and they are where
+// the tools themselves live. Two levels, never three — the same rule the menu uses.
 import Base from "@/layouts/Base.astro";
 import Icon from "@/components/Icon.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
-import Button from "@/components/ui/Button.astro";
 import Badge from "@/components/ui/Badge.astro";
-import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
-import { getIcon } from "@/lib/icons";
-import { tools, webcamVariants } from "@/data/tools";
+import { deviceTests, audioTools, toolHref } from "@/data/tools";
+import { timers } from "@/data/timers";
 
-const live = tools.filter((t) => t.status === "live");
-const soon = tools.filter((t) => t.status === "soon");
+const liveDevice = deviceTests.filter((t) => t.status === "live");
+const liveTimers = timers.filter((t) => t.status === "live");
+const liveAudio = audioTools.filter((t) => t.status === "live");
+const liveTotal = liveDevice.length + liveTimers.length + liveAudio.length;
 
-const title = "Free Device Tests — Check Webcam, Mic, Speaker and Screen";
+const groups = [
+  {
+    label: "Device tests",
+    href: "/tools/device-tests/",
+    icon: "camera",
+    tint: "#ffeadb",
+    blurb: "Is the camera working? Is the mic picking you up? Are any pixels dead? Answers in seconds, with the fix underneath when the answer is no.",
+    names: liveDevice.map((t) => t.name),
+    count: liveDevice.length,
+  },
+  {
+    label: "Timers",
+    href: "/tools/timers/",
+    icon: "clock",
+    tint: "#e2f0ff",
+    blurb: "Countdowns big enough for the back of a classroom, Toastmasters speech lights and an exam clock. Fullscreen carries no ads at all.",
+    names: liveTimers.map((t) => t.name),
+    count: liveTimers.length,
+  },
+  {
+    label: "Audio",
+    href: "/tools/audio/",
+    icon: "message",
+    tint: "#dff5ea",
+    blurb: "Record, trim and export in the tab. Nothing is uploaded — the file is written on your own machine.",
+    names: liveAudio.map((t) => t.name),
+    count: liveAudio.length,
+  },
+];
+
+const title = "Free Browser Tools — Device Tests, Timers and a Voice Recorder";
 const description =
-  "Browser tools that check your camera, microphone, speakers, keyboard and screen. No sign-up, no downloads, and nothing you test is uploaded.";
+  `${liveTotal} free browser tools in three sets: device tests for camera, mic, speakers, keyboard and screen; timers built to be projected; and a voice recorder. No sign-up, nothing uploaded.`;
 
-const jsonLd = [{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: Astro.site!.toString() },
-    { "@type": "ListItem", position: 2, name: "Tools", item: new URL("/tools/", Astro.site).toString() },
-  ],
-}, {
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  name: "Spolvero device tests",
-  description,
-  url: new URL("/tools/", Astro.site).toString(),
-  hasPart: tools
-    .filter((t) => t.status === "live")
-    .map((t) => ({
-      "@type": "SoftwareApplication",
-      name: t.name,
-      applicationCategory: "UtilitiesApplication",
-      operatingSystem: "Web browser",
-      url: new URL(`/tools/${t.slug}/`, Astro.site).toString(),
-      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: Astro.site!.toString() },
+      { "@type": "ListItem", position: 2, name: "Tools", item: new URL("/tools/", Astro.site).toString() },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Spolvero free browser tools",
+    description,
+    url: new URL("/tools/", Astro.site).toString(),
+    hasPart: groups.map((g) => ({
+      "@type": "CollectionPage",
+      name: g.label,
+      url: new URL(g.href, Astro.site).toString(),
     })),
-}];
+  },
+];
 ---
 
-<Base title={title} description={description} headerCta={{ label: "Contact us", href: "/contact/" }}
-  headerLabel="Tools"
-  headerLabelHref="/tools/">
+<Base title={title} description={description} headerLabel="Tools" headerLabelHref="/tools/">
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
 
-  <section class="relative overflow-hidden bg-secondary pt-14 pb-14 md:pt-20 md:pb-20">
-    <div class="relative container-page flex flex-col items-center text-center">
+  <section class="bg-secondary pt-14 pb-14 md:pt-20 md:pb-20">
+    <div class="container-page flex flex-col items-center text-center">
       <nav aria-label="Breadcrumb" class="text-sm font-semibold text-brand-secondary">Tools</nav>
-      <h1 class="mt-5 max-w-3xl text-display-sm font-semibold text-primary md:text-display-lg">Check your gear before the call starts</h1>
+      <h1 class="mt-5 max-w-3xl text-display-sm font-semibold text-primary md:text-display-lg">Free tools that run in your browser</h1>
       <p class="mt-4 max-w-2xl text-lg text-tertiary md:text-xl">
-        Small browser tools that tell you whether your camera, microphone, speakers, keyboard and screen actually work —
-        and what to do when they don't. Nothing to install, and nothing you test leaves your device.
+        {liveTotal} of them, in three sets. Nothing to install, no sign-up, and nothing you test or record leaves your device.
       </p>
       <div class="mt-8 flex flex-wrap items-center justify-center gap-2">
         <Badge variant="success" size="lg">Nothing uploaded</Badge>
@@ -62,63 +92,52 @@ const jsonLd = [{
     </div>
   </section>
 
-  <section class="bg-secondary py-14 md:py-20">
+  <section class="bg-primary py-14 md:py-20">
     <div class="container-page">
-      <SectionHeader eyebrow="Live now" icon="zap" title="Ready *to use*" />
-      <ul class="mt-10 grid gap-6 md:mt-12 lg:grid-cols-2">
-        {live.map((t) => (
+      <SectionHeader eyebrow="Three sets" icon="wrench" title="Pick the *kind of thing* you need" />
+      <ul class="mt-10 grid gap-6 md:mt-12 lg:grid-cols-3">
+        {groups.map((g) => (
           <li data-reveal>
-            <a href={`/tools/${t.slug}/`} class="group flex h-full flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring md:p-8">
+            <a href={g.href} class="group flex h-full flex-col rounded-3xl bg-secondary p-6 transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring md:p-8">
               <div class="flex items-start justify-between gap-4">
-                <span class="grid size-14 place-items-center rounded-2xl text-neutral-900" style={`background:${t.tint}`} aria-hidden="true">
-                  <Icon name={t.icon} class="size-7" />
+                <span class="grid size-14 place-items-center rounded-2xl text-neutral-900" style={`background:${g.tint}`} aria-hidden="true">
+                  <Icon name={g.icon} class="size-7" />
                 </span>
-                <Badge variant="success" size="sm">Live</Badge>
+                <Badge variant="success" size="sm">{g.count} live</Badge>
               </div>
-              <h2 class="mt-6 text-xl font-semibold text-primary">{t.name}</h2>
-              <p class="mt-1 text-md font-medium text-brand-secondary">{t.tagline}</p>
-              <p class="mt-3 text-md text-tertiary">{t.summary}</p>
-              <span class="mt-6 inline-flex items-center gap-1.5 text-md font-semibold text-brand-secondary">
-                Open the test <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+              <h2 class="mt-6 text-xl font-semibold text-primary">{g.label}</h2>
+              <p class="mt-3 text-md text-tertiary">{g.blurb}</p>
+              <p class="mt-4 text-sm text-quaternary">{g.names.join(" · ")}</p>
+              <span class="mt-auto inline-flex items-center gap-1.5 pt-6 text-md font-semibold text-brand-secondary">
+                Open {g.label.toLowerCase()} <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
               </span>
             </a>
           </li>
         ))}
-        <li class="flex flex-col justify-center rounded-3xl border-2 border-dashed border-primary p-6 md:p-8" data-reveal>
-          <h2 class="text-lg font-semibold text-primary">Testing for a specific app?</h2>
-          <p class="mt-2 text-md text-tertiary">The webcam test has a page for each place people use it.</p>
-          <ul class="mt-5 flex flex-wrap gap-2">
-            {webcamVariants.map((v) => (
-              <li>
-                <a href={`/tools/webcam-test/${v.slug}/`} class="inline-flex rounded-full bg-secondary px-3 py-1.5 text-sm font-semibold text-secondary transition hover:bg-primary_hover">{v.label}</a>
-              </li>
-            ))}
-          </ul>
-        </li>
       </ul>
     </div>
   </section>
 
   <section class="py-14 md:py-20" style="background:var(--color-wash-soft)">
     <div class="container-page">
-      <SectionHeader eyebrow="Coming up" icon="pen" title="The rest *of the set*" lede="Each one built the same way: one job, no account, nothing uploaded." />
-      <ul class="mt-10 grid gap-6 md:mt-12 md:grid-cols-2 lg:grid-cols-4">
-        {soon.map((t) => (
-          <li class="flex flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary" data-reveal>
-            <div class="flex items-start justify-between gap-3">
-              <span class="grid size-12 place-items-center rounded-2xl text-neutral-900" style={`background:${t.tint}`} aria-hidden="true">
-                <Icon name={t.icon} class="size-6" />
+      <SectionHeader eyebrow="Every tool" icon="layers" title="The *whole list*" lede="If you already know what you want, it is here." />
+      <ul class="mx-auto mt-10 grid max-w-4xl gap-2 md:mt-12 sm:grid-cols-2">
+        {[
+          ...liveDevice.map((t) => ({ name: t.name, href: toolHref(t), kind: t.kind })),
+          ...liveAudio.map((t) => ({ name: t.name, href: toolHref(t), kind: t.kind })),
+          ...liveTimers.map((t) => ({ name: t.name, href: `/tools/timers/${t.slug}/`, kind: t.kind })),
+        ].map((t) => (
+          <li>
+            <a href={t.href} class="flex items-center justify-between gap-3 rounded-xl bg-primary px-4 py-3 ring-1 ring-secondary transition hover:shadow-md focus-visible:outline-2 focus-visible:outline-focus-ring">
+              <span class="min-w-0">
+                <span class="block truncate text-md font-semibold text-primary">{t.name}</span>
+                <span class="block truncate text-sm text-tertiary">{t.kind}</span>
               </span>
-              <Badge variant="secondary" size="sm">In design</Badge>
-            </div>
-            <h2 class="mt-6 text-lg font-semibold text-primary">{t.name}</h2>
-            <p class="mt-1.5 text-md text-tertiary">{t.summary}</p>
+              <Icon name="arrow" class="size-5 shrink-0 text-brand-secondary" />
+            </a>
           </li>
         ))}
       </ul>
-      <div class="mt-12 flex justify-center" data-reveal>
-        <Button href="/tools/webcam-test/" variant="default" size="xl">Start with the webcam test<Icon name="arrow" /></Button>
-      </div>
     </div>
   </section>
 </Base>

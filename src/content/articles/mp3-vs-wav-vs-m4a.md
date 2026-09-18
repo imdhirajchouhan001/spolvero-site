@@ -5,8 +5,8 @@ description: "A plain comparison of the formats you actually meet — what each 
 published: "2026-09-18"
 updated: "2026-09-18"
 answer: "Use MP3 to send or upload, because it plays everywhere and is about a megabyte a minute. Use WAV if the audio is going into an editor, because it throws nothing away. M4A is slightly better than MP3 at the same size but less universal, and OPUS — what WhatsApp voice notes actually are — is the best of all for speech and the worst supported."
-tool: "/tools/voice-recorder/"
-tools: ["/tools/voice-recorder/"]
+tool: "/tools/audio/voice-recorder/"
+tools: ["/tools/audio/voice-recorder/"]
 toolCta: "Record and export"
 tags: ["Audio", "Formats"]
 minutes: 6
@@ -85,4 +85,4 @@ If you have an OPUS file that needs to go somewhere else, convert it to MP3 once
 
 If someone is going to *listen* to it, MP3. If someone is going to *work* on it, WAV.
 
-Almost every format decision you will actually face resolves cleanly with that, and the [voice recorder](/tools/voice-recorder/) offers exactly those two for the same reason — labelled by what you are going to do with the file rather than by the codec.
+Almost every format decision you will actually face resolves cleanly with that, and the [voice recorder](/tools/audio/voice-recorder/) offers exactly those two for the same reason — labelled by what you are going to do with the file rather than by the codec.

@@ -12,7 +12,7 @@ import Icon from "@/components/Icon.astro";
 import AdSlot from "@/components/AdSlot.astro";
 import Button from "@/components/ui/Button.astro";
 import Badge from "@/components/ui/Badge.astro";
-import { deviceVariants, tools, type Faq as FaqItem, type Tip, type Tool } from "@/data/tools";
+import { deviceVariants, tools, type Faq as FaqItem, type Tip, type Tool, toolHref } from "@/data/tools";
 
 interface Props {
   tool: Tool;
@@ -27,7 +27,7 @@ interface Props {
 }
 const { tool, h1, intro, answer, tips, faqs, crumb, variantSlug } = Astro.props;
 
-const base = `/tools/${tool.slug}/`;
+const base = toolHref(tool);
 const siblings = tools.filter((t) => t.slug !== tool.slug && t.status === "live");
 const others = (deviceVariants[tool.slug] ?? []).filter((v) => v.slug !== variantSlug);
 const photo = getPhoto(tool.slug) ?? getPhoto("webcam-test")!;
@@ -159,7 +159,7 @@ const photo = getPhoto(tool.slug) ?? getPhoto("webcam-test")!;
     <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {siblings.map((t) => (
         <li data-reveal>
-          <a href={`/tools/${t.slug}/`} class="group flex h-full flex-col rounded-3xl bg-primary p-5 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
+          <a href={toolHref(t)} class="group flex h-full flex-col rounded-3xl bg-primary p-5 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
             <div class="flex items-start justify-between gap-3">
               <span class="grid size-11 place-items-center rounded-2xl text-neutral-900" style={`background:${t.tint}`} aria-hidden="true">
                 <Icon name={t.icon} class="size-5" />

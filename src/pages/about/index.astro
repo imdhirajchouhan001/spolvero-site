@@ -1,0 +1,93 @@
+---
+// About Spolvero.
+//
+// Carries the company FAQ and its FAQPage schema, which used to sit on the
+// homepage competing with the studio FAQ for the same rich result.
+import Base from "@/layouts/Base.astro";
+import Icon from "@/components/Icon.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Button from "@/components/ui/Button.astro";
+import Faq from "@/components/Faq.astro";
+import StatCards from "@/components/sections/StatCards.astro";
+import Eyebrow from "@/components/sections/Eyebrow.astro";
+import Headline from "@/components/sections/Headline.astro";
+import AppPromises from "@/components/sections/AppPromises.astro";
+import { companyFaqs, stats } from "@/data/home";
+
+const title = "About Spolvero — An Independent Design and Software Studio";
+const description =
+  "What Spolvero is, what it makes, and how free tools with no sign-up and apps with no trackers actually pay for themselves.";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: Astro.site!.toString() },
+      { "@type": "ListItem", position: 2, name: "About", item: new URL("/about/", Astro.site).toString() },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: companyFaqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  },
+];
+---
+
+<Base title={title} description={description} headerLabel="About" headerLabelHref="/about/">
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="bg-secondary pt-14 pb-14 md:pt-20 md:pb-20">
+    <div class="container-page flex flex-col items-center text-center">
+      <nav aria-label="Breadcrumb" class="text-sm font-semibold text-brand-secondary">About</nav>
+      <h1 class="mt-5 max-w-3xl text-display-sm font-semibold text-primary md:text-display-lg">An independent studio, and what it actually ships</h1>
+      <p class="mt-4 max-w-2xl text-lg text-tertiary md:text-xl">
+        Spolvero designs and builds its own apps, publishes free browser tools that upload nothing, and takes design work
+        for other people's products. The three feed each other.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-24" style="background:var(--color-wash)">
+    <div class="container-page grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+      <StatCards
+        stats={[
+          { value: stats[0].value, label: stats[0].label, icon: "phone", tint: "var(--color-cielo-tint)" },
+          { value: stats[1].value, label: stats[1].label, icon: "wrench", tint: "var(--color-verde-tint)" },
+          { value: stats[2].value, label: stats[2].label, icon: "book", tint: "var(--color-giallo-tint)" },
+          { value: stats[3].value, label: stats[3].label, icon: "lock", tint: "var(--color-rosa-tint)" },
+        ]}
+      />
+      <div data-reveal>
+        <Eyebrow icon="chart">Where things stand</Eyebrow>
+        <Headline class="mt-5" align="left" text="What we have *actually shipped*" />
+        <p class="mt-4 max-w-md text-lg text-tertiary">
+          Small numbers, honestly counted. One app on Google Play, free tool pages that need no account, and a growing set
+          of guides — each written to answer a question rather than to fill a page.
+        </p>
+        <div class="mt-8"><Button href="/tools/" variant="default" size="xl">Try a tool<Icon name="arrow" /></Button></div>
+      </div>
+    </div>
+  </section>
+
+  <AppPromises />
+
+  <section class="bg-secondary py-16 md:py-24">
+    <div class="container-page grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-16">
+      <div>
+        <SectionHeader align="left" eyebrow="About Spolvero" icon="book" title="The *short version*" lede="What we are, and how the whole thing pays for itself." />
+        <div class="mt-6" data-reveal>
+          <Button href="/contact/" variant="outline" size="lg">Ask us something</Button>
+        </div>
+      </div>
+      <div data-reveal>
+        <Faq id="company-faq" items={companyFaqs} />
+      </div>
+    </div>
+  </section>
+</Base>

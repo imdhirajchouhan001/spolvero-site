@@ -23,10 +23,15 @@ export type Variant = {
   faqs: Faq[];
 };
 
+/** Which hub a tool belongs under. This decides its URL — see toolHref — so a
+ *  tool cannot be filed in one place and linked from another. */
+export type ToolCategory = "device-test" | "audio";
+
 export type Tool = {
   slug: string;
   name: string;
   kind: string;
+  category: ToolCategory;
   status: ToolStatus;
   icon: string;
   accent: string;
@@ -50,6 +55,7 @@ export type Tool = {
 export const tools: Tool[] = [
   {
     slug: "webcam-test",
+    category: "device-test",
     name: "Webcam Test",
     kind: "Camera check",
     status: "live",
@@ -62,6 +68,7 @@ export const tools: Tool[] = [
   },
   {
     slug: "voice-recorder",
+    category: "audio",
     name: "Voice Recorder",
     kind: "Record and export",
     status: "live",
@@ -73,6 +80,7 @@ export const tools: Tool[] = [
       "Record from your microphone, trim the dead air off the ends, and download an MP3 or WAV. Captured, edited and encoded on your own device — there is no server to send it to.",
   },
   {
+    category: "device-test",
     slug: "mic-test", name: "Mic Test", kind: "Microphone check", status: "live", engine: "mic", icon: "message", accent: "#23b26d", tint: "#dff5ea",
     tagline: "Hear yourself before they do.",
     summary: "Check your microphone level, pick the right input, and see whether you are too quiet — in your browser, with nothing recorded.",
@@ -99,6 +107,7 @@ export const tools: Tool[] = [
     },
   },
   {
+    category: "device-test",
     slug: "speaker-test", name: "Speaker Test", kind: "Audio output check", status: "live",
     engine: "speaker", icon: "play", accent: "#ff6fa3", tint: "#ffe6ef",
     tagline: "Left, right, and is it loud enough?",
@@ -126,6 +135,7 @@ export const tools: Tool[] = [
     },
   },
   {
+    category: "device-test",
     slug: "keyboard-test", name: "Keyboard Test", kind: "Key check", status: "live",
     engine: "keyboard", icon: "monitor", accent: "#2e9bff", tint: "#e2f0ff",
     tagline: "Find the key that stopped working.",
@@ -153,6 +163,7 @@ export const tools: Tool[] = [
     },
   },
   {
+    category: "device-test",
     slug: "dead-pixel-test", name: "Dead Pixel Test", kind: "Screen check", status: "live",
     engine: "dead-pixel", icon: "browser", accent: "#ffc83d", tint: "#fff4d9",
     tagline: "Check a new screen before the return window closes.",
@@ -929,3 +940,12 @@ export const deviceVariants: Record<string, Variant[]> = {
 
 export const getDeviceVariant = (tool: string, slug: string) =>
   deviceVariants[tool]?.find((v) => v.slug === slug);
+
+/** The only place a tool URL is constructed. Device tests and audio tools live
+ *  under their own hub so the menu, the hubs and the sitemap agree; timers have
+ *  their own file and their own /tools/timers/ prefix. */
+export const toolHref = (t: Pick<Tool, "slug" | "category">) =>
+  t.category === "audio" ? `/tools/audio/${t.slug}/` : `/tools/device-tests/${t.slug}/`;
+
+export const deviceTests = tools.filter((t) => t.category === "device-test");
+export const audioTools = tools.filter((t) => t.category === "audio");

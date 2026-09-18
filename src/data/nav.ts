@@ -7,7 +7,7 @@
 // we want to rank. Long-tail variants — /tools/webcam-test/zoom and friends —
 // never appear in the menu at all; they are reached from their parent tool.
 import { products } from "@/data/products";
-import { tools } from "@/data/tools";
+import { deviceTests as deviceTestTools, audioTools, toolHref } from "@/data/tools";
 import { timers } from "@/data/timers";
 
 export type NavItem = { label: string; href: string; note?: string; status?: "live" | "soon" };
@@ -44,23 +44,22 @@ const appItems = products.map((p) => item(p.name, `/${p.slug}/`, p.kind, p.statu
 // Live tools first, so the menu leads with what a visitor can actually use.
 const byStatus = <T extends { status: string }>(a: T, b: T) => (a.status === b.status ? 0 : a.status === "live" ? -1 : 1);
 
-const deviceTests = [...tools]
-  .filter((t) => t.slug !== "voice-recorder")
+const deviceTests = [...deviceTestTools]
   .sort(byStatus)
-  .map((t) => item(t.name, t.status === "live" ? `/tools/${t.slug}/` : "/tools/", t.kind, t.status));
+  .map((t) => item(t.name, t.status === "live" ? toolHref(t) : "/tools/device-tests/", t.kind, t.status));
 
 const timerItems = [...timers]
   .sort(byStatus)
   .map((t) => item(t.name, t.status === "live" ? `/tools/timers/${t.slug}/` : "/tools/timers/", t.kind, t.status));
 
-const audioItems = [
-  item("Voice Recorder", "/tools/voice-recorder/", "Record and export", "live"),
-];
+const audioItems = [...audioTools]
+  .sort(byStatus)
+  .map((t) => item(t.name, t.status === "live" ? toolHref(t) : "/tools/audio/", t.kind, t.status));
 
 const toolCategories: NavCategory[] = [
   {
     label: "Device tests",
-    href: "/tools/",
+    href: "/tools/device-tests/",
     blurb: "Check your camera, mic, speakers, keyboard and screen.",
     count: deviceTests.length,
     featured: deviceTests.slice(0, FEATURED),
@@ -74,7 +73,7 @@ const toolCategories: NavCategory[] = [
   },
   {
     label: "Audio",
-    href: "/tools/voice-recorder/",
+    href: "/tools/audio/",
     blurb: "Record and export without uploading anything.",
     count: audioItems.length,
     featured: audioItems,
@@ -91,24 +90,25 @@ export const navGroups: NavGroup[] = [
   },
   {
     label: "Apps",
-    href: "/#apps",
+    href: "/apps/",
     blurb: "Small apps for Android and iOS, each doing one job.",
     items: appItems,
-    footer: { label: "See all apps", href: "/#apps" },
+    footer: { label: "See all apps", href: "/apps/" },
   },
   {
     label: "Games",
-    href: "/#next",
+    href: "/about/",
     blurb: "2D games first, 3D later. Nothing to play yet.",
-    items: [item("In design", "/#next", "Follow along on the drawing board", "soon")],
-    footer: { label: "What we're sketching", href: "/#next" },
+    items: [item("In design", "/about/", "Follow along on the drawing board", "soon")],
+    footer: { label: "About Spolvero", href: "/about/" },
   },
 ];
 
 /** Flat links that sit beside the groups. */
 export const navLinks: NavItem[] = [
   { label: "Guides", href: "/articles/" },
-  { label: "Design studio", href: "/#studio" },
+  { label: "Design studio", href: "/studio/" },
+  { label: "About", href: "/about/" },
   { label: "Contact", href: "/contact/" },
 ];
 

@@ -4,7 +4,7 @@
 import Base from "@/layouts/Base.astro";
 import DeviceTestPage from "@/components/tools/DeviceTestPage.astro";
 import { deviceTestJsonLd } from "@/components/tools/schema";
-import { tools, type Tool } from "@/data/tools";
+import { tools, type Tool, toolHref } from "@/data/tools";
 
 export function getStaticPaths() {
   return tools
@@ -15,7 +15,7 @@ export function getStaticPaths() {
 const { tool } = Astro.props as { tool: Tool };
 const p = tool.page!;
 const site = Astro.site!.toString();
-const url = new URL(`/tools/${tool.slug}/`, site).toString();
+const url = new URL(toolHref(tool), site).toString();
 const jsonLd = deviceTestJsonLd({ tool, url, site, name: `Spolvero ${tool.name}`, description: p.description, faqs: p.faqs });
 ---
 
@@ -24,7 +24,7 @@ const jsonLd = deviceTestJsonLd({ tool, url, site, name: `Spolvero ${tool.name}`
   description={p.description}
   headerCta={{ label: "All tools", href: "/tools/" }}
   headerLabel={tool.name}
-  headerLabelHref={`/tools/${tool.slug}/`}
+  headerLabelHref={toolHref(tool)}
 >
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
   <DeviceTestPage tool={tool} h1={p.h1} intro={p.intro} answer={p.answer} tips={p.tips} faqs={p.faqs} />

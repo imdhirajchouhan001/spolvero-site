@@ -40,7 +40,7 @@ export const loudnessTargets = [
 export const recorderHowTo = [
   { name: "Press record", text: "Allow the microphone when the browser asks. The level meter starts moving as soon as it hears you." },
   { name: "Stop and trim", text: "Drag the handles on the waveform to cut the dead air off either end, and play the selection back to check it." },
-  { name: "Download", text: "Choose MP3 to send it or WAV to edit it. The file is made on your device and saved straight to your downloads." },
+  { name: "Clean it up and download", text: "Leave the silence trim on, add a loudness target if the file is going to a platform, then choose MP3 to send it or WAV to edit it. The file is made on your device and saved straight to your downloads." },
 ];
 
 export const recorderShortcuts = [
@@ -82,6 +82,10 @@ export const voiceRecorder = {
       body: "Bluetooth headsets switch to a low-quality call profile when the microphone is in use, which is why they sound thin. Wired earbuds with an inline mic usually beat both a Bluetooth headset and a laptop's built-in microphone.",
     },
     {
+      title: "Let it set the loudness rather than guessing",
+      body: "Podcast hosts want about −16 LUFS and Spotify and YouTube normalise to −14, which is why a file that sounded fine on your laptop can arrive quiet. Tick the loudness box before downloading and the tool measures the take with ITU-R BS.1770-4 — the same standard the platforms use — and applies one gain to the whole thing. Nothing is compressed, so if the target would clip it stops at −1 dBFS and tells you.",
+    },
+    {
       title: "MP3 to send, WAV to edit",
       body: "MP3 is small and plays everywhere, which is what you want for a voice note or an upload. WAV throws nothing away, so use it if the recording is going into an editor afterwards — you can always make an MP3 from a WAV, but not the reverse.",
     },
@@ -98,6 +102,14 @@ export const voiceRecorder = {
     {
       q: "Why does the MP3 take a moment to appear?",
       a: "Because it is being encoded on your machine rather than on a server. The encoder is only downloaded when you first ask for an MP3, which keeps the page fast for everyone who does not. WAV export is instant, since it needs no encoding.",
+    },
+    {
+      q: "What does the silence trim actually cut?",
+      a: "Only the quiet at the very start and the very end, and it leaves 150 milliseconds of room so the first word is never clipped. It never removes pauses from the middle — deciding which of your pauses were deliberate is not something a threshold can do well, and a recording with its breathing cut out sounds worse, not better.",
+    },
+    {
+      q: "Is the loudness reading a real LUFS measurement?",
+      a: "Yes. It is ITU-R BS.1770-4 integrated loudness: the K-weighting filter, 400 millisecond blocks at 75 percent overlap, and both the absolute gate at −70 LUFS and the relative gate 10 LU below the ungated mean. It is not a peak meter with a LUFS label on it. Takes shorter than 400 milliseconds cannot be measured under the standard, and the tool says so rather than inventing a number.",
     },
     {
       q: "Can I record a phone call or a meeting?",

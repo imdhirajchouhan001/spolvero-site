@@ -1,0 +1,79 @@
+---
+// The apps hub.
+//
+// Apps used to live at /#apps, which meant the homepage had to carry them, the
+// menu pointed at an anchor, and there was no page for "Spolvero apps" to rank.
+import Base from "@/layouts/Base.astro";
+import Icon from "@/components/Icon.astro";
+import Button from "@/components/ui/Button.astro";
+import Badge from "@/components/ui/Badge.astro";
+import AppsShowcase from "@/components/sections/AppsShowcase.astro";
+import AppPromises from "@/components/sections/AppPromises.astro";
+import { products } from "@/data/products";
+
+const live = products.filter((p) => p.status === "live");
+const title = "Spolvero Apps — Small Android Apps That Ask For Very Little";
+const description =
+  "Every Spolvero app: a subscription tracker with no bank login, a GST calculator, and more in progress. Each does one job and keeps your data on your phone.";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: Astro.site!.toString() },
+      { "@type": "ListItem", position: 2, name: "Apps", item: new URL("/apps/", Astro.site).toString() },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Spolvero apps",
+    description,
+    url: new URL("/apps/", Astro.site).toString(),
+    hasPart: products.map((p) => ({
+      "@type": "MobileApplication",
+      name: p.name,
+      applicationCategory: "UtilitiesApplication",
+      operatingSystem: p.platform,
+      url: new URL(`/${p.slug}/`, Astro.site).toString(),
+    })),
+  },
+];
+---
+
+<Base title={title} description={description} headerLabel="Apps" headerLabelHref="/apps/">
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="bg-secondary pt-14 pb-14 md:pt-20 md:pb-20">
+    <div class="container-page flex flex-col items-center text-center">
+      <nav aria-label="Breadcrumb" class="text-sm font-semibold text-brand-secondary">Apps</nav>
+      <h1 class="mt-5 max-w-3xl text-display-sm font-semibold text-primary md:text-display-lg">Small apps, each doing one job</h1>
+      <p class="mt-4 max-w-2xl text-lg text-tertiary md:text-xl">
+        {products.length} apps designed and built here, {live.length} live on Google Play so far. None of them wants your bank
+        login, your gallery or an account before you can start.
+      </p>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-2">
+        <Badge variant="success" size="lg">No account to start</Badge>
+        <Badge variant="secondary" size="lg">No bank login</Badge>
+        <Badge variant="secondary" size="lg">Data stays on your phone</Badge>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-primary py-14 md:py-20">
+    <div class="container-page">
+      <AppsShowcase headingLevel={2} />
+    </div>
+  </section>
+
+  <AppPromises />
+
+  <section class="py-16 md:py-24" style="background:var(--color-wash-soft)">
+    <div class="container-page flex flex-col items-center text-center">
+      <h2 class="max-w-2xl text-display-xs font-semibold text-primary md:text-display-sm">Need something like this for your own product?</h2>
+      <p class="mt-3 max-w-xl text-lg text-tertiary">The same design work goes into client projects, from the first sketch to the store listing.</p>
+      <div class="mt-8"><Button href="/studio/" variant="default" size="xl">See the design studio<Icon name="arrow" /></Button></div>
+    </div>
+  </section>
+</Base>

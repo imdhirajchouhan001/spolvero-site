@@ -1,6 +1,6 @@
 // Structured data for every webcam page: the tool itself, the steps, and the FAQ.
 // One helper so the head page and every variant stay consistent.
-import { howToSteps, type Faq, type Tool } from "@/data/tools";
+import { howToSteps, type Faq, type Tool, toolHref } from "@/data/tools";
 
 export const webcamJsonLd = (opts: {
   url: string;
@@ -17,7 +17,7 @@ export const webcamJsonLd = (opts: {
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: opts.site },
       { "@type": "ListItem", position: 2, name: "Tools", item: new URL("/tools/", opts.site).toString() },
-      { "@type": "ListItem", position: 3, name: "Webcam test", item: new URL("/tools/webcam-test/", opts.site).toString() },
+      { "@type": "ListItem", position: 3, name: "Webcam test", item: new URL("/tools/device-tests/webcam-test/", opts.site).toString() },
       ...(opts.crumb ? [{ "@type": "ListItem", position: 4, name: opts.crumb, item: opts.url }] : []),
     ],
   },
@@ -77,7 +77,7 @@ export const deviceTestJsonLd = (opts: {
   /** Present on a variant page; the head page leaves it out. */
   crumb?: string;
 }) => {
-  const head = new URL(`/tools/${opts.tool.slug}/`, opts.site).toString();
+  const head = new URL(toolHref(opts.tool), opts.site).toString();
   const permission = enginePermission[opts.tool.engine ?? ""];
   return [
     {

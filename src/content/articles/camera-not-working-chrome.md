@@ -5,8 +5,8 @@ description: "Chrome can't find your camera, shows a black screen, or says it's 
 published: "2026-09-17"
 updated: "2026-09-17"
 answer: "Most Chrome camera problems come down to three things: the site permission is blocked, another app is holding the camera, or the operating system is refusing access. Work through the fixes below in order — the first three solve the large majority of cases, and none of them take more than a minute."
-tool: "/tools/webcam-test/"
-tools: ["/tools/webcam-test/", "/tools/mic-test/"]
+tool: "/tools/device-tests/webcam-test/"
+tools: ["/tools/device-tests/webcam-test/", "/tools/device-tests/mic-test/"]
 toolCta: "Test your camera"
 tags: ["Chrome", "Troubleshooting"]
 minutes: 6

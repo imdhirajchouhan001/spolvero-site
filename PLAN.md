@@ -135,6 +135,25 @@ endorsements mislead readers and are what an ad network's site review looks for.
 both interrupting formats stand down while a timer runs. This is a promise made on
 the pages themselves, and competitors with ad-funded fullscreen cannot copy it.
 
+**Every cluster has a page; nothing lives at a homepage anchor.** Changed 18
+September 2026. Apps were at `/#apps`, the studio at `/#studio`, games at `/#next`
+and the company FAQ at `/#about-faq`, which is why the homepage ran to fifteen
+sections and why the menu felt arbitrary — it was pointing at fragments of one
+page. There are now real pages at `/apps/`, `/studio/` and `/about/`, and the
+homepage is back to six sections whose only job is to route. Tools moved above
+apps there, because tools are what brings anyone to the site and they had been
+sitting sixth, below a privacy table about the apps.
+
+**Tool URLs carry their category, and `toolHref` is the only place one is built.**
+Device tests were at `/tools/<slug>/` while timers were at `/tools/timers/<slug>/`,
+and the menu's "Audio" category pointed at a single tool pretending to be a hub.
+Device tests are now under `/tools/device-tests/`, the recorder under
+`/tools/audio/`, and `/tools/` is a short directory of the three. Done at 25 days
+old with zero backlinks, which is the cheapest this was ever going to be; GitHub
+Pages serves no 301s, so `astro.config.mjs` emits a meta-refresh page with a
+canonical at each of the 32 old paths. Never hand-write a tool path again — add
+the tool to `src/data/tools.ts` with a `category` and let `toolHref` place it.
+
 **Two levels of navigation, never three.** The menu shows a category and a few
 tools; the rest live on that category's hub, which is also the page worth ranking.
 Long-tail variants never appear in the menu. Listing every tool worked at eleven
@@ -162,6 +181,14 @@ pages carry unreadable text on purpose and are exempt under 1.4.3's picture exce
 they also sit inside `aria-hidden="true"`. Re-check with axe after any token change,
 and force `[data-reveal]` visible first or the scan silently skips everything below
 the fold.
+
+**No live transcript until it can run locally.** The recorder's headline claim is
+"0 bytes of audio uploaded", and it is printed on the tool itself. The browser
+`SpeechRecognition` API in Chrome streams the microphone to Google's servers, so
+shipping it would make that claim false on the very page that makes it. The
+feature is not cancelled — it needs a local model (whisper.cpp compiled to WASM,
+a 30–75 MB download on first use), which is its own project rather than an
+afternoon. Do not implement it with the browser API to save time.
 
 **No audio of unverified provenance.** `public/sounds/` ships empty with a README
 naming licences safe for commercial use. The timer falls back to synthesis.
@@ -203,6 +230,9 @@ A one-year horizon before meaningful revenue is the correct expectation.
 ## Next actions
 
 - [ ] Get AdSense approved — needs nothing from the build
+- [ ] Resubmit the sitemap: it is 90 URLs after the restructure, and 32 old tool
+      paths now answer with a meta-refresh and a canonical. Watch Search Console
+      for those being folded into the new URLs rather than reported as errors.
 - [ ] Search Console: sitemap submitted 18 Sept, now 85 URLs. "Couldn't fetch"
       on the day of submission is Google not having tried yet, not a fault —
       the file returns 200 with `application/xml`, no BOM, and valid XML to
@@ -221,5 +251,15 @@ A one-year horizon before meaningful revenue is the correct expectation.
       · `public/products/baseline/icon.webp` and `public/products/astro/icon.webp`
         (both fall back to the monogram tile)
 - [ ] Write the GST and water-tracker guides — both need facts confirmed first
-- [ ] Recorder follow-ups: live transcript, silence removal, loudness normalise,
-      and the format pages (WhatsApp to MP3, iPhone ringtone, remove silence)
+- [x] Recorder: silence removal and loudness normalise — done 18 September 2026.
+      `src/lib/audio-cleanup.ts` measures ITU-R BS.1770-4 integrated loudness
+      (K-weighting derived per sample rate, 400 ms blocks at 75% overlap, both
+      gates) and applies one gain to hit −16 or −14 LUFS, stopping at −1 dBFS
+      rather than compressing. `npm test` checks it against EBU Tech 3341 test 1.
+- [ ] Recorder format pages, now that two of them have a feature behind them:
+      `remove-silence` and `whatsapp-to-mp3` can both be written honestly. The
+      iPhone ringtone page cannot — an M4R is AAC, and the tool ships an MP3 and
+      WAV encoder only. Either add an AAC path or write it as a guide that sends
+      people to WAV plus iTunes; do not publish a page the tool cannot deliver.
+- [ ] Live transcript — see the decision above; needs a local model, not the
+      browser API

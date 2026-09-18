@@ -1,0 +1,147 @@
+---
+// The audio hub.
+//
+// The menu used to send "Audio" straight at the voice recorder, which meant a
+// single tool was standing in for a category. It has a hub now, and the mic and
+// speaker tests are surfaced here too — they are device tests by filing, but they
+// are what someone with an audio problem is actually looking for.
+import Base from "@/layouts/Base.astro";
+import Icon from "@/components/Icon.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Button from "@/components/ui/Button.astro";
+import Badge from "@/components/ui/Badge.astro";
+import { audioTools, tools, toolHref } from "@/data/tools";
+import { getCollection } from "astro:content";
+
+const live = audioTools.filter((t) => t.status === "live");
+const related = tools.filter((t) => ["mic-test", "speaker-test"].includes(t.slug));
+const audioGuides = (await getCollection("articles"))
+  .filter((a) => (a.data.tools ?? []).some((t: string) => t.startsWith("/tools/audio/")))
+  .slice(0, 3);
+
+const title = "Free Online Audio Tools — Record, Trim and Export In Your Browser";
+const description =
+  "Record your voice, trim the ends and download MP3 or WAV without uploading anything. Plus the mic and speaker tests for when the sound is not the problem you thought.";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: Astro.site!.toString() },
+      { "@type": "ListItem", position: 2, name: "Tools", item: new URL("/tools/", Astro.site).toString() },
+      { "@type": "ListItem", position: 3, name: "Audio", item: new URL("/tools/audio/", Astro.site).toString() },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Spolvero audio tools",
+    description,
+    url: new URL("/tools/audio/", Astro.site).toString(),
+    hasPart: live.map((t) => ({
+      "@type": "SoftwareApplication",
+      name: t.name,
+      applicationCategory: "MultimediaApplication",
+      operatingSystem: "Web browser",
+      url: new URL(toolHref(t), Astro.site).toString(),
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    })),
+  },
+];
+---
+
+<Base title={title} description={description} headerLabel="Audio" headerLabelHref="/tools/audio/">
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="bg-secondary pt-14 pb-14 md:pt-20 md:pb-20">
+    <div class="container-page flex flex-col items-center text-center">
+      <nav aria-label="Breadcrumb" class="text-sm font-semibold text-brand-secondary">
+        <a href="/tools/" class="hover:underline">Tools</a> <span class="text-quaternary" aria-hidden="true">/</span> Audio
+      </nav>
+      <h1 class="mt-5 max-w-3xl text-display-sm font-semibold text-primary md:text-display-lg">Audio tools that never upload your audio</h1>
+      <p class="mt-4 max-w-2xl text-lg text-tertiary md:text-xl">
+        Recording, trimming and exporting all happen inside the tab. The file is written on your own machine, and no part
+        of it is sent anywhere.
+      </p>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-2">
+        <Badge variant="success" size="lg">0 bytes uploaded</Badge>
+        <Badge variant="secondary" size="lg">No sign-up</Badge>
+        <Badge variant="secondary" size="lg">MP3 and WAV</Badge>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-primary py-14 md:py-20">
+    <div class="container-page">
+      <SectionHeader eyebrow="Live now" icon="zap" title="Ready *to use*" />
+      <ul class="mt-10 grid gap-6 md:mt-12 lg:grid-cols-2">
+        {live.map((t) => (
+          <li data-reveal>
+            <a href={toolHref(t)} class="group flex h-full flex-col rounded-3xl bg-secondary p-6 transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring md:p-8">
+              <div class="flex items-start justify-between gap-4">
+                <span class="grid size-14 place-items-center rounded-2xl text-neutral-900" style={`background:${t.tint}`} aria-hidden="true">
+                  <Icon name={t.icon} class="size-7" />
+                </span>
+                <Badge variant="success" size="sm">Live</Badge>
+              </div>
+              <h2 class="mt-6 text-xl font-semibold text-primary">{t.name}</h2>
+              <p class="mt-1 text-md font-medium text-brand-secondary">{t.tagline}</p>
+              <p class="mt-3 text-md text-tertiary">{t.summary}</p>
+              <span class="mt-auto inline-flex items-center gap-1.5 pt-6 text-md font-semibold text-brand-secondary">
+                Open the tool <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+              </span>
+            </a>
+          </li>
+        ))}
+        <li class="flex flex-col rounded-3xl border-2 border-dashed border-primary p-6 md:p-8" data-reveal>
+          <h2 class="text-lg font-semibold text-primary">Sound not working at all?</h2>
+          <p class="mt-2 text-md text-tertiary">Before you record anything, check the hardware is doing its job.</p>
+          <ul class="mt-5 flex flex-col gap-2">
+            {related.map((t) => (
+              <li>
+                <a href={toolHref(t)} class="flex items-center justify-between gap-3 rounded-xl bg-secondary px-4 py-3 transition hover:bg-primary_hover">
+                  <span class="text-md font-semibold text-secondary">{t.name}</span>
+                  <Icon name="arrow" class="size-5 shrink-0 text-brand-secondary" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  {audioGuides.length > 0 && (
+    <section class="py-14 md:py-20" style="background:var(--color-wash-soft)">
+      <div class="container-page">
+        <SectionHeader eyebrow="Guides" icon="book" title="Before you *hit record*" lede="The questions that come up once the recording exists." />
+        <ul class="mt-10 grid gap-6 md:mt-12 md:grid-cols-3">
+          {audioGuides.map((a) => (
+            <li data-reveal>
+              <a href={`/articles/${a.id}/`} class="group flex h-full flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
+                <p class="text-sm font-semibold text-brand-secondary">{a.data.tags[0] ?? "Guide"}</p>
+                <h2 class="mt-2 text-lg font-semibold text-primary">{a.data.title}</h2>
+                <p class="mt-2 text-md text-tertiary">{a.data.description}</p>
+                <span class="mt-auto inline-flex items-center gap-1.5 pt-5 text-md font-semibold text-brand-secondary">
+                  Read <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <section class="bg-primary py-14 md:py-20">
+    <div class="container-page flex flex-col items-center text-center">
+      <h2 class="max-w-2xl text-display-xs font-semibold text-primary md:text-display-sm">There are two other sets of tools</h2>
+      <p class="mt-3 max-w-xl text-lg text-tertiary">Device tests for camera, keyboard and screen, and timers built to be projected.</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <Button href="/tools/device-tests/" variant="default" size="xl">Device tests<Icon name="arrow" /></Button>
+        <Button href="/tools/timers/" variant="outline" size="xl">Timers</Button>
+      </div>
+    </div>
+  </section>
+</Base>

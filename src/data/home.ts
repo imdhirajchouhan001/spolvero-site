@@ -24,7 +24,7 @@ export const pillars: Pillar[] = [
       "Small Android apps that each do one job and ask for as little as possible. No bank logins, no gallery access, and no account needed to start.",
     icon: "phone",
     tint: "#ffeadb",
-    href: "/#apps",
+    href: "/apps/",
     cta: "See the apps",
     proof: "Unspend is live on Google Play",
   },
@@ -32,12 +32,12 @@ export const pillars: Pillar[] = [
     kind: "Free tools",
     title: "Tools anyone can use",
     body:
-      "Browser tools that solve one problem and then get out of the way — a webcam test, timers built to be projected, and more on the way. No sign-up, nothing uploaded.",
+      "Browser tools that solve one problem and then get out of the way — device tests, timers built to be projected, and a voice recorder. No sign-up, nothing uploaded.",
     icon: "wrench",
     tint: "#e2f0ff",
     href: "/tools/",
     cta: "Open the tools",
-    proof: "Two tools live, free forever",
+    proof: "Twelve tools live, free forever",
   },
   {
     kind: "Services",
@@ -46,17 +46,34 @@ export const pillars: Pillar[] = [
       "The same design work that goes into our own apps, for yours. Flows, screens, prototypes and a design system your developers can build from.",
     icon: "pen",
     tint: "#dff5ea",
-    href: "/#studio",
+    href: "/studio/",
     cta: "Work with us",
     proof: "$20–30 an hour, worldwide",
   },
 ];
 
+/** The three promises every app makes. Shown on /about/, and on each app page
+ *  only where the app actually keeps them. */
+export const principles = [
+  { icon: "lock", title: "Private by default", body: "Your data stays on your phone. No bank logins, no gallery access, no account needed to start." },
+  { icon: "eyeoff", title: "Ads that know their place", body: "Free apps may show ads, but nothing you type or track in our apps is ever shared with an ad network." },
+  { icon: "quote", title: "Numbers you can check", body: "Every figure shows where it came from, and our apps say plainly what they can't prove." },
+];
+
+/** Every "Spolvero way" line must stay true for all apps in src/data/products.ts. */
+export const comparison = [
+  { old: "Asks for your bank login, whole photo gallery or an account first", ours: "Asks only for what the job needs, and you can start without an account" },
+  { old: "Sends what you enter to its own servers", ours: "Keeps what you enter on your phone by default" },
+  { old: "Uses what you do in the app to target ads", ours: "Ads never see what you put into the app" },
+  { old: "Gives you numbers with no explanation", ours: "Shows where its numbers come from" },
+  { old: "Puts the main feature behind a paywall", ours: "The main job is free; upgrades are optional" },
+];
+
 /** Only numbers the site itself proves. Update these when the counts change. */
 export const stats = [
-  { value: "4", label: "apps designed and built", note: "One live, three in progress" },
-  { value: "13", label: "free tool pages", note: "Webcam test and timers" },
-  { value: "7", label: "guides published", note: "Written to answer, not to fill" },
+  { value: "5", label: "apps designed and built", note: "One live, four in progress" },
+  { value: "58", label: "free tool pages", note: "Device tests, timers and the recorder" },
+  { value: "16", label: "guides published", note: "Written to answer, not to fill" },
   { value: "0", label: "trackers in our apps", note: "Nothing sold, nothing shared" },
 ];
 
@@ -100,13 +117,4 @@ export const companyFaqs = [
     q: "Can I suggest a tool or an app?",
     a: "Please do. A good share of what is on the roadmap started as somebody describing a problem they kept having. Send it through the contact page and tell us what you are actually trying to do.",
   },
-];
-
-/** What a client engagement covers. Used in the umbrella section. */
-export const serviceList = [
-  "UI and UX for iOS and Android apps",
-  "Flows, prototypes and design systems",
-  "Landing pages and product websites",
-  "Name, logo, colour and type",
-  "Store listings and screenshots",
 ];
