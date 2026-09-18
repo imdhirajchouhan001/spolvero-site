@@ -12,15 +12,16 @@ Facts, not estimates. Check them again rather than trusting this list once it ag
 | | |
 | --- | --- |
 | Domain created | **24 August 2026** — it was 24 days old when this plan was written |
-| Pages live | 48 built |
+| Pages live | 66 built |
 | Backlinks | **Zero** |
 | AdSense | Site status "Getting ready" — **not approved, so revenue is £0** |
 | Ad units | 5 created and wired; they return `unfilled` until approval |
 | Capacity | ~20 hrs/week |
 
-Tools live: webcam test (+8 long-tail variants), mic, speaker, keyboard, dead
-pixel · classroom, speech, exam clock, interval, Tabata, debate timers · voice
-recorder. 13 guides, each linked from the tools it is about and back again.
+Tools live: webcam test (+8 long-tail variants), mic (+6), speaker (+4),
+keyboard (+4), dead pixel (+4) · classroom, speech, exam clock, interval,
+Tabata, debate timers · voice recorder. 13 guides, each linked from the tools
+it is about and back again.
 Apps: Unspend live on Play; Exact, Enough, GST Calculator and Flash in progress.
 
 ---
@@ -184,7 +185,10 @@ A one-year horizon before meaningful revenue is the correct expectation.
 ## Next actions
 
 - [ ] Get AdSense approved — needs nothing from the build
-- [ ] Submit the sitemap in Search Console (40 URLs, none crawled yet)
+- [ ] Search Console: sitemap submitted 18 Sept, 64 URLs. "Couldn't fetch"
+      on the day of submission is Google not having tried yet, not a fault —
+      the file returns 200 with `application/xml`, no BOM, and valid XML to
+      Googlebot. Request Indexing on the three or four pages that matter most.
 - [ ] Start the weekly two hours: Toastmasters clubs, debate leagues, r/Teachers
 - [ ] List on AlternativeTo and Product Hunt
 - [ ] Decide whether anyone else can do the community posting

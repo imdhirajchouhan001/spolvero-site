@@ -1,0 +1,31 @@
+---
+// The device tests that share the DeviceTest engine. The webcam test keeps its own
+// page file because its variants carry a different, camera-specific layout.
+import Base from "@/layouts/Base.astro";
+import DeviceTestPage from "@/components/tools/DeviceTestPage.astro";
+import { deviceTestJsonLd } from "@/components/tools/schema";
+import { tools, type Tool } from "@/data/tools";
+
+export function getStaticPaths() {
+  return tools
+    .filter((t) => t.engine && t.page)
+    .map((tool) => ({ params: { tool: tool.slug }, props: { tool } }));
+}
+
+const { tool } = Astro.props as { tool: Tool };
+const p = tool.page!;
+const site = Astro.site!.toString();
+const url = new URL(`/tools/${tool.slug}/`, site).toString();
+const jsonLd = deviceTestJsonLd({ tool, url, site, name: `Spolvero ${tool.name}`, description: p.description, faqs: p.faqs });
+---
+
+<Base
+  title={p.title}
+  description={p.description}
+  headerCta={{ label: "All tools", href: "/tools/" }}
+  headerLabel={tool.name}
+  headerLabelHref={`/tools/${tool.slug}/`}
+>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+  <DeviceTestPage tool={tool} h1={p.h1} intro={p.intro} answer={p.answer} tips={p.tips} faqs={p.faqs} />
+</Base>

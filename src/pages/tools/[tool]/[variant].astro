@@ -1,0 +1,50 @@
+---
+// Long-tail variants of the four engine-backed device tests: same tool, its own
+// H1, intro, tips and FAQ. The data lives in `deviceVariants`, keyed by tool.
+import Base from "@/layouts/Base.astro";
+import DeviceTestPage from "@/components/tools/DeviceTestPage.astro";
+import { deviceTestJsonLd } from "@/components/tools/schema";
+import { deviceVariants, tools, type Tool, type Variant } from "@/data/tools";
+
+export function getStaticPaths() {
+  return tools
+    .filter((t) => t.engine && t.page)
+    .flatMap((tool) =>
+      (deviceVariants[tool.slug] ?? []).map((variant) => ({
+        params: { tool: tool.slug, variant: variant.slug },
+        props: { tool, variant },
+      })),
+    );
+}
+
+const { tool, variant: v } = Astro.props as { tool: Tool; variant: Variant };
+const site = Astro.site!.toString();
+const url = new URL(`/tools/${tool.slug}/${v.slug}/`, site).toString();
+const jsonLd = deviceTestJsonLd({
+  tool, url, site,
+  name: `Spolvero ${tool.name} — ${v.label}`,
+  description: v.description,
+  faqs: v.faqs,
+  crumb: v.label,
+});
+---
+
+<Base
+  title={v.title}
+  description={v.description}
+  headerCta={{ label: `All ${tool.name.toLowerCase()}s`, href: `/tools/${tool.slug}/` }}
+  headerLabel={`${tool.name} · ${v.label}`}
+  headerLabelHref={`/tools/${tool.slug}/${v.slug}/`}
+>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+  <DeviceTestPage
+    tool={tool}
+    h1={v.h1}
+    intro={v.intro}
+    answer={v.answer}
+    tips={v.tips}
+    faqs={v.faqs}
+    crumb={v.label}
+    variantSlug={v.slug}
+  />
+</Base>

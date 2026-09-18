@@ -476,3 +476,456 @@ export const webcamVariants: Variant[] = [
 ];
 
 export const getVariant = (slug: string) => webcamVariants.find((v) => v.slug === slug);
+
+/** Long-tail variants for the four tests that share the DeviceTest engine.
+ *  Keyed by the head tool's slug. Same rule as `webcamVariants`: a variant
+ *  earns its page by carrying advice the head page does not, not by swapping
+ *  a product name into the same four tips. */
+export const deviceVariants: Record<string, Variant[]> = {
+  "mic-test": [
+    {
+      slug: "zoom",
+      label: "Zoom",
+      h1: "Microphone test for Zoom",
+      title: "Microphone Test for Zoom — Check Your Mic Level for Free",
+      description:
+        "Test your microphone before a Zoom call. Watch a live level meter, pick the right input, and fix a mic Zoom cannot hear. Nothing recorded or uploaded.",
+      intro:
+        "Zoom's automatic volume and its noise suppression both change how you sound, and either can make a working microphone seem broken. Check your raw level here first, then match the Zoom settings below.",
+      answer:
+        "To test your mic for Zoom, speak at your normal volume and check the meter peaks between −18 dB and −6 dB. If the level is fine here but Zoom hears nothing, Zoom is on the wrong input — open Settings → Audio and pick the microphone by name rather than leaving it on Same as System.",
+      tips: [
+        { title: "Turn off Automatically adjust microphone volume", body: "Zoom raises the gain when you are quiet and lowers it when you are loud, which sounds like your voice fading in and out. Untick it in Settings → Audio and set the slider by hand against the meter here." },
+        { title: "Background noise suppression eats quiet speech", body: "Zoom's suppression defaults to Auto and will gate a soft voice out entirely. If people say you cut out at the start of sentences, set it to Low." },
+        { title: "Original Sound is for music, not meetings", body: "Enabling Original Sound for Musicians switches off suppression, echo cancellation and auto gain together. That is right for an instrument and wrong for a laptop in a kitchen." },
+        { title: "Test the microphone Zoom will actually use", body: "Zoom remembers the last device it saw. Plug the headset in before opening Zoom, then confirm the input name in Zoom matches the one you selected here." },
+      ],
+      faqs: [
+        { q: "Zoom says my mic is working but nobody hears me.", a: "Check you are not muted at three separate levels: the Zoom mute button, a hardware mute switch on the headset, and the operating system's input volume. Zoom's own level bar can move while the meeting audio stays muted." },
+        { q: "Why am I quieter on Zoom than on this test?", a: "Zoom applies noise suppression and, by default, automatic gain control. Both reduce a soft voice. This page shows the raw signal, which is why the two disagree." },
+        { q: "How do I test my mic inside Zoom?", a: "Settings → Audio → Test Mic records a short clip and plays it back. It is useful for hearing tone, but it shows no numeric level, which is the thing that tells you whether you are too quiet." },
+        { q: "My Bluetooth headset sounds terrible on Zoom calls.", a: "That is the Bluetooth call profile rather than Zoom. The moment the microphone is used, the link drops to narrowband and the audio goes thin. Wired earbuds avoid it completely." },
+      ],
+    },
+    {
+      slug: "teams",
+      label: "Microsoft Teams",
+      h1: "Microphone test for Microsoft Teams",
+      title: "Microphone Test for Microsoft Teams — Free Mic Level Check",
+      description:
+        "Test your microphone before a Teams meeting. Check your level, pick the right input, and fix a mic Teams cannot find. Free, private, nothing uploaded.",
+      intro:
+        "Teams is the most common place to meet a microphone that works everywhere else. Usually it is a Windows permission or another app holding the device. Test here, then work through the fixes below.",
+      answer:
+        "To test your microphone for Teams, speak normally and check the meter peaks between −18 dB and −6 dB. If it works here but Teams cannot find it, quit Teams from the system tray, turn on microphone access for desktop apps in Windows privacy settings, and reopen Teams.",
+      tips: [
+        { title: "There are two Windows permissions, not one", body: "Settings → Privacy & security → Microphone has a global toggle and a separate 'Let desktop apps access your microphone'. Teams in a browser needs only the first; the Teams desktop app needs both." },
+        { title: "Teams noise suppression defaults to Auto", body: "Settings → Devices → Noise suppression can remove a soft voice along with the fan noise. Set it to Low if people tell you that you drop out mid-sentence." },
+        { title: "Run the Teams test call afterwards", body: "Settings → Devices → Make a test call records you and plays it back through Teams' own pipeline. Use it once this page has confirmed the hardware is fine, so you are testing one thing at a time." },
+        { title: "Only one app at a time can hold some headsets", body: "Certain USB and Bluetooth headsets allow a single application to open the microphone. If Teams was running in the background, this page can show a flat meter until you quit it properly." },
+      ],
+      faqs: [
+        { q: "Teams cannot detect my microphone.", a: "Work through it in order: confirm the mic works on this page, quit Teams fully from the system tray, check Windows microphone permissions for desktop apps, then restart Teams. If it also fails here, the fault is the device or its driver." },
+        { q: "Why does Teams make me sound robotic?", a: "Teams drops to a lower bitrate on a poor connection, and heavy noise suppression adds artefacts on top of that. Check your connection and set suppression to Low before blaming the microphone." },
+        { q: "Can Teams use a different mic from everything else?", a: "Yes. Teams keeps its own device selection under Settings → Devices, independent of the Windows default. That is also how it ends up pointing at a headset you unplugged last week." },
+        { q: "My mic works in Teams web but not the desktop app.", a: "That points straight at 'Let desktop apps access your microphone' in Windows privacy settings. Browsers do not need it; the desktop app does." },
+      ],
+    },
+    {
+      slug: "google-meet",
+      label: "Google Meet",
+      h1: "Microphone test for Google Meet",
+      title: "Microphone Test for Google Meet — Check Your Mic Online",
+      description:
+        "Test your microphone before a Google Meet call. Watch your level, choose the right input, and fix the Chrome permission that silences it. Nothing is uploaded.",
+      intro:
+        "Meet runs in the browser, so nearly every microphone problem there is a permission or a device choice rather than a fault. Check your level here, then fix the permission if Meet still hears nothing.",
+      answer:
+        "To test your microphone for Google Meet, speak normally and confirm the meter moves and peaks between −18 dB and −6 dB. If Meet hears nothing, click the padlock in Chrome's address bar on meet.google.com, set Microphone to Allow, and reload the tab.",
+      tips: [
+        { title: "Permissions are per-site, not per-browser", body: "Allowing the microphone on this page does nothing for meet.google.com. Every site asks separately, and a single accidental Block is remembered indefinitely until you clear it." },
+        { title: "Use Meet's green room check second", body: "On the screen before you join, Meet shows a level indicator and a 'Check your audio and video' option that records a short sample. Run it after this page, so each test covers one layer." },
+        { title: "Close the other tab holding the microphone", body: "A second Meet tab, or any page still using the mic, can leave the one you are in silent. Browsers mark the tab that holds the microphone with a recording indicator — look along the tab strip." },
+        { title: "Meet keeps its own input picker", body: "Three-dot menu → Settings → Audio. Choose the microphone by name rather than leaving it on Default, which follows the system and changes when you plug anything in." },
+      ],
+      faqs: [
+        { q: "Google Meet cannot hear me but this test works.", a: "Then the hardware is fine and Meet has either the wrong input selected or no permission. Check the padlock icon for the microphone permission first, then Meet's own Settings → Audio device list." },
+        { q: "Chrome never asks for microphone permission.", a: "It was answered before and remembered. Click the padlock beside the address, set Microphone back to Ask or Allow, and reload the page." },
+        { q: "Does Google Meet work in Safari or Firefox?", a: "Yes, both support Meet, though Chrome and Edge get new features first. Each browser stores microphone permission separately, so allowing it in one does nothing for the others." },
+        { q: "Why am I quiet on Meet but loud here?", a: "Meet applies its own noise cancellation and gain control, and this page shows the raw signal. A modest difference is normal; a large one usually means Meet has the wrong input selected." },
+      ],
+    },
+    {
+      slug: "discord",
+      label: "Discord",
+      h1: "Microphone test for Discord",
+      title: "Microphone Test for Discord — Check Your Mic Level Online",
+      description:
+        "Test your microphone before talking on Discord. Check your level, then set input sensitivity, push-to-talk and noise suppression so people hear every word.",
+      intro:
+        "Most Discord microphone problems are input sensitivity rather than hardware: the gate sits above your speaking level, so the first word of every sentence disappears. Find your real level here, then set the threshold to match.",
+      answer:
+        "To test your mic for Discord, speak normally and note where the meter peaks — between −18 dB and −6 dB is healthy. Then open Discord's Settings → Voice & Video, switch off automatic input sensitivity, and set the slider just below your quietest speech so the gate never closes mid-sentence.",
+      tips: [
+        { title: "Turn automatic input sensitivity off", body: "Discord's automatic mode re-reads the room and often settles above a quiet voice, clipping the start of sentences. Set the threshold by hand using the bar in Discord's own settings." },
+        { title: "Krisp suppression trades quality for quiet", body: "Discord's noise suppression is aggressive by design. It removes a mechanical keyboard convincingly and thins a soft voice while it does. Turn it off and listen before you leave it on." },
+        { title: "Push-to-talk removes the problem entirely", body: "In a noisy room a bound key beats any amount of gate tuning. Set a release delay around 100ms so the last syllable is not cut off." },
+        { title: "Reset Voice Settings fixes more than the sliders do", body: "Settings → Voice & Video → Reset Voice Settings clears a bad device selection and a stuck audio subsystem in one step, and is faster than working through every control." },
+      ],
+      faqs: [
+        { q: "Discord cannot hear me but this test can.", a: "Almost always input sensitivity. Open Settings → Voice & Video, switch off automatic sensitivity, and drag the threshold below your speaking level. Check the input device by name while you are in there." },
+        { q: "Why does my first word get cut off?", a: "A noise gate only opens once you cross its threshold, so anything quieter is lost. Lower the sensitivity threshold, or switch to push-to-talk." },
+        { q: "Should I use the Discord app or the browser?", a: "The app exposes input sensitivity, push-to-talk and noise suppression controls that the browser version does not. If you are troubleshooting, use the app." },
+        { q: "My mic is quiet on Discord only.", a: "Check the per-application input volume in your system sound settings, and confirm Discord is not still using a second device it remembered from last time." },
+      ],
+    },
+    {
+      slug: "airpods",
+      label: "AirPods",
+      h1: "AirPods microphone test",
+      title: "AirPods Mic Test — Check Your AirPods Microphone Online",
+      description:
+        "Test the microphone in your AirPods or Bluetooth earbuds. See your live level, and find out why the sound quality drops the moment the mic turns on.",
+      intro:
+        "AirPods sound excellent until the microphone is used, and then everything goes thin. That is Bluetooth switching profiles, not a fault. This test runs through the same path, so what you see here is what a call gets.",
+      answer:
+        "To test an AirPods microphone, start the test and speak normally — the meter should peak between −18 dB and −6 dB. Expect the playback quality to drop as soon as the mic activates: Bluetooth switches from a high-bitrate music codec to a narrowband call profile, and every wireless headset does this.",
+      tips: [
+        { title: "The profile switch is the whole story", body: "With playback only, Bluetooth uses a high-bitrate codec. Open a microphone and the link drops to a call profile of roughly 16kHz. Music going dull the moment you join a call is expected behaviour, not a defect." },
+        { title: "Wired earbuds beat any AirPod for calls", body: "A cheap wired headset carries full-bandwidth audio in both directions at once. Where call quality matters more than convenience, this is the largest single improvement available." },
+        { title: "Work out which AirPod is doing the talking", body: "With both in, either one can be the microphone. A blocked mesh on that side halves your level. Try each one alone and compare the meter." },
+        { title: "Clean the mesh before replacing anything", body: "The microphone port is a small mesh at the bottom of the stem and it clogs with pocket lint. A soft dry brush often restores a level that had been sliding for months." },
+      ],
+      faqs: [
+        { q: "Why do my AirPods sound worse on calls?", a: "Bluetooth cannot carry high-quality playback and a microphone at the same time. When the mic opens, the link drops to a narrowband call profile. Every wireless headset behaves this way." },
+        { q: "Can I use AirPods as a microphone on Windows?", a: "Yes, though support is inconsistent. Windows exposes them as two devices — a stereo playback one and a hands-free one — and only the hands-free device carries the microphone." },
+        { q: "One AirPod is much quieter than the other.", a: "Try each one alone on this test. A clear difference points at a blocked microphone mesh on that side, which careful cleaning usually fixes." },
+        { q: "Is the iPhone's own microphone better?", a: "In a quiet room, usually yes — the phone's microphones carry more bandwidth than a Bluetooth call profile. AirPods win in noisy places and when you need your hands free." },
+      ],
+    },
+    {
+      slug: "windows",
+      label: "Windows",
+      h1: "Microphone test for Windows",
+      title: "Microphone Test for Windows 11 — Check Your Mic for Free",
+      description:
+        "Test your microphone on Windows 10 or 11 in the browser. See your level, then fix the privacy setting, input volume and enhancements that silence it.",
+      intro:
+        "Windows has four separate places a microphone can be silenced, and a browser only ever sees the end of that chain. Test here first — if the meter stays flat, the list below is the order to check them in.",
+      answer:
+        "To test a microphone on Windows, allow access below and speak normally; the meter should peak between −18 dB and −6 dB. A flat meter with the correct device selected almost always means Settings → Privacy & security → Microphone is off, or the input volume in Sound settings has been set to zero.",
+      tips: [
+        { title: "Check the input volume, not only the mute", body: "Sound settings → your input device → Input volume. Windows sometimes drops this to zero after a driver update, which looks exactly like a dead microphone." },
+        { title: "Turn off audio enhancements while testing", body: "Many Realtek and vendor drivers add enhancements that gate or compress the signal. Disable them, retest, then turn back on only what measurably helped." },
+        { title: "Exclusive mode lets one app take the device", body: "In the microphone's advanced properties, 'Allow applications to take exclusive control' means a background app can lock everything else out. Unticking it fixes a whole class of intermittent faults." },
+        { title: "Re-enumerate a USB mic rather than reinstalling drivers", body: "Unplug it, remove the device under Audio inputs and outputs in Device Manager, then plug it back in. This is more reliable than a driver reinstall and takes a fraction of the time." },
+      ],
+      faqs: [
+        { q: "Windows shows my mic but records nothing.", a: "Check in order: the two privacy toggles, the input volume slider, the device mute in Sound settings, then a physical mute switch on the hardware. Windows can list a device as working while any one of these blocks the signal." },
+        { q: "How do I test a mic without installing anything?", a: "This page does it — it uses the browser's own audio API, installs nothing and uploads nothing. Windows also has a level bar under Settings → System → Sound → your input device." },
+        { q: "My USB mic disappeared after a Windows update.", a: "Unplug it, remove the device in Device Manager under Audio inputs and outputs, then reconnect it so Windows re-enumerates it from scratch." },
+        { q: "Which microphone is Windows actually using?", a: "Settings → System → Sound shows the default input. Individual apps can override it, which is why a mic that works here can still be ignored by one program." },
+      ],
+    },
+  ],
+
+  "speaker-test": [
+    {
+      slug: "headphones",
+      label: "Headphones",
+      h1: "Headphone test: left, right and the full range",
+      title: "Headphone Test — Check Left, Right and Stereo Channels Free",
+      description:
+        "Test your headphones in the browser. Play a tone through each ear separately, run a frequency sweep, and confirm the channels are not swapped.",
+      intro:
+        "Play the left tone and confirm it arrives on your left. Swapped channels are more common than people expect and nearly impossible to notice in music, but they ruin anything mixed with direction in it.",
+      answer:
+        "To test headphones, play the left tone and the right tone separately and confirm each arrives on the correct side. Sound from one ear only usually means the plug is not fully seated or a conductor in the cable has failed. Reversed sides point at an extension lead or a channel balance setting, not at the headphones.",
+      tips: [
+        { title: "Seat the plug fully", body: "A 3.5mm jack pushed in only to the first click gives you one channel or a thin, phasey sound. Push until it seats — a phone case with a narrow port is the usual reason it does not." },
+        { title: "Flex the cable near the plug while a tone plays", body: "Crackling or dropouts as you move it means a broken conductor rather than a driver fault. It is the most common headphone failure, and the plug end is where it happens." },
+        { title: "Turn spatial audio off before judging anything", body: "Head-tracked and spatial modes move the stereo image deliberately, which makes a left-right test meaningless. Switch to plain stereo, test, then turn it back on." },
+        { title: "Start the sweep quiet", body: "Headphones sit against your ears, so a sweep at a level that is comfortable on speakers can genuinely damage hearing. Set the volume low and raise it only if you need to." },
+      ],
+      faqs: [
+        { q: "One side is silent.", a: "Try another pair in the same socket, and the same pair in another socket. Those two tests separate the headphones, the cable and the port in under a minute." },
+        { q: "The sides are swapped. Is that possible?", a: "Yes. A reversed extension lead, a badly wired adapter or a balance slider dragged off centre all do it. It is almost never the headphones themselves." },
+        { q: "Why do cheap headphones go quiet at the low end of the sweep?", a: "Small drivers cannot move enough air to produce deep bass. Very little output below about 60Hz is normal on in-ear headphones. A rattle or a dropout anywhere in the range is not." },
+        { q: "Is testing at full volume safe?", a: "No. Prolonged exposure above roughly 85 dB damages hearing and headphones reach well past that. Test at the level you would actually listen at." },
+      ],
+    },
+    {
+      slug: "surround",
+      label: "Surround sound",
+      h1: "Surround sound test: what a browser can and cannot check",
+      title: "Surround Sound Test — Check 5.1 and 7.1 Speakers Online",
+      description:
+        "Test a surround setup channel by channel. See what a browser can and cannot send to 5.1 or 7.1, and which built-in tool checks the rest of the chain.",
+      intro:
+        "Browsers output stereo and let the operating system handle everything after that, so a web page cannot address a rear speaker directly. This test proves the front pair and the signal path; the section below covers the honest limits.",
+      answer:
+        "A browser cannot send discrete 5.1 or 7.1 channels — it outputs stereo, and your operating system or receiver upmixes it. Use the tones below to confirm the front pair and the signal path, then use the speaker configuration test in Windows or macOS, or your receiver's own test tone, to check the centre, surround and subwoofer channels individually.",
+      tips: [
+        { title: "Use the system test for discrete channels", body: "On Windows: Sound settings → your device → Configure → Test plays each speaker in turn by name. On macOS: Audio MIDI Setup → Configure Speakers. Those tools address individual channels; a browser cannot." },
+        { title: "The receiver's test tone is the ground truth", body: "Every AV receiver has a channel test in its setup menu, and it bypasses the computer entirely. That is exactly what you want when deciding whether a silent rear speaker is the PC or the wiring." },
+        { title: "A silent centre channel is usually the source", body: "Stereo material has no centre channel at all. Check whether what you are playing is genuinely multichannel before you start adjusting speaker levels." },
+        { title: "Check the declared speaker layout first", body: "If the system believes you have two speakers, it folds everything into two no matter how many are connected. The configuration screen above is where that is declared." },
+      ],
+      faqs: [
+        { q: "Can I test 5.1 speakers in a browser?", a: "Not channel by channel. Web audio outputs stereo to the operating system, which then upmixes it. Use the speaker configuration test in Windows or macOS to hear individual channels." },
+        { q: "Why do my rear speakers stay silent?", a: "Either the source is stereo, or the system is configured for two channels. Check the declared speaker layout in your sound settings before suspecting the speakers or the wiring." },
+        { q: "What about surround from a streaming site?", a: "Some services pass multichannel audio through in specific browsers and apps, and many do not. It varies by service and platform, which is another reason a browser test cannot settle this." },
+        { q: "My subwoofer does nothing.", a: "Check that it is enabled in the speaker configuration, that the crossover is not set below the range of the material, and that the receiver is not in a stereo mode that bypasses it." },
+      ],
+    },
+    {
+      slug: "windows",
+      label: "Windows",
+      h1: "Speaker test for Windows",
+      title: "Speaker Test for Windows 11 — Check Sound and Channels Free",
+      description:
+        "Test speakers on Windows 10 or 11 in the browser. Play left and right tones, then fix the output device, volume mixer and enhancements that silence them.",
+      intro:
+        "Windows keeps at least three volume controls plus a per-application mixer, and any one of them can silence a working speaker. Play the tones first — if they work here but not elsewhere, the mixer is where to look.",
+      answer:
+        "To test speakers on Windows, play the left and right tones below and confirm each comes from the correct side. If you hear nothing, check the output device in Settings → System → Sound, then the per-app volume mixer, then whether the browser tab itself is muted — in that order.",
+      tips: [
+        { title: "The volume mixer is per application", body: "Settings → System → Sound → Volume mixer keeps a separate level for every running app. A browser muted there stays silent whatever the main slider says." },
+        { title: "Windows switches output when you plug in a monitor", body: "Connecting a display over HDMI usually moves audio to that monitor's speakers, which may not exist. If sound vanished the moment a screen was connected, this is why." },
+        { title: "Use the built-in test for individual speakers", body: "Sound settings → your device → Configure → Test names and plays each speaker in turn. It is the right tool for anything beyond a stereo pair." },
+        { title: "Disable enhancements before chasing a fault", body: "Loudness equalisation and virtual surround change level and imaging enough to make a channel test read wrongly. Turn them off, test, then decide what to restore." },
+      ],
+      faqs: [
+        { q: "Sound works in one app but not another.", a: "That is either the per-application volume mixer or that app having its own output device setting. Check the mixer first — it is much the more common of the two." },
+        { q: "There is a red cross on my speaker icon.", a: "Windows cannot see an output device at all. Check the physical connections, then Device Manager for a disabled or missing audio device, then reinstall the audio driver." },
+        { q: "Audio moved to my monitor and I want it back.", a: "Settings → System → Sound, and choose the correct output device. Windows remembers this per display, so it will switch again the next time that monitor is connected." },
+        { q: "Why is there no sound from the front panel jack?", a: "Front headphone sockets sit on a separate connector inside the case, and many drivers need the front and rear jacks configured as separate devices before either one works." },
+      ],
+    },
+    {
+      slug: "mac",
+      label: "Mac",
+      h1: "Speaker test for Mac",
+      title: "Speaker Test for Mac — Check Output, Left and Right Sides",
+      description:
+        "Test the speakers or headphones on your Mac. Play a tone through each channel, check the balance slider, and confirm the right output is selected.",
+      intro:
+        "macOS keeps a balance slider that is easy to nudge and hard to find, and it sits behind a surprising share of \"one side is quiet\" reports. Play both tones, then check the settings below.",
+      answer:
+        "To test speakers on a Mac, play the left and right tones below and confirm each comes from the correct side. If one side is quiet, open System Settings → Sound and check the Balance slider is centred — a slider dragged off centre is far more common than a failed speaker.",
+      tips: [
+        { title: "Check the balance slider first", body: "System Settings → Sound → Output → Balance. A stray trackpad gesture can move it, and nothing anywhere on screen indicates that it is off centre." },
+        { title: "Option-click the volume icon to switch output fast", body: "Holding Option while clicking the menu bar volume control lists every input and output device and lets you switch without opening System Settings at all." },
+        { title: "Audio MIDI Setup is where the detail lives", body: "It shows the sample rate, per-channel volume and the speaker configuration. When something sounds wrong but the basic settings look fine, look there next." },
+        { title: "Turn Spatial Audio off for a channel test", body: "Spatial and head-tracked modes move the stereo image on purpose, which makes a left-right check unreliable. Switch to Stereo in Control Centre before you start." },
+      ],
+      faqs: [
+        { q: "No sound from my Mac at all.", a: "Check the output device in System Settings → Sound, then that the volume is not muted, then whether the browser tab is muted. If the output list is empty, restart — Core Audio occasionally needs it." },
+        { q: "Why did my Mac send audio to the TV?", a: "macOS switches output when an HDMI or AirPlay device connects, and remembers the choice. Set it back in System Settings → Sound; it will switch again next time that device appears." },
+        { q: "One side went quieter and I changed nothing.", a: "Check the Balance slider. It causes this far more often than a failing speaker, and nothing on screen flags it as being off centre." },
+        { q: "Can I test each speaker on a MacBook individually?", a: "The tones here separate left and right, which is what a MacBook has. For a setup with more speakers, use Audio MIDI Setup → Configure Speakers." },
+      ],
+    },
+  ],
+
+  "keyboard-test": [
+    {
+      slug: "gaming",
+      label: "Gaming and ghosting",
+      h1: "Keyboard ghosting test: how many keys register at once",
+      title: "Keyboard Ghosting Test — Check N-Key Rollover Online Free",
+      description:
+        "Test your keyboard for ghosting and rollover. Hold several keys at once to see how many register together, and learn what a browser can actually prove.",
+      intro:
+        "Hold your movement keys plus a modifier and watch what registers. Ghosting is a keyboard that cannot report certain combinations at all — the missing input never reaches the game, and no setting recovers it.",
+      answer:
+        "To test for ghosting, hold several keys down together — W, A, Shift and Space is a realistic combination — and count how many stay lit. A membrane keyboard typically manages three to six before extra presses are dropped; a keyboard with n-key rollover registers every one you can physically hold.",
+      tips: [
+        { title: "Test the combinations you actually play", body: "Rollover limits are not uniform. A keyboard can handle six arbitrary keys and fail on a specific three that share a matrix row. Hold your real movement and ability keys, not random ones." },
+        { title: "The browser reports a floor, not a ceiling", body: "The operating system and USB polling can drop simultaneous presses before the browser ever sees them. If every key you need registers here, the keyboard is fine; if one does not, retest before concluding anything." },
+        { title: "This does not measure polling rate", body: "A 1000Hz keyboard and a 125Hz keyboard both light a key here. Polling affects latency, not whether a press registers, and no browser can measure it reliably." },
+        { title: "Anti-ghosting and n-key rollover are different claims", body: "Anti-ghosting usually means a handful of common gaming keys are wired to work together. N-key rollover means all of them are. Marketing blurs the two; the test above does not." },
+      ],
+      faqs: [
+        { q: "What is keyboard ghosting?", a: "A keyboard failing to report a key that is genuinely being pressed, because of how its key matrix is wired. The press never reaches the computer, so it cannot be fixed in software." },
+        { q: "How many keys should register at once?", a: "A good gaming keyboard registers every key you can physically hold down. A standard membrane keyboard manages three to six, which is fine for typing and often not enough for movement plus abilities." },
+        { q: "Does USB or PS/2 matter for rollover?", a: "It used to. The old USB boot protocol limited six keys, but modern keyboards send a full HID report and are not constrained by it. PS/2 is no longer a meaningful advantage." },
+        { q: "My keys work here but not in one game.", a: "Then the keyboard reports them and the game is not acting on them. Check for a binding conflict, and for an overlay or macro utility intercepting the input first." },
+      ],
+    },
+    {
+      slug: "mac",
+      label: "Mac",
+      h1: "Keyboard test for Mac",
+      title: "Keyboard Test for Mac — Check Every Key on Your MacBook",
+      description:
+        "Test a Mac or MacBook keyboard in the browser. Press each key and watch it light up, check Command and Option, and find a key that stopped registering.",
+      intro:
+        "Press keys and watch them light. On a Mac several keys never reach the browser by design, so a dark key is not automatically a broken one — the list below says which ones to ignore.",
+      answer:
+        "To test a Mac keyboard, press each key and watch the on-screen layout. Letters, numbers, Command, Option, Control and Shift should all light. The top-row keys in their media mode, the brightness keys and Fn itself are handled by macOS before the browser sees them, so those staying dark is normal.",
+      tips: [
+        { title: "Hold Fn to reach the real function keys", body: "By default the top row sends media commands that macOS consumes. Hold Fn and those same keys send F1 to F12, which the browser does receive and will light." },
+        { title: "Check both Command keys separately", body: "The left and right Command keys are distinct switches. A shortcut that works with one hand and not the other is the clearest possible sign of a failing key." },
+        { title: "Butterfly keyboards fail from debris", body: "The 2016–2019 MacBook keyboards are notorious for a single key dying from one crumb. Compressed air at an angle, with the machine on its side, recovers more of these than any software step." },
+        { title: "Rule out the software before the hardware", body: "If keys light here but do nothing in one app, check System Settings → Keyboard → Keyboard Shortcuts for a conflict, and Accessibility for Slow Keys or Sticky Keys left switched on." },
+      ],
+      faqs: [
+        { q: "Which Mac keys will not show up in this test?", a: "The media functions on the top row, screen and keyboard brightness, Launchpad, and Fn itself. macOS intercepts them, so the browser never receives an event to draw." },
+        { q: "How do I test an external keyboard on a Mac?", a: "The same way — plug it in and press keys. If nothing registers at all, check System Settings → Keyboard, then try the keyboard on another machine before replacing it." },
+        { q: "A key types the wrong character.", a: "That is a layout problem rather than a hardware one. Check System Settings → Keyboard → Input Sources and confirm the selected layout matches the physical keyboard." },
+        { q: "My MacBook keyboard repeats characters.", a: "A worn or dirty switch sends several events from one press, and the counter beside each key here makes it obvious. On butterfly-era machines it is often dust, and sometimes a service issue." },
+      ],
+    },
+    {
+      slug: "laptop",
+      label: "Laptop",
+      h1: "Laptop keyboard test: find the keys that stopped working",
+      title: "Laptop Keyboard Test — Find the Keys That Stopped Working",
+      description:
+        "Test a laptop keyboard in the browser. Press every key, spot the dead ones, and work out whether it is debris, a driver or a cable before paying for a repair.",
+      intro:
+        "Press each key and watch the layout. On a laptop the useful question is not whether a key is broken but whether the fault is a crumb, a driver or the ribbon cable — and the pattern of dead keys usually tells you which.",
+      answer:
+        "To test a laptop keyboard, press every key and watch the on-screen layout. A single dead key is usually debris under the cap. A dead row or a dead block points at the ribbon connector or the controller, which is a repair rather than a clean. Keys that work here but not in one program are a software problem.",
+      tips: [
+        { title: "Read the pattern, not the key", body: "One dead key is mechanical. A whole row, or a contiguous block failing together, is the matrix or the ribbon cable, and no amount of cleaning will change it." },
+        { title: "Plug in a USB keyboard to split the problem", body: "If an external keyboard works perfectly, the operating system and drivers are fine and the fault is in the built-in keyboard. That single test removes most of the guesswork." },
+        { title: "Compressed air at an angle, machine on its side", body: "Blowing straight down pushes debris further in. Tilt the laptop and aim across the key so the crumb leaves the way it arrived." },
+        { title: "Mention any spill before paying for a diagnosis", body: "Liquid damage shows as keys that work intermittently, or a keyboard that starts repeating. Even a small spill changes the repair path completely, so say so up front." },
+      ],
+      faqs: [
+        { q: "Is it worth replacing a laptop keyboard?", a: "It depends on the machine. On many laptops it is a serviceable part at modest cost; on thin ultrabooks the keyboard is bonded to the top case and the repair approaches the value of the laptop. Check your model before deciding." },
+        { q: "My laptop keyboard works in BIOS but not in Windows.", a: "That isolates it to software — the hardware is fine. Remove the keyboard device in Device Manager and reboot so Windows re-detects it, and check for a filter driver from a vendor utility." },
+        { q: "Only the number keys stopped working.", a: "Check Num Lock, and on a compact laptop check whether the embedded numeric keypad has been switched on over the letter keys. This is a mode rather than a fault more often than people expect." },
+        { q: "Can I keep using a laptop with one dead key?", a: "Yes, with a remap. Windows PowerToys and macOS Karabiner both move a function to another key, which is a reasonable stopgap while you decide about a repair." },
+      ],
+    },
+    {
+      slug: "mechanical",
+      label: "Mechanical and chatter",
+      h1: "Mechanical keyboard test: chatter, repeats and stuck keys",
+      title: "Mechanical Keyboard Test — Check for Chatter and Repeats",
+      description:
+        "Test a mechanical keyboard for double-typing, switch chatter and stuck keys, using a per-key counter that makes an intermittent failing switch obvious.",
+      intro:
+        "Switch chatter is a worn contact bouncing and sending two presses where you made one. It is intermittent, which makes it maddening to prove — the per-key counter below is what proves it.",
+      answer:
+        "To test a mechanical keyboard for chatter, press each key once deliberately and watch its counter. A counter advancing by two from a single press is a bouncing switch. That is a hardware failure, fixed by replacing the switch or raising the debounce time in firmware, not by cleaning.",
+      tips: [
+        { title: "One deliberate press at a time", body: "Chatter only shows against a known number of presses. Press once, pause, read the counter. A fast run of presses proves nothing at all." },
+        { title: "Raise the debounce time before desoldering", body: "QMK, VIA and most vendor software expose a debounce value. Increasing it masks a marginal switch for a few milliseconds of latency, and often buys a keyboard another year." },
+        { title: "Hot-swap sockets make this a two-minute repair", body: "If the board is hot-swap, pull the failing switch and move a known-good one over from a key you never use, like Scroll Lock, to confirm the diagnosis before ordering parts." },
+        { title: "Test after cleaning, not before", body: "Contact cleaner and compressed air genuinely fix chatter caused by contamination. Run the counter test, clean, then run it again so you know whether it worked." },
+      ],
+      faqs: [
+        { q: "What causes double-typing on a mechanical keyboard?", a: "The metal contact inside the switch bounces as it closes. A worn switch bounces for longer than the firmware's debounce window allows, so the firmware reads two separate presses." },
+        { q: "Can chatter be fixed in software?", a: "Partly. Raising the debounce time in QMK, VIA or vendor software hides a marginal switch. It does not repair the switch, and a badly worn one eventually exceeds any sensible debounce value." },
+        { q: "How do I test one switch in isolation?", a: "Press only that key, repeatedly and deliberately, and compare its counter with the number of presses you made. Doing the same for a known-good key alongside it makes any difference obvious." },
+        { q: "Is a stuck key the same as chatter?", a: "No. A stuck key stays registered with your hands off the board. Chatter produces extra presses only when you do press the key." },
+      ],
+    },
+  ],
+
+  "dead-pixel-test": [
+    {
+      slug: "monitor",
+      label: "Monitor",
+      h1: "Monitor dead pixel test: check a new display properly",
+      title: "Monitor Dead Pixel Test — Check a New Display for Faults",
+      description:
+        "Test a new monitor for dead pixels, stuck pixels and backlight bleed, and find out what manufacturers actually accept as a warranty fault.",
+      intro:
+        "Do this the day it arrives. Manufacturers accept a pixel fault only within a set window and above a set number, and both are easier to meet now.",
+      answer:
+        "To test a monitor for dead pixels, go fullscreen and cycle through red, green, blue, white and black at full brightness from about 50cm away. A pixel black on every colour is dead; one lit on a single colour is stuck. Photograph anything you find straight away — manufacturers usually want evidence inside the return window.",
+      tips: [
+        { title: "Photograph the fault with something for scale", body: "A photo of a bright dot on a black field, with a ruler or a coin beside it, is far harder to dismiss than a description. Take it the day you find it." },
+        { title: "Know the class your panel is sold under", body: "ISO 9241-307 defines pixel fault classes, and most consumer monitors are Class II, which permits a small number of faults before the panel counts as defective. Retailers are often more generous than manufacturers, so ask both." },
+        { title: "Test at native resolution", body: "Scaling blends a faulty pixel with its neighbours and can hide it completely. Set the display to its native resolution before you look for anything." },
+        { title: "Check the corners on black with the lights off", body: "Backlight bleed and IPS glow show at the edges on a dark field in a dark room. Some is normal on IPS; a bright patch that is obvious during a film is not." },
+      ],
+      faqs: [
+        { q: "How many dead pixels before I can return a monitor?", a: "It varies by manufacturer and panel class. Some accept a single bright pixel, others require several. Check the warranty text for your model, and check the retailer's return policy separately — it is often the easier route." },
+        { q: "What is the difference between backlight bleed and IPS glow?", a: "Bleed is light escaping at the edges and stays put as you move. Glow is a wash across a corner that shifts with your viewing angle. Bleed can be a warranty fault; glow is a property of the panel type." },
+        { q: "Will a dead pixel spread?", a: "No. A dead pixel is a single failed transistor and does not affect its neighbours. New faults appearing over time is a different problem and worth reporting." },
+        { q: "Should I test a second-hand monitor before buying?", a: "Yes, and take a phone with this page already open. Five minutes of colour fields is the cheapest inspection available." },
+      ],
+    },
+    {
+      slug: "laptop",
+      label: "Laptop screen",
+      h1: "Laptop screen test: dead pixels and pressure marks",
+      title: "Laptop Screen Test — Check Dead Pixels and Backlight Bleed",
+      description:
+        "Test a laptop screen for dead pixels, stuck pixels, pressure marks and backlight bleed. Fullscreen colour fields, nothing to install and no sign-up.",
+      intro:
+        "Laptop panels add two faults monitors rarely show: pressure marks from the keyboard, and bleed along the bottom edge. Both appear on the fields below.",
+      answer:
+        "To test a laptop screen, go fullscreen and cycle through red, green, blue, white and black at maximum brightness. Dead pixels stay black on every colour and stuck pixels stay lit on one. Pressure marks are different: they show as faint light or dark patches on a solid grey or white field.",
+      tips: [
+        { title: "Look for pressure marks on grey, not black", body: "A keyboard pressing against the panel inside a bag leaves faint blotches that a mid-grey field reveals and a black field hides. Check for them in a line matching the key rows." },
+        { title: "Bottom-edge bleed is common and often acceptable", body: "The backlight enters most laptop panels from the bottom, so a slight glow along that edge is normal. An obvious bright patch is not." },
+        { title: "Open the lid fully and look straight on", body: "Laptop panels, especially TN ones, shift colour sharply with angle. A half-open lid will show you faults that are not actually there." },
+        { title: "Find it before the return window closes", body: "A laptop screen is rarely user-serviceable, so a panel fault means a whole-machine return or a service visit. The day it arrives is the cheapest possible time to discover one." },
+      ],
+      faqs: [
+        { q: "What are the faint blotches on my laptop screen?", a: "Usually pressure marks, where the keyboard or something in a bag pressed against the panel. They show best on a grey or white field. Light ones sometimes fade; deep ones do not." },
+        { q: "Can a laptop screen be replaced for a dead pixel?", a: "Under warranty, if the fault meets the manufacturer's threshold. Out of warranty, panel replacement is possible on many models but not on those with a bonded display assembly." },
+        { q: "Is backlight bleed on a laptop a fault?", a: "Some is expected, particularly along the bottom edge. It becomes a fault when it is visible during normal use on dark content, rather than only when you go looking in a dark room." },
+        { q: "Should I test a refurbished laptop?", a: "Yes, immediately. Refurbished units are the most likely to arrive with a cosmetic screen fault, and their return windows are usually shorter." },
+      ],
+    },
+    {
+      slug: "phone",
+      label: "Phone screen",
+      h1: "Phone screen test: dead pixels and OLED burn-in",
+      title: "Phone Screen Test — Check for Dead Pixels and OLED Burn-In",
+      description:
+        "Test a phone screen for dead pixels, stuck pixels and OLED burn-in with fullscreen colour fields, plus the checks that matter on an AMOLED panel.",
+      intro:
+        "On an OLED phone the usual fault is burn-in, not a dead pixel — a faint ghost of the status bar on a grey field. The colours below reveal both.",
+      answer:
+        "To test a phone screen, open this page fullscreen at maximum brightness with auto-brightness turned off, then cycle through the colours. Dead pixels show as black dots on every colour. Burn-in shows as a faint permanent ghost of the status bar, navigation bar or keyboard, and is clearest on a solid grey field.",
+      tips: [
+        { title: "Turn auto-brightness off first", body: "The ambient sensor will change the level part way through and make a uniform field look uneven. Set brightness manually to maximum and leave it alone." },
+        { title: "Grey shows burn-in that white hides", body: "A mid-grey field reveals uneven pixel wear far better than pure white. Look specifically where the status bar, navigation bar and keyboard sit." },
+        { title: "Take the case off and clean the glass", body: "A smudge under a screen protector looks exactly like a stuck pixel. Clean the surface, and check with the protector removed if you can." },
+        { title: "Buying second-hand? Check burn-in before anything else", body: "It is the most common real fault on a used OLED phone, it cannot be repaired, and a thirty-second grey field finds it." },
+      ],
+      faqs: [
+        { q: "What is OLED burn-in?", a: "Uneven ageing of the pixels. Elements that stay on screen for long periods — the status bar, the keyboard — dim faster than the rest, leaving a permanent faint ghost. It is wear rather than a failure, and it cannot be reversed." },
+        { q: "Is a green or pink tint a dead pixel problem?", a: "No. A tint across a region is a panel uniformity issue, most often seen on AMOLED at low brightness. It is a separate fault, and worth reporting under warranty if it is pronounced." },
+        { q: "Can I fix a stuck pixel on a phone?", a: "Sometimes, with rapid colour cycling over the area for a few minutes. It works on stuck pixels and never on dead ones. Do not press on the screen — that risks making it worse." },
+        { q: "Does this work on iPhone and Android?", a: "Yes, in Safari and Chrome. Use the browser's fullscreen mode, turn off auto-brightness, and set brightness to maximum before you start." },
+      ],
+    },
+    {
+      slug: "tv",
+      label: "TV screen",
+      h1: "TV screen test: dead pixels and panel uniformity",
+      title: "TV Screen Test — Check for Dead Pixels and Panel Uniformity",
+      description:
+        "Test a TV for dead pixels, stuck pixels and uniformity problems, and see why casting a browser tab can hide the exact fault you are looking for.",
+      intro:
+        "Casting compresses the picture, and compression hides the single-pixel faults you are testing for. Use the TV's own browser or a USB stick instead.",
+      answer:
+        "To test a TV for dead pixels, display solid red, green, blue, white and black fullscreen and inspect from about 50cm — far closer than you would watch from. Avoid casting the tab: video compression smooths single-pixel faults and can hide one entirely. Use the TV's built-in browser, a directly connected computer, or image files from a USB stick.",
+      tips: [
+        { title: "Connect directly or use a USB stick", body: "HDMI from a laptop, or solid-colour image files on a USB drive, both give an uncompressed field. Casting and screen mirroring do not." },
+        { title: "Inspect close, then judge from your sofa", body: "Stand close enough to resolve individual pixels while inspecting. Then step back to your normal seating distance and decide whether the fault is visible in use — on a large panel, many are not." },
+        { title: "Turn off every picture enhancement", body: "Noise reduction, motion smoothing and local dimming all alter a solid field. Switch to a plain picture mode — often called Filmmaker, Cinema or PC — before judging uniformity." },
+        { title: "Dirty screen effect shows on grey, not black", body: "Faint vertical bands across a solid mid-grey field are a uniformity problem, most visible on sport and panning shots. A black field will not reveal it at all." },
+      ],
+      faqs: [
+        { q: "Can I test a TV by casting this page?", a: "You can, but the result is unreliable. Cast and mirror paths compress video, and compression removes single-pixel detail. Use the TV's own browser or a directly connected source." },
+        { q: "How close should I look?", a: "Close enough to resolve individual pixels, which on a large 4K panel means roughly 30 to 50cm. Then judge from your real seating distance whether it actually matters." },
+        { q: "What is the dirty screen effect?", a: "Uneven brightness across the panel, showing as faint bands or blotches on uniform content. It is most obvious on sport and on grey fields. It is a uniformity fault rather than a pixel fault." },
+        { q: "Is there a burn-in risk from this test?", a: "Not from a few minutes. OLED burn-in comes from static content over many hours. Do not leave a solid colour on an OLED TV and walk away." },
+      ],
+    },
+  ],
+};
+
+export const getDeviceVariant = (tool: string, slug: string) =>
+  deviceVariants[tool]?.find((v) => v.slug === slug);
