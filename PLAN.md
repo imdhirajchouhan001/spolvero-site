@@ -185,7 +185,7 @@ A one-year horizon before meaningful revenue is the correct expectation.
 ## Next actions
 
 - [ ] Get AdSense approved — needs nothing from the build
-- [ ] Search Console: sitemap submitted 18 Sept, 64 URLs. "Couldn't fetch"
+- [ ] Search Console: sitemap submitted 18 Sept, now 82 URLs. "Couldn't fetch"
       on the day of submission is Google not having tried yet, not a fault —
       the file returns 200 with `application/xml`, no BOM, and valid XML to
       Googlebot. Request Indexing on the three or four pages that matter most.
