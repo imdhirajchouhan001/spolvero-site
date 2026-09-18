@@ -17,6 +17,7 @@ import { products, type Product } from "@/data/products";
 import Badge from "@/components/ui/Badge.astro";
 import PhotoCard from "@/components/sections/PhotoCard.astro";
 import { getPhoto } from "@/data/photos";
+import { bandCycle } from "@/lib/bands";
 import { getCollection } from "astro:content";
 
 export function getStaticPaths() {
@@ -55,24 +56,7 @@ const byTag = p.readingTags?.length
 const related = [...declared, ...byTag].slice(0, 3);
 const ogImage = p.slug === "unspend" ? "/products/unspend/og.png" : "/assets/brand/og.png";
 
-// Section surfaces.
-//
-// The page was a run of white and near-white with five identical sections in a
-// row, which reads as one long column and gets skimmed rather than read. Sections
-// now alternate white / periwinkle so each one lands as its own block. Three
-// surfaces only, all from the token set — more than that and the alternation
-// stops reading as structure and starts looking like decoration.
-//
-// The order is declared here rather than hardcoded per section, because half the
-// sections are conditional: an app with no pricing or no screenshots would
-// otherwise put two washes next to each other and lose the effect exactly where
-// the page is shortest.
-const BANDS = [
-  { style: "background:var(--color-bg-primary)", card: "bg-secondary" },
-  { style: "background:var(--color-wash-soft)", card: "bg-primary" },
-  { style: "background:var(--color-bg-primary)", card: "bg-secondary" },
-  { style: "background:var(--color-wash)", card: "bg-primary" },
-];
+// Section surfaces — see src/lib/bands.ts for why, and for the shared cycle.
 const sectionOrder = [
   "features",
   ...(p.screenshots.length ? ["screenshots"] : []),
@@ -87,8 +71,7 @@ const sectionOrder = [
   ...(related.length ? ["related"] : []),
   "more",
 ];
-const band: Record<string, (typeof BANDS)[number]> = {};
-sectionOrder.forEach((name, i) => { band[name] = BANDS[i % BANDS.length]; });
+const band = bandCycle(sectionOrder);
 
 
 const jsonLd = {

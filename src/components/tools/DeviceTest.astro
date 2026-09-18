@@ -51,7 +51,7 @@ const keyLabel = (k: string) =>
           <div class="absolute inset-y-0 left-[70%] w-px bg-white/40"></div>
           <div class="absolute inset-y-0 left-[90%] w-px bg-error-solid/70"></div>
         </div>
-        <div class="flex justify-between text-xs text-white/40">
+        <div class="flex justify-between text-xs text-white/60">
           <span>quiet</span><span>good</span><span>too loud</span>
         </div>
 
@@ -130,7 +130,7 @@ const keyLabel = (k: string) =>
           </div>
         </div>
 
-        <p class="text-center text-sm text-white/40">
+        <p class="text-center text-sm text-white/60">
           Nothing typed here is stored or sent. Even so, never type a password into a keyboard tester.
         </p>
       </div>
@@ -139,7 +139,7 @@ const keyLabel = (k: string) =>
     {engine === "dead-pixel" && (
       <div class="flex flex-col gap-5 bg-[#12121c] p-6 text-white md:p-8" data-stage>
         <div class="grid h-56 place-items-center rounded-3xl ring-1 ring-white/10 md:h-72" data-swatch style="background-color:#000000">
-          <p class="text-sm text-white/40" data-swatch-label>Black — shows stuck pixels and backlight bleed</p>
+          <p class="rounded-full bg-black/70 px-3 py-1.5 text-sm text-white" data-swatch-label>Black — shows stuck pixels and backlight bleed</p>
         </div>
 
         <div class="flex flex-wrap items-center justify-center gap-2" data-colours>

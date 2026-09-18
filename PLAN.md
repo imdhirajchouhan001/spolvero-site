@@ -123,15 +123,19 @@ changed deliberately and the document is the thing that is stale.
 below AA on the wash band (`#6b7288` measured 3.93). Re-check contrast against
 white, `--color-wash-soft` and `--color-wash` before changing any neutral.
 
-**App pages alternate surfaces; the order lives in one array.** Added 18 September
-2026. The page was a run of white and near-white — five identical sections in a
+**Every long page alternates surfaces; the cycle lives in `src/lib/bands.ts`.**
+Added 18 September 2026, extended the same day to the tool, timer and recorder
+pages, which were the worst of it — ten sections deep without changing colour
+once. The page was a run of white and near-white — five identical sections in a
 row at one point — which reads as a single column and gets skimmed. Sections now
 cycle white / `--color-wash-soft` / white / `--color-wash`. Three surfaces, no
 more: past that the alternation stops reading as structure. Half the sections are
 conditional, so the cycle is assigned in `sectionOrder` in the frontmatter rather
 than hardcoded per section — otherwise an app with no pricing puts two washes
 side by side and loses the effect on exactly the shortest page. Cards flip to
-white on a coloured band, since `bg-secondary` disappears against a wash.
+white on a coloured band, since `bg-secondary` disappears against a wash. An ad
+slot takes the band of the section it sits under so it reads as part of that
+block rather than as a stripe of its own.
 
 **Section headers are one component.** `SectionHeader.astro` renders the eyebrow
 pill and the two-tone headline for all 29 call sites; wrap words in `*asterisks*`

@@ -13,6 +13,7 @@ import AdSlot from "@/components/AdSlot.astro";
 import Button from "@/components/ui/Button.astro";
 import Badge from "@/components/ui/Badge.astro";
 import { deviceVariants, tools, type Faq as FaqItem, type Tip, type Tool, toolHref } from "@/data/tools";
+import { bandCycle } from "@/lib/bands";
 
 interface Props {
   tool: Tool;
@@ -28,6 +29,18 @@ interface Props {
 const { tool, h1, intro, answer, tips, faqs, crumb, variantSlug } = Astro.props;
 
 const base = toolHref(tool);
+
+// Section surfaces — see src/lib/bands.ts. Every section below the test was the
+// same colour, which is what made the page read as one column.
+const band = bandCycle([
+  "answer",
+  "tips",
+  "privacy",
+  "faq",
+  ...((deviceVariants[tool.slug] ?? []).filter((v) => v.slug !== variantSlug).length > 0 || crumb ? ["specific"] : []),
+  "siblings",
+  "photo",
+]);
 const siblings = tools.filter((t) => t.slug !== tool.slug && t.status === "live");
 const others = (deviceVariants[tool.slug] ?? []).filter((v) => v.slug !== variantSlug);
 const photo = getPhoto(tool.slug) ?? getPhoto("webcam-test")!;
@@ -61,7 +74,7 @@ const photo = getPhoto(tool.slug) ?? getPhoto("webcam-test")!;
   </div>
 </section>
 
-<section class="bg-secondary pb-14 md:pb-20">
+<section class="pt-14 pb-14 md:pt-16 md:pb-20" style={band.answer.style}>
   <div class="container-page">
     <div class="mx-auto max-w-3xl rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary md:p-8" data-reveal>
       <h2 class="text-display-xs font-semibold text-primary">The short answer</h2>
@@ -70,11 +83,12 @@ const photo = getPhoto(tool.slug) ?? getPhoto("webcam-test")!;
   </div>
 </section>
 
-<div class="bg-secondary pb-14 md:pb-20">
+<!-- The ad takes the band of the answer above it rather than being a stripe. -->
+<div class="pb-14 md:pb-20" style={band.answer.style}>
   <div class="container-page max-w-4xl"><AdSlot placement="in-content" /></div>
 </div>
 
-<section class="bg-secondary pb-14 md:pb-20">
+<section class="py-14 md:py-20" style={band.tips.style}>
   <div class="container-page">
     <SectionHeader eyebrow="Getting it right" title="Four things worth knowing" />
     <ul class="mx-auto mt-10 grid max-w-5xl gap-6 md:mt-12 md:grid-cols-2">
@@ -93,7 +107,7 @@ const photo = getPhoto(tool.slug) ?? getPhoto("webcam-test")!;
   </div>
 </section>
 
-<section class="bg-secondary pb-14 md:pb-20">
+<section class="py-14 md:py-20" style={band.privacy.style}>
   <div class="container-page">
     <div class="mx-auto grid max-w-5xl gap-8 rounded-3xl bg-brand-section px-6 py-10 md:grid-cols-2 md:px-10" data-reveal>
       <div>
@@ -115,7 +129,7 @@ const photo = getPhoto(tool.slug) ?? getPhoto("webcam-test")!;
   </div>
 </section>
 
-<section id="faq" class="bg-secondary pb-14 md:pb-20">
+<section id="faq" class="py-14 md:py-20" style={band.faq.style}>
   <div class="container-page grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16">
     <div>
       <SectionHeader align="left" eyebrow="FAQ" title="Questions people ask" lede="Anything we've missed?" />
@@ -128,7 +142,7 @@ const photo = getPhoto(tool.slug) ?? getPhoto("webcam-test")!;
 </section>
 
 {(others.length > 0 || crumb) && (
-  <section class="bg-secondary pb-14 md:pb-20">
+  <section class="py-14 md:py-20" style={band.specific.style}>
     <div class="container-page">
       <h2 class="text-display-xs font-semibold text-primary" data-reveal>Test it for something specific</h2>
       <ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -153,7 +167,7 @@ const photo = getPhoto(tool.slug) ?? getPhoto("webcam-test")!;
   </section>
 )}
 
-<section class="bg-secondary pb-16 md:pb-24">
+<section class="py-16 md:py-24" style={band.siblings.style}>
   <div class="container-page">
     <h2 class="text-display-xs font-semibold text-primary" data-reveal>Other device tests</h2>
     <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -176,7 +190,7 @@ const photo = getPhoto(tool.slug) ?? getPhoto("webcam-test")!;
 </section>
 
 <!-- A photograph, deep in the page so the test itself stays where it is. -->
-<section class="bg-secondary pb-14 md:pb-20">
+<section class="py-14 md:py-20" style={band.photo.style}>
   <div class="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
     <PhotoCard photo={photo} chip={{ label: "Sent anywhere", value: "Nothing", icon: "lock" }} ratio="wide" />
     <div data-reveal>

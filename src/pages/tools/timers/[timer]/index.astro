@@ -83,7 +83,11 @@ const jsonLd = timerJsonLd({
                     <tr class="border-t border-secondary bg-primary">
                       <th scope="row" class="px-4 py-4 text-md font-semibold text-primary md:px-6">{r.type}</th>
                       <td class="px-4 py-4 text-md text-tertiary tabular-nums md:px-6">{r.range}</td>
-                      <td class="px-4 py-4 text-md tabular-nums text-[#1a8a54] md:px-6">{r.green}</td>
+                      {/* Signal colours darkened to clear 4.5:1 on white. #1a8a54 measured
+                          4.36 and failed 1.4.3; the amber and red were already at 5.2 and
+                          5.4, so only the green moved. The column headers name each light
+                          as well, so the colour is never the only cue. */}
+                      <td class="px-4 py-4 text-md tabular-nums text-[#15774a] md:px-6">{r.green}</td>
                       <td class="px-4 py-4 text-md tabular-nums text-[#946200] md:px-6">{r.amber}</td>
                       <td class="px-4 py-4 text-md tabular-nums text-[#c4342f] md:px-6">{r.red}</td>
                     </tr>

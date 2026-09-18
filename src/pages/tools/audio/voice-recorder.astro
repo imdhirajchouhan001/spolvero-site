@@ -13,10 +13,14 @@ import Button from "@/components/ui/Button.astro";
 import Badge from "@/components/ui/Badge.astro";
 import { voiceRecorder as v, formatGuide, loudnessTargets, recorderHowTo } from "@/data/audio";
 import { tools, toolHref } from "@/data/tools";
+import { bandCycle } from "@/lib/bands";
 
 const site = Astro.site!.toString();
 const url = new URL("/tools/audio/voice-recorder/", site).toString();
 const related = tools.filter((t) => ["mic-test", "speaker-test", "webcam-test"].includes(t.slug));
+
+// Section surfaces — see src/lib/bands.ts. Nine sections, all one colour before.
+const band = bandCycle(["answer", "tips", "fix", "formats", "photo", "privacy", "faq", "guides"]);
 
 const jsonLd = [
   {
@@ -94,7 +98,7 @@ const jsonLd = [
   </section>
 
   <!-- Short answer -->
-  <section class="bg-secondary pb-14 md:pb-20">
+  <section class="pt-14 pb-14 md:pt-16 md:pb-20" style={band.answer.style}>
     <div class="container-page">
       <div class="mx-auto max-w-3xl rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary md:p-8" data-reveal>
         <h2 class="text-display-xs font-semibold text-primary">The short answer</h2>
@@ -116,12 +120,13 @@ const jsonLd = [
     </div>
   </section>
 
-  <div class="bg-secondary pb-14 md:pb-20">
+  <!-- The ad takes the band of the answer above it rather than being a stripe. -->
+  <div class="pb-14 md:pb-20" style={band.answer.style}>
     <div class="container-page max-w-4xl"><AdSlot placement="in-content" /></div>
   </div>
 
   <!-- Tips -->
-  <section class="bg-secondary pb-14 md:pb-20">
+  <section class="py-14 md:py-20" style={band.tips.style}>
     <div class="container-page">
       <SectionHeader eyebrow="Getting a clean take" title="Four things worth knowing" />
       <ul class="mx-auto mt-10 grid max-w-5xl gap-6 md:mt-12 md:grid-cols-2">
@@ -141,7 +146,7 @@ const jsonLd = [
   </section>
 
   <!-- Troubleshooting -->
-  <section class="bg-secondary pb-14 md:pb-20">
+  <section class="py-14 md:py-20" style={band.fix.style}>
     <div class="container-page">
       <SectionHeader eyebrow="Troubleshooting" title="If recording did not start" lede="Open the one that matches what the tool told you." />
       <div class="mx-auto mt-10 max-w-5xl md:mt-12" data-reveal><Troubleshoot /></div>
@@ -149,7 +154,7 @@ const jsonLd = [
   </section>
 
   <!-- Format guide: the citable reference -->
-  <section class="bg-secondary pb-14 md:pb-20">
+  <section class="py-14 md:py-20" style={band.formats.style}>
     <div class="container-page">
       <SectionHeader
         eyebrow="Which format"
@@ -200,7 +205,7 @@ const jsonLd = [
   </section>
 
   <!-- A photograph, well below the recorder itself. -->
-  <section class="bg-secondary pb-14 md:pb-20">
+  <section class="py-14 md:py-20" style={band.photo.style}>
     <div class="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
       <PhotoCard
         photo={getPhoto("audio")!}
@@ -220,7 +225,7 @@ const jsonLd = [
   </section>
 
   <!-- Privacy -->
-  <section id="privacy" class="bg-secondary pb-14 md:pb-20">
+  <section id="privacy" class="py-14 md:py-20" style={band.privacy.style}>
     <div class="container-page">
       <div class="mx-auto grid max-w-5xl gap-8 rounded-3xl bg-brand-section px-6 py-10 md:grid-cols-2 md:px-10" data-reveal>
         <div>
@@ -252,7 +257,7 @@ const jsonLd = [
   </section>
 
   <!-- FAQ -->
-  <section id="faq" class="bg-secondary pb-14 md:pb-20">
+  <section id="faq" class="py-14 md:py-20" style={band.faq.style}>
     <div class="container-page grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16">
       <div>
         <SectionHeader align="left" eyebrow="FAQ" title="Questions people ask" lede="Anything we've missed?" />
@@ -267,7 +272,7 @@ const jsonLd = [
   <RelatedGuides tool="/tools/audio/voice-recorder/" />
 
   <!-- Related -->
-  <section class="bg-secondary pb-16 md:pb-24">
+  <section class="py-16 md:py-24" style={band.guides.style}>
     <div class="container-page">
       <h2 class="text-display-xs font-semibold text-primary" data-reveal>Before you record</h2>
       <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

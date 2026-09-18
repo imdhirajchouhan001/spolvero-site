@@ -86,7 +86,7 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
       <div class="flex gap-3" data-lights hidden={mode !== "speech"}>
         {["green", "amber", "red"].map((c) => (
           <span
-            class="grid h-8 w-16 place-items-center rounded-full text-xs font-semibold text-white/40 ring-1 ring-white/15 transition"
+            class="grid h-8 w-16 place-items-center rounded-full text-xs font-semibold text-white/60 ring-1 ring-white/15 transition"
             data-light={c}
           >{c}</span>
         ))}
@@ -103,7 +103,7 @@ const { mode, presets, defaultSeconds, slug, accent } = Astro.props;
       </div>
 
       <!-- Only shown while running in fullscreen; the promise the page makes. -->
-      <p class="absolute bottom-3 text-xs text-white/25 opacity-0 transition-opacity" data-fs-note>No ads in fullscreen</p>
+      <p class="absolute bottom-3 text-xs text-white/55 opacity-0 transition-opacity" data-fs-note>No ads in fullscreen</p>
     </div>
 
     <!-- Setup. Everything below is hidden once fullscreen starts. -->

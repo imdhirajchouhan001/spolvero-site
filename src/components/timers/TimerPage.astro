@@ -12,6 +12,7 @@ import AdSlot from "@/components/AdSlot.astro";
 import Button from "@/components/ui/Button.astro";
 import Badge from "@/components/ui/Badge.astro";
 import { howToSteps, timerVariants, timers, type Timer as TimerType, type TimerVariant } from "@/data/timers";
+import { bandCycle } from "@/lib/bands";
 
 interface Props {
   timer: TimerType;
@@ -37,6 +38,18 @@ const p = variant
 const base = `/tools/timers/${timer.slug}/`;
 const siblings = timers.filter((t) => t.slug !== timer.slug);
 const others = (timerVariants[timer.slug] ?? []).filter((v) => v.slug !== variant?.slug);
+
+// Section surfaces — see src/lib/bands.ts. Everything below the timer was one
+// colour, eight sections deep.
+const band = bandCycle([
+  "answer",
+  "tips",
+  "guides",
+  "noads",
+  "faq",
+  ...(others.length > 0 || variant ? ["specific"] : []),
+  "siblings",
+]);
 ---
 
 <!-- Hero and tool, above the fold -->
@@ -72,7 +85,7 @@ const others = (timerVariants[timer.slug] ?? []).filter((v) => v.slug !== varian
 </section>
 
 <!-- The short answer -->
-<section class="bg-secondary pb-14 md:pb-20">
+<section class="pt-14 pb-14 md:pt-16 md:pb-20" style={band.answer.style}>
   <div class="container-page">
     <div class="mx-auto max-w-3xl rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary md:p-8" data-reveal>
       <h2 class="text-display-xs font-semibold text-primary">The short answer</h2>
@@ -94,14 +107,15 @@ const others = (timerVariants[timer.slug] ?? []).filter((v) => v.slug !== varian
   </div>
 </section>
 
-<div class="bg-secondary pb-14 md:pb-20">
+<!-- The ad takes the band of the answer above it rather than being a stripe. -->
+<div class="pb-14 md:pb-20" style={band.answer.style}>
   <div class="container-page max-w-4xl">
     <AdSlot placement="in-content" />
   </div>
 </div>
 
 <!-- Page-specific tips -->
-<section class="bg-secondary pb-14 md:pb-20">
+<section class="py-14 md:py-20" style={band.tips.style}>
   <div class="container-page">
     <SectionHeader eyebrow="Running it well" title="Four things worth knowing" />
     <ul class="mx-auto mt-10 grid max-w-5xl gap-6 md:mt-12 md:grid-cols-2">
@@ -124,7 +138,7 @@ const others = (timerVariants[timer.slug] ?? []).filter((v) => v.slug !== varian
 <slot name="reference" />
 
 <!-- A photograph, deep in the page so the timer stays where it is. -->
-<section class="bg-secondary pb-14 md:pb-20">
+<section class="py-14 md:py-20" style={band.guides.style}>
   <div class="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
     <div data-reveal>
       <SectionHeader
@@ -145,7 +159,7 @@ const others = (timerVariants[timer.slug] ?? []).filter((v) => v.slug !== varian
 </section>
 
 <!-- The promise that competitors with ad-funded fullscreen cannot copy -->
-<section class="bg-secondary pb-14 md:pb-20">
+<section class="py-14 md:py-20" style={band.noads.style}>
   <div class="container-page">
     <div class="mx-auto grid max-w-5xl gap-8 rounded-3xl bg-brand-section px-6 py-10 md:grid-cols-2 md:px-10" data-reveal>
       <div>
@@ -173,7 +187,7 @@ const others = (timerVariants[timer.slug] ?? []).filter((v) => v.slug !== varian
 </section>
 
 <!-- FAQ -->
-<section id="faq" class="bg-secondary pb-14 md:pb-20">
+<section id="faq" class="py-14 md:py-20" style={band.faq.style}>
   <div class="container-page grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16">
     <div>
       <SectionHeader align="left" eyebrow="FAQ" title="Questions people ask" lede="Anything we've missed?" />
@@ -188,7 +202,7 @@ const others = (timerVariants[timer.slug] ?? []).filter((v) => v.slug !== varian
 </section>
 
 {(others.length > 0 || variant) && (
-  <section class="bg-secondary pb-14 md:pb-20">
+  <section class="py-14 md:py-20" style={band.specific.style}>
     <div class="container-page">
       <h2 class="text-display-xs font-semibold text-primary" data-reveal>Time something specific</h2>
       <ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -216,7 +230,7 @@ const others = (timerVariants[timer.slug] ?? []).filter((v) => v.slug !== varian
 <RelatedGuides tool={`/tools/timers/${timer.slug}/`} />
 
 <!-- Sibling timers -->
-<section class="bg-secondary pb-16 md:pb-24">
+<section class="py-16 md:py-24" style={band.siblings.style}>
   <div class="container-page">
     <h2 class="text-display-xs font-semibold text-primary" data-reveal>Other timers</h2>
     <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

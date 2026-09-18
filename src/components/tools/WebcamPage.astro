@@ -16,6 +16,7 @@ import Button from "@/components/ui/Button.astro";
 import Badge from "@/components/ui/Badge.astro";
 import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
 import { getIcon } from "@/lib/icons";
+import { bandCycle } from "@/lib/bands";
 import { appRequirements, howToSteps, tools, webcamVariants, type Faq as FaqItem, type Tip } from "@/data/tools";
 
 interface Props {
@@ -38,6 +39,10 @@ const tipTints = ["var(--color-arancio-tint)", "var(--color-cielo-tint)", "var(-
 
 const siblings = tools.filter((t) => t.slug !== "webcam-test");
 const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
+
+// Section surfaces — see src/lib/bands.ts. Every section below the tool used to be
+// the same colour, ten deep, which is why the page read as one column.
+const band = bandCycle(["answer", "tips", "fix", "reference", "photo", "privacy", "faq", "specific", "cta"]);
 ---
 
 <!-- Hero + tool, above the fold -->
@@ -73,7 +78,7 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
 </section>
 
 <!-- The short answer, readable without a camera (and quotable by an AI answer) -->
-<section class="bg-secondary py-14 md:py-20">
+<section class="py-14 md:py-20" style={band.answer.style}>
   <div class="container-page">
     <div class="mx-auto max-w-3xl rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary md:p-8" data-reveal>
       <h2 class="text-display-xs font-semibold text-primary">The short answer</h2>
@@ -100,14 +105,16 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
   </div>
 </section>
 
-<div class="bg-secondary pt-14 md:pt-20">
+<!-- The ad takes the band of the section above it, so it reads as part of that
+     block rather than as a stripe of its own. -->
+<div class="pt-14 md:pt-20" style={band.tips.style}>
   <div class="container-page max-w-4xl">
     <AdSlot placement="in-content" />
   </div>
 </div>
 
 <!-- Page-specific tips -->
-<section class="bg-secondary pb-14 md:pb-20">
+<section class="pt-14 pb-14 md:pt-16 md:pb-20" style={band.tips.style}>
   <div class="container-page">
     <SectionHeader eyebrow="Get a better picture" title="Four things worth doing before you join" />
     <ul class="mx-auto mt-10 grid max-w-5xl gap-6 md:mt-12 md:grid-cols-2">
@@ -131,7 +138,7 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
 </section>
 
 <!-- Troubleshooting -->
-<section class="bg-secondary py-14 md:py-20">
+<section class="py-14 md:py-20" style={band.fix.style}>
   <div class="container-page">
     <SectionHeader
       eyebrow="Troubleshooting"
@@ -145,7 +152,7 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
 </section>
 
 <!-- Reference table -->
-<section class="bg-secondary py-14 md:py-20">
+<section class="py-14 md:py-20" style={band.reference.style}>
   <div class="container-page">
     <SectionHeader
       eyebrow="What your results mean"
@@ -183,7 +190,7 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
 
 <!-- A photograph, placed well below the tool so it cannot affect what is
      visible when the page opens. -->
-<section class="bg-secondary pb-14 md:pb-20">
+<section class="py-14 md:py-20" style={band.photo.style}>
   <div class="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
     <PhotoCard
       photo={getPhoto("webcam-test")!}
@@ -203,7 +210,7 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
 </section>
 
 <!-- Privacy -->
-<section id="privacy" class="bg-secondary py-14 md:py-20">
+<section id="privacy" class="py-14 md:py-20" style={band.privacy.style}>
   <div class="container-page grid gap-10 lg:grid-cols-2 lg:gap-16">
     <div>
       <SectionHeader align="left" eyebrow="Privacy" title="How this tool handles your camera" lede="A camera test that uploads your face would defeat the point. This one cannot." />
@@ -228,7 +235,7 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
 </section>
 
 <!-- FAQ -->
-<section id="faq" class="bg-secondary py-14 md:py-20">
+<section id="faq" class="py-14 md:py-20" style={band.faq.style}>
   <div class:list={["container-page grid gap-10 lg:grid-cols-[1fr_2fr] lg:gap-16", (adsenseClient || adsPreview) && "xl:grid-cols-[1fr_2fr_300px]"]}>
     <div>
       <SectionHeader align="left" eyebrow="FAQ" title="Questions people ask" lede="Anything we've missed?" />
@@ -252,7 +259,7 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
 <RelatedGuides tool={variantSlug ? `/tools/device-tests/webcam-test/${variantSlug}/` : "/tools/device-tests/webcam-test/"} tags={["Troubleshooting", "Lighting"]} />
 
 <!-- Same tool, other situations -->
-<section class="bg-secondary py-14 md:py-20">
+<section class="py-14 md:py-20" style={band.specific.style}>
   <div class="container-page">
     <h2 class="text-display-xs font-semibold text-primary" data-reveal>Test your camera for something specific</h2>
     <ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -292,7 +299,7 @@ const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
 </section>
 
 <!-- Studio line: every tool page is a lead source for the design studio. -->
-<section class="bg-secondary pb-16 md:pb-24">
+<section class="py-16 md:py-24" style={band.cta.style}>
   <div class="container-page">
     <div class="mx-auto flex max-w-3xl flex-col items-center gap-4 rounded-3xl bg-brand-section px-6 py-8 text-center md:flex-row md:justify-between md:text-left" data-reveal>
       <p class="text-md text-tertiary_on-brand">
