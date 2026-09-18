@@ -12,7 +12,7 @@ Facts, not estimates. Check them again rather than trusting this list once it ag
 | | |
 | --- | --- |
 | Domain created | **24 August 2026** — it was 24 days old when this plan was written |
-| Pages live | 84 built |
+| Pages live | 87 built |
 | Backlinks | **Zero** |
 | AdSense | Site status "Getting ready" — **not approved, so revenue is £0** |
 | Ad units | 5 created and wired; they return `unfilled` until approval |
@@ -20,8 +20,8 @@ Facts, not estimates. Check them again rather than trusting this list once it ag
 
 Tools live: webcam test (+8 long-tail variants), mic (+6), speaker (+4),
 keyboard (+4), dead pixel (+4) · classroom (+4), speech (+4), exam clock (+2),
-interval (+4), Tabata (+1), debate (+3) timers · voice recorder. 13 guides,
-each linked from the tools it is about and back again.
+interval (+4), Tabata (+1), debate (+3) timers · voice recorder. 16 guides,
+each linked from the tool or app it is about and back again.
 Apps: Unspend live on Play; Exact, Enough, GST Calculator and Flash in progress.
 
 ---
@@ -143,7 +143,9 @@ and would be unusable at fifty.
 **Every tool carries its guides, and every guide carries its tool.** Articles
 declare `tools:` in their front matter, and `RelatedGuides.astro` renders the
 reverse link on tool pages. One-directional linking wasted the articles as a route
-into the tools and left each tool page a dead end.
+into the tools and left each tool page a dead end. App pages follow the same rule:
+`[slug]/index.astro` ranks declared articles above `readingTags` matches, because a
+tag match put an unrelated photo guide above Unspend's own.
 
 **No audio of unverified provenance.** `public/sounds/` ships empty with a README
 naming licences safe for commercial use. The timer falls back to synthesis.
@@ -185,7 +187,7 @@ A one-year horizon before meaningful revenue is the correct expectation.
 ## Next actions
 
 - [ ] Get AdSense approved — needs nothing from the build
-- [ ] Search Console: sitemap submitted 18 Sept, now 82 URLs. "Couldn't fetch"
+- [ ] Search Console: sitemap submitted 18 Sept, now 85 URLs. "Couldn't fetch"
       on the day of submission is Google not having tried yet, not a fault —
       the file returns 200 with `application/xml`, no BOM, and valid XML to
       Googlebot. Request Indexing on the three or four pages that matter most.
@@ -196,6 +198,12 @@ A one-year horizon before meaningful revenue is the correct expectation.
       `5 minute timer`, `10 minute timer`, `1 hour timer` and the rest are the
       highest-volume timer queries there are, and none of the six existing
       timers is the right parent for them
+- [ ] **Assets needed from Dhiraj** — nothing can generate these:
+      · `public/products/flash/icon.webp` and `01.webp`–`05.webp` (no icon, no
+        screenshots, so the whole screenshot section is missing from the page)
+      · `public/products/gst/01.webp`–`05.webp` (icon present, section missing)
+      · `public/products/baseline/icon.webp` and `public/products/astro/icon.webp`
+        (both fall back to the monogram tile)
 - [ ] Write the GST and water-tracker guides — both need facts confirmed first
 - [ ] Recorder follow-ups: live transcript, silence removal, loudness normalise,
       and the format pages (WhatsApp to MP3, iPhone ringtone, remove silence)

@@ -31,7 +31,7 @@ const isLive = p.status === "live";
 const heroShots = p.screenshots.slice(0, 3);
 const others = products.filter((o) => o.slug !== p.slug);
 
-// Guides that share a tag with this app, so every app page feeds the cluster.
+// Guides for this app: the ones that name it, then the ones that share a tag.
 const allArticles = await getCollection("articles");
 // One photograph per app, with a chip carrying a number the page already claims.
 const photo = getPhoto(p.slug);
@@ -43,10 +43,16 @@ const photoChip: Record<string, { label: string; value: string; icon: string }> 
   flash: { label: "Permissions requested", value: "None", icon: "shield" },
 };
 
-const related = (p.readingTags?.length
-  ? allArticles.filter((a) => a.data.tags.some((t) => p.readingTags!.includes(t)))
-  : []
-).slice(0, 3);
+// Articles that name this app in their `tools:` front matter come first — that is
+// a deliberate declaration, and it beats a shared tag. `readingTags` then fills any
+// remaining slots, which is how an app with no guides of its own still gets three.
+const declared = allArticles.filter((a) => a.data.tools.includes(`/${p.slug}/`));
+const byTag = p.readingTags?.length
+  ? allArticles.filter(
+      (a) => !declared.includes(a) && a.data.tags.some((t) => p.readingTags!.includes(t)),
+    )
+  : [];
+const related = [...declared, ...byTag].slice(0, 3);
 const ogImage = p.slug === "unspend" ? "/products/unspend/og.png" : "/assets/brand/og.png";
 
 const jsonLd = {
