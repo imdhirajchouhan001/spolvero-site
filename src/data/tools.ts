@@ -61,6 +61,18 @@ export const tools: Tool[] = [
       "See your webcam, get a readiness score, and find out if your resolution, frame rate and lighting are good enough for a call. Nothing is uploaded — the video never leaves your browser.",
   },
   {
+    slug: "voice-recorder",
+    name: "Voice Recorder",
+    kind: "Record and export",
+    status: "live",
+    icon: "message",
+    accent: "#7c3aed",
+    tint: "#ede9fe",
+    tagline: "Record, trim, download. Nothing uploaded.",
+    summary:
+      "Record from your microphone, trim the dead air off the ends, and download an MP3 or WAV. Captured, edited and encoded on your own device — there is no server to send it to.",
+  },
+  {
     slug: "mic-test", name: "Mic Test", kind: "Microphone check", status: "live", engine: "mic", icon: "message", accent: "#23b26d", tint: "#dff5ea",
     tagline: "Hear yourself before they do.",
     summary: "Check your microphone level, pick the right input, and see whether you are too quiet — in your browser, with nothing recorded.",

@@ -19,7 +19,8 @@ Facts, not estimates. Check them again rather than trusting this list once it ag
 | Capacity | ~20 hrs/week |
 
 Tools live: webcam test (+8 long-tail variants), mic, speaker, keyboard, dead
-pixel · classroom, speech, exam clock, interval, Tabata, debate timers.
+pixel · classroom, speech, exam clock, interval, Tabata, debate timers · voice
+recorder.
 Apps: Unspend live on Play; Exact, Enough, GST Calculator in progress;
 `flashlight` exists on GitHub but is not on the site yet.
 
@@ -163,3 +164,5 @@ A one-year horizon before meaningful revenue is the correct expectation.
 - [ ] Decide whether anyone else can do the community posting
 - [ ] Add `flashlight` to the site as "soon"
 - [ ] Write the GST and water-tracker guides — both need facts confirmed first
+- [ ] Recorder follow-ups: live transcript, silence removal, loudness normalise,
+      and the format pages (WhatsApp to MP3, iPhone ringtone, remove silence)

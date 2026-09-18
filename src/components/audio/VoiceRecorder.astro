@@ -1,0 +1,491 @@
+---
+// The voice recorder.
+//
+// Everything happens in the tab: MediaRecorder captures the microphone, the audio
+// is decoded to a buffer for the waveform, trimming is a pair of offsets into that
+// buffer, and export writes the file locally. There is no upload path in this
+// component, which is the claim the page makes and the reason the tool exists.
+//
+// Libraries, all loaded on demand rather than on page load:
+//   wavesurfer.js        BSD-3-Clause — waveform drawing and the trim region
+//   audiobuffer-to-wav   MIT          — WAV encoding
+//   lamejs               LGPL-3.0     — MP3 encoding, served unmodified from
+//                                       /vendor/ so it stays replaceable.
+//                                       See public/vendor/README.md.
+import Icon from "@/components/Icon.astro";
+import Button from "@/components/ui/Button.astro";
+import { recorderShortcuts } from "@/data/audio";
+---
+
+<section class="container-page" aria-labelledby="recorder-heading">
+  <div
+    class="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--card)] shadow-lg"
+    data-recorder
+    data-state="idle"
+  >
+    <h2 id="recorder-heading" class="sr-only">Voice recorder</h2>
+
+    <!-- Stage -->
+    <div class="relative bg-[#12121c] px-5 py-8 text-white md:px-8 md:py-10">
+      <div class="flex items-center justify-between gap-3">
+        <span class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold">
+          <span class="size-2 rounded-full bg-white/30 transition-colors" data-rec-dot></span>
+          <span data-status>Ready</span>
+        </span>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold">
+          <Icon name="lock" class="size-3.5" /> 0 bytes of audio uploaded
+        </span>
+      </div>
+
+      <!-- Timer -->
+      <p class="mt-6 text-center text-6xl font-semibold tabular-nums md:text-7xl" data-time>0:00</p>
+
+      <!-- Live level, shown while recording -->
+      <div class="mx-auto mt-6 max-w-md" data-level-wrap>
+        <div class="h-3 overflow-hidden rounded-full bg-white/10">
+          <div class="h-full w-0 rounded-full bg-[#3ddc84] transition-[width,background-color] duration-75" data-level></div>
+        </div>
+        <p class="mt-2 text-center text-xs text-white/50" data-level-hint>The bar moves when the microphone hears you</p>
+      </div>
+
+      <!-- Waveform, shown after stopping -->
+      <div class="mt-6 hidden" data-wave-wrap>
+        <div class="rounded-2xl bg-white/5 p-3">
+          <div data-wave></div>
+        </div>
+        <p class="mt-2 text-center text-xs text-white/50">Drag the edges of the highlighted area to trim</p>
+      </div>
+
+      <!-- Controls -->
+      <div class="mt-7 flex flex-wrap items-center justify-center gap-2">
+        <Button variant="default" size="xl" data-record><Icon name="message" />Record</Button>
+        <Button variant="outline" size="lg" class="hidden" data-pause>Pause</Button>
+        <Button variant="outline" size="lg" class="hidden" data-stop>Stop</Button>
+        <Button variant="ghost" size="md" class="hidden" data-play><Icon name="play" />Play selection</Button>
+        <Button variant="ghost" size="md" class="hidden" data-again>Start over</Button>
+      </div>
+
+      <!-- Error -->
+      <div class="mt-6 hidden rounded-2xl bg-white/5 p-4 text-center" data-error>
+        <p class="text-md font-semibold" data-error-title></p>
+        <p class="mx-auto mt-1 max-w-md text-sm text-white/70" data-error-body></p>
+        <a class="mt-3 inline-flex text-sm font-semibold underline" href="#fix" data-error-link>Read the fix</a>
+      </div>
+    </div>
+
+    <!-- Setup and export -->
+    <div class="p-5 md:p-6">
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label class="flex flex-col gap-1.5">
+          <span class="text-sm font-semibold text-secondary">Microphone</span>
+          <select
+            data-devices
+            class="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-md text-[var(--foreground)] outline-none focus:ring-2 focus:ring-[var(--ring)]"
+          ></select>
+        </label>
+        <label class="flex flex-col gap-1.5">
+          <span class="text-sm font-semibold text-secondary">File name</span>
+          <input
+            type="text" value="recording" maxlength="60" data-filename
+            class="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-md text-[var(--foreground)] outline-none focus:ring-2 focus:ring-[var(--ring)]"
+          />
+        </label>
+      </div>
+
+      <!-- Export: named by what you will do with the file, not by codec -->
+      <div class="mt-5 hidden border-t border-[var(--border)] pt-5" data-export>
+        <p class="text-sm font-semibold text-secondary">Download</p>
+        <div class="mt-3 flex flex-wrap items-center gap-2">
+          <Button variant="default" size="lg" data-dl="mp3">
+            <Icon name="arrow" />MP3 — to send
+          </Button>
+          <Button variant="outline" size="lg" data-dl="wav">
+            <Icon name="arrow" />WAV — to edit
+          </Button>
+          <span class="text-sm text-tertiary" data-dl-status></span>
+        </div>
+        <p class="mt-3 text-sm text-tertiary" data-trim-info></p>
+      </div>
+
+      <dl class="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-[var(--border)] pt-4 text-sm">
+        {recorderShortcuts.map((s) => (
+          <div class="flex items-center gap-1.5">
+            <dt><kbd class="rounded-md border border-[var(--border)] bg-[var(--muted)] px-1.5 py-0.5 font-mono text-xs">{s.keys}</kbd></dt>
+            <dd class="text-tertiary">{s.action}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <p class="mt-4 flex items-start gap-2 text-sm text-tertiary">
+        <span class="mt-0.5 text-fg-success-primary"><Icon name="lock" class="size-4" /></span>
+        <span>
+          Recorded, trimmed and encoded on this device. There is no upload and no server copy — closing the tab discards it.
+          <a class="font-semibold text-brand-secondary hover:underline" href="#privacy">How this works</a>
+        </span>
+      </p>
+    </div>
+
+    <p class="sr-only" role="status" aria-live="polite" data-announce></p>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-recorder]");
+  if (root) init(root);
+
+  function init(root: HTMLElement) {
+    const q = <T extends HTMLElement>(s: string) => root.querySelector<T>(s);
+    const statusEl = q("[data-status]")!;
+    const dot = q("[data-rec-dot]")!;
+    const timeEl = q("[data-time]")!;
+    const level = q("[data-level]")!;
+    const levelWrap = q("[data-level-wrap]")!;
+    const levelHint = q("[data-level-hint]")!;
+    const waveWrap = q("[data-wave-wrap]")!;
+    const devices = q<HTMLSelectElement>("[data-devices]")!;
+    const filename = q<HTMLInputElement>("[data-filename]")!;
+    const exportRow = q("[data-export]")!;
+    const dlStatus = q("[data-dl-status]")!;
+    const trimInfo = q("[data-trim-info]")!;
+    const announce = q("[data-announce]")!;
+    const btn = {
+      record: q("[data-record]")!, pause: q("[data-pause]")!, stop: q("[data-stop]")!,
+      play: q("[data-play]")!, again: q("[data-again]")!,
+    };
+
+    let stream: MediaStream | null = null;
+    let recorder: MediaRecorder | null = null;
+    let chunks: BlobPart[] = [];
+    let audioCtx: AudioContext | null = null;
+    let analyser: AnalyserNode | null = null;
+    let raf = 0;
+    let startedAt = 0;
+    let elapsed = 0;
+    let tick: number | undefined;
+    let buffer: AudioBuffer | null = null;
+    let ws: any = null;
+    let region: any = null;
+    let clipped = false;
+
+    const say = (m: string) => { announce.textContent = m; };
+    const fmt = (s: number) => {
+      s = Math.max(0, Math.floor(s));
+      return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+    };
+
+    const setState = (s: "idle" | "recording" | "paused" | "ready") => {
+      root.dataset.state = s;
+      const rec = s === "recording" || s === "paused";
+      btn.record.classList.toggle("hidden", rec || s === "ready");
+      btn.pause.classList.toggle("hidden", !rec);
+      btn.stop.classList.toggle("hidden", !rec);
+      btn.play.classList.toggle("hidden", s !== "ready");
+      btn.again.classList.toggle("hidden", s !== "ready");
+      levelWrap.classList.toggle("hidden", s === "ready");
+      waveWrap.classList.toggle("hidden", s !== "ready");
+      exportRow.classList.toggle("hidden", s !== "ready");
+      dot.style.background = s === "recording" ? "#ff4d4d" : s === "paused" ? "#ffc83d" : "";
+      statusEl.textContent = s === "recording" ? "Recording" : s === "paused" ? "Paused" : s === "ready" ? "Ready to trim" : "Ready";
+      // Ads must not move or make noise during a take.
+      document.documentElement.toggleAttribute("data-recording", rec);
+      document.dispatchEvent(new CustomEvent("spolvero:timer", { detail: { running: rec } }));
+    };
+
+    // ---- errors, mapped to the fixes published below ----
+    const errors: Record<string, { id: string; title: string; body: string }> = {
+      NotAllowedError: { id: "denied", title: "The browser blocked the microphone", body: "Permission was refused or dismissed. Reset it from the padlock in the address bar, then try again." },
+      NotFoundError: { id: "notfound", title: "No microphone was found", body: "No input device is available. Check it is plugged in and not disabled in your system sound settings." },
+      NotReadableError: { id: "inuse", title: "The microphone is in use", body: "Another app is holding it. Quit Zoom, Teams, Discord or OBS and try again." },
+      SecurityError: { id: "denied", title: "This page cannot use the microphone", body: "Browsers only allow recording on secure pages. Check the address bar shows https." },
+      RecorderError: { id: "inuse", title: "Recording stopped unexpectedly", body: "The browser ended the recording. Reload the page and try again, and close other apps using the microphone." },
+      EmptyRecording: { id: "notfound", title: "Nothing was recorded", body: "The microphone produced no audio. Pick the right input from the list and check the level meter moves while you speak." },
+      DecodeError: { id: "notfound", title: "That recording could not be read", body: "The browser produced audio this page could not decode. Reload and try again — and tell us which browser you are on, because that is a bug worth fixing." },
+    };
+    const showError = (e: unknown) => {
+      const name = (e as DOMException)?.name || "UnknownError";
+      const info = errors[name] ?? { id: "denied", title: "Recording could not start", body: `The browser reported: ${name}.` };
+      const box = q("[data-error]")!;
+      q("[data-error-title]")!.textContent = info.title;
+      q("[data-error-body]")!.textContent = info.body;
+      q<HTMLAnchorElement>("[data-error-link]")!.href = `#fix-${info.id}`;
+      box.classList.remove("hidden");
+      say(`${info.title}. ${info.body}`);
+    };
+
+    // ---- level meter ----
+    const meter = () => {
+      if (!analyser) return;
+      const data = new Float32Array(analyser.fftSize);
+      analyser.getFloatTimeDomainData(data);
+      let peak = 0;
+      for (const v of data) peak = Math.max(peak, Math.abs(v));
+      const pct = Math.min(100, peak * 140);
+      level.style.width = `${pct}%`;
+      if (peak > 0.97) {
+        clipped = true;
+        level.style.backgroundColor = "#ffc83d";
+        levelHint.textContent = "Too loud — move back from the microphone";
+      } else if (peak > 0.02) {
+        level.style.backgroundColor = "#3ddc84";
+        if (!clipped) levelHint.textContent = "Level looks good";
+      }
+      raf = requestAnimationFrame(meter);
+    };
+
+    async function listDevices() {
+      try {
+        const all = await navigator.mediaDevices.enumerateDevices();
+        const mics = all.filter((d) => d.kind === "audioinput");
+        const current = stream?.getAudioTracks()[0]?.getSettings().deviceId;
+        devices.innerHTML = mics
+          .map((d, i) => `<option value="${d.deviceId}"${d.deviceId === current ? " selected" : ""}>${d.label || `Microphone ${i + 1}`}</option>`)
+          .join("");
+      } catch { /* the tool still works without the picker */ }
+    }
+
+    // ---- record ----
+    async function start() {
+      q("[data-error]")!.classList.add("hidden");
+      clipped = false;
+      try {
+        const deviceId = devices.value;
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: deviceId ? { deviceId: { exact: deviceId } } : true,
+        });
+      } catch (e) { return showError(e); }
+
+      await listDevices();
+      audioCtx = audioCtx ?? new (window.AudioContext || (window as any).webkitAudioContext)();
+      if (audioCtx.state === "suspended") await audioCtx.resume();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 1024;
+      audioCtx.createMediaStreamSource(stream).connect(analyser);
+
+      chunks = [];
+      // Browsers disagree on containers: Chrome and Firefox give webm/opus, Safari
+      // gives mp4/aac. Asking for the first supported one avoids a NotSupportedError
+      // on whichever browser is not the one this was written on.
+      const preferred = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
+      const mimeType = preferred.find((t) => MediaRecorder.isTypeSupported?.(t));
+      try {
+        recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+        recorder.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+        recorder.onstop = () => void finish();
+        recorder.onerror = () => showError({ name: "RecorderError" });
+        recorder.start(200);
+      } catch (e) {
+        stopAll();
+        setState("idle");
+        return showError(e);
+      }
+
+      startedAt = Date.now();
+      elapsed = 0;
+      setState("recording");
+      meter();
+      tick = window.setInterval(() => {
+        timeEl.textContent = fmt(elapsed + (Date.now() - startedAt) / 1000);
+      }, 200);
+      say("Recording started");
+    }
+
+    const pause = () => {
+      if (!recorder) return;
+      if (recorder.state === "recording") {
+        recorder.pause();
+        elapsed += (Date.now() - startedAt) / 1000;
+        setState("paused");
+        btn.pause.textContent = "Resume";
+        say("Paused");
+      } else {
+        recorder.resume();
+        startedAt = Date.now();
+        setState("recording");
+        btn.pause.textContent = "Pause";
+        say("Resumed");
+      }
+    };
+
+    const stopAll = () => {
+      window.clearInterval(tick);
+      cancelAnimationFrame(raf);
+      stream?.getTracks().forEach((t) => t.stop());
+      stream = null;
+    };
+
+    async function finish() {
+      stopAll();
+      const blob = new Blob(chunks, { type: recorder?.mimeType || "audio/webm" });
+      if (!blob.size) {
+        setState("idle");
+        return showError({ name: "EmptyRecording" });
+      }
+      try {
+        const bytes = await blob.arrayBuffer();
+        audioCtx = audioCtx ?? new AudioContext();
+        buffer = await audioCtx.decodeAudioData(bytes);
+      } catch (e) {
+        setState("idle");
+        return showError({ name: "DecodeError" });
+      }
+      timeEl.textContent = fmt(buffer.duration);
+      setState("ready");
+      try {
+        await drawWave(blob);
+      } catch {
+        // The waveform is a convenience; without it the whole recording is still
+        // exportable, so a failure here must not cost the user their take.
+        trimInfo.textContent = "The waveform could not be drawn, but the recording is fine — download it below.";
+      }
+      say(`Recording finished, ${fmt(buffer.duration)}. Trim it or download it.`);
+    }
+
+    // ---- waveform, loaded only once there is something to draw ----
+    async function drawWave(blob: Blob) {
+      const [{ default: WaveSurfer }, { default: RegionsPlugin }] = await Promise.all([
+        import("wavesurfer.js"),
+        import("wavesurfer.js/dist/plugins/regions.esm.js"),
+      ]);
+      ws?.destroy();
+      const regions = RegionsPlugin.create();
+      ws = WaveSurfer.create({
+        container: q("[data-wave]")!,
+        height: 96,
+        waveColor: "rgba(255,255,255,0.35)",
+        progressColor: "#a78bfa",
+        cursorColor: "#ffffff",
+        plugins: [regions],
+      });
+      await ws.loadBlob(blob);
+      region = regions.addRegion({ start: 0, end: ws.getDuration(), drag: false, resize: true, color: "rgba(167,139,250,0.18)" });
+      const showTrim = () => {
+        const d = region.end - region.start;
+        trimInfo.textContent = `Selected ${fmt(d)} of ${fmt(ws.getDuration())}${
+          region.start > 0.05 || region.end < ws.getDuration() - 0.05 ? " — the rest is trimmed off" : ""
+        }`;
+      };
+      regions.on("region-updated", showTrim);
+      showTrim();
+    }
+
+    // ---- export, on this device ----
+    const sliceBuffer = () => {
+      if (!buffer) return null;
+      const start = Math.floor((region?.start ?? 0) * buffer.sampleRate);
+      const end = Math.floor((region?.end ?? buffer.duration) * buffer.sampleRate);
+      const len = Math.max(1, end - start);
+      const out = new AudioContext().createBuffer(buffer.numberOfChannels, len, buffer.sampleRate);
+      for (let c = 0; c < buffer.numberOfChannels; c++) {
+        out.copyToChannel(buffer.getChannelData(c).slice(start, end), c);
+      }
+      return out;
+    };
+
+    const save = (blob: Blob, ext: string) => {
+      const name = (filename.value || "recording").replace(/[^\w\-. ]+/g, "").trim() || "recording";
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${name}.${ext}`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 10_000);
+    };
+
+    async function exportAs(kind: "mp3" | "wav") {
+      const buf = sliceBuffer();
+      if (!buf) return;
+      dlStatus.textContent = kind === "wav" ? "Writing the file…" : "Encoding on your device…";
+      try {
+        if (kind === "wav") {
+          const { default: toWav } = await import("audiobuffer-to-wav");
+          save(new Blob([toWav(buf)], { type: "audio/wav" }), "wav");
+        } else {
+          // The encoder is LGPL and is served unmodified from /vendor/ so it stays
+          // replaceable, and is fetched only now so it never slows the page down.
+          if (!(window as any).lamejs) {
+            await new Promise<void>((res, rej) => {
+              const s = document.createElement("script");
+              s.src = "/vendor/lamejs.js";
+              s.onload = () => res();
+              s.onerror = () => rej(new Error("encoder failed to load"));
+              document.head.append(s);
+            });
+          }
+          save(encodeMp3(buf), "mp3");
+        }
+        dlStatus.textContent = "Saved to your downloads";
+        say(`${kind.toUpperCase()} saved`);
+      } catch (e) {
+        dlStatus.textContent = "That did not work — try WAV, or reload the page";
+      }
+    }
+
+    /** Interleaves to mono-or-stereo 16-bit and hands it to lamejs in blocks. */
+    function encodeMp3(buf: AudioBuffer): Blob {
+      const lame = (window as any).lamejs;
+      const channels = Math.min(2, buf.numberOfChannels);
+      const enc = new lame.Mp3Encoder(channels, buf.sampleRate, 128);
+      const toInt16 = (f: Float32Array) => {
+        const out = new Int16Array(f.length);
+        for (let i = 0; i < f.length; i++) {
+          const s = Math.max(-1, Math.min(1, f[i]));
+          out[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+        }
+        return out;
+      };
+      const left = toInt16(buf.getChannelData(0));
+      const right = channels > 1 ? toInt16(buf.getChannelData(1)) : null;
+      const parts: BlobPart[] = [];
+      const block = 1152;
+      for (let i = 0; i < left.length; i += block) {
+        const l = left.subarray(i, i + block);
+        const r = right ? right.subarray(i, i + block) : undefined;
+        const chunk = right ? enc.encodeBuffer(l, r) : enc.encodeBuffer(l);
+        if (chunk.length) parts.push(chunk.buffer as ArrayBuffer);
+      }
+      const last = enc.flush();
+      if (last.length) parts.push(last.buffer as ArrayBuffer);
+      return new Blob(parts, { type: "audio/mpeg" });
+    }
+
+    // ---- wiring ----
+    btn.record.addEventListener("click", () => void start());
+    btn.pause.addEventListener("click", pause);
+    btn.stop.addEventListener("click", () => recorder?.stop());
+    btn.play.addEventListener("click", () => {
+      if (!ws || !region) return;
+      region.play();
+      say("Playing the selection");
+    });
+    btn.again.addEventListener("click", () => {
+      ws?.destroy(); ws = null; region = null; buffer = null;
+      timeEl.textContent = "0:00";
+      level.style.width = "0%";
+      levelHint.textContent = "The bar moves when the microphone hears you";
+      dlStatus.textContent = "";
+      trimInfo.textContent = "";
+      btn.pause.textContent = "Pause";
+      setState("idle");
+      say("Cleared. Ready to record again.");
+    });
+    root.querySelectorAll<HTMLElement>("[data-dl]").forEach((b) =>
+      b.addEventListener("click", () => void exportAs(b.dataset.dl as "mp3" | "wav")),
+    );
+    devices.addEventListener("change", () => { if (root.dataset.state === "idle") void listDevices(); });
+
+    document.addEventListener("keydown", (e) => {
+      const t = e.target as HTMLElement;
+      if (t && /^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName)) return;
+      const s = root.dataset.state;
+      if (e.key === " ") { e.preventDefault(); s === "recording" || s === "paused" ? recorder?.stop() : s === "idle" && void start(); }
+      if (e.key.toLowerCase() === "p" && (s === "recording" || s === "paused")) { e.preventDefault(); pause(); }
+      if (e.key === "Enter" && s === "ready") { e.preventDefault(); btn.play.click(); }
+      if (e.key.toLowerCase() === "r" && s === "ready") { e.preventDefault(); btn.again.click(); }
+    });
+
+    window.addEventListener("pagehide", () => { stopAll(); document.documentElement.removeAttribute("data-recording"); });
+
+    setState("idle");
+    void listDevices();
+  }
+</script>
