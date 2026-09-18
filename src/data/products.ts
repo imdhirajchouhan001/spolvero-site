@@ -399,9 +399,14 @@ const allProducts: Product[] = [
       "A torch, a full-screen light in any colour, and a Morse signal — with no permissions requested at all. It drives the LED directly rather than opening the camera, which is why it needs nothing from you.",
     accent: "#ffc83d",
     tint: "#fff4d9",
-    monogram: "F",
+    icon: "/products/flash/icon.webp",
     framed: false,
-    screenshots: [],
+    screenshots: [
+      { src: "/products/flash/01.webp", alt: "Torch screen with a brightness slider down the right edge and a Morse button", caption: "The light, straight away" },
+      { src: "/products/flash/02.webp", alt: "Screen mode showing a colour swatch, seven colour presets, and brightness, thickness and shape controls", caption: "The screen as the lamp" },
+      { src: "/products/flash/03.webp", alt: "The whole screen filled with warm orange light, with a small control bar at the bottom", caption: "Fill the screen, any colour" },
+      { src: "/products/flash/04.webp", alt: "Settings screen listing an auto-off timer, what the app opens on, appearance, and tile and widget help", caption: "An auto-off timer, so it can't run all night" },
+    ],
     features: [
       { icon: "zap", title: "The torch, without the camera", body: "Most torch apps open a camera to reach the LED, which is why they ask for camera permission. Flash uses the direct torch APIs on both platforms, so it declares no permissions and requests none." },
       { icon: "palette", title: "Screen light in any colour", body: "When there is no LED, or you want softer light, the whole screen becomes the lamp — colour and brightness both adjustable." },

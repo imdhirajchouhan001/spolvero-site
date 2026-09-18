@@ -123,6 +123,16 @@ changed deliberately and the document is the thing that is stale.
 below AA on the wash band (`#6b7288` measured 3.93). Re-check contrast against
 white, `--color-wash-soft` and `--color-wash` before changing any neutral.
 
+**App pages alternate surfaces; the order lives in one array.** Added 18 September
+2026. The page was a run of white and near-white — five identical sections in a
+row at one point — which reads as a single column and gets skimmed. Sections now
+cycle white / `--color-wash-soft` / white / `--color-wash`. Three surfaces, no
+more: past that the alternation stops reading as structure. Half the sections are
+conditional, so the cycle is assigned in `sectionOrder` in the frontmatter rather
+than hardcoded per section — otherwise an app with no pricing puts two washes
+side by side and loses the effect on exactly the shortest page. Cards flip to
+white on a coloured band, since `bg-secondary` disappears against a wash.
+
 **Section headers are one component.** `SectionHeader.astro` renders the eyebrow
 pill and the two-tone headline for all 29 call sites; wrap words in `*asterisks*`
 in a title to render them in the quiet colour. Restyle there, not per page.
@@ -245,9 +255,13 @@ A one-year horizon before meaningful revenue is the correct expectation.
       highest-volume timer queries there are, and none of the six existing
       timers is the right parent for them
 - [ ] **Assets needed from Dhiraj** — nothing can generate these:
-      · `public/products/flash/icon.webp` and `01.webp`–`05.webp` (no icon, no
-        screenshots, so the whole screenshot section is missing from the page)
-      · `public/products/gst/01.webp`–`05.webp` (icon present, section missing)
+      · ~~Flash icon and screenshots~~ — supplied 18 September 2026: icon plus
+        four screens (torch, screen mode, fill screen, settings). They arrived at
+        1x from Figma, 393×852, and are used at that size rather than upscaled to
+        match Unspend's 750px exports, because enlarging a 1x export adds file
+        size and no detail. A 2x or 3x re-export would sharpen them on retina.
+      · `public/products/gst/01.webp`–`05.webp` (icon present, section missing —
+        its card on /apps/ still falls back to the drawn keypad mock)
       · `public/products/baseline/icon.webp` and `public/products/astro/icon.webp`
         (both fall back to the monogram tile)
 - [ ] Write the GST and water-tracker guides — both need facts confirmed first
