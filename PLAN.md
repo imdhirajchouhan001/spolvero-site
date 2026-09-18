@@ -260,8 +260,15 @@ A one-year horizon before meaningful revenue is the correct expectation.
         1x from Figma, 393×852, and are used at that size rather than upscaled to
         match Unspend's 750px exports, because enlarging a 1x export adds file
         size and no detail. A 2x or 3x re-export would sharpen them on retina.
-      · `public/products/gst/01.webp`–`05.webp` (icon present, section missing —
-        its card on /apps/ still falls back to the drawn keypad mock)
+      · ~~GST, Enough and Unspend screens~~ — supplied 18 September 2026. Unspend
+        went from five older screens to three current ones, Enough's five were
+        replaced and its stale sixth removed, GST got its first three and a new
+        icon. Every app now has real screenshots; no card falls back to the drawn
+        keypad mock any more.
+      · **Held back:** the GST invoice-preview screen. It shows a mobile number
+        and a street address under the Spolvero.Design heading. Publishing those
+        is Dhiraj's call, not an assumption to make — either confirm it, or send
+        a re-export with dummy contact details.
       · `public/products/baseline/icon.webp` and `public/products/astro/icon.webp`
         (both fall back to the monogram tile)
 - [ ] Write the GST and water-tracker guides — both need facts confirmed first

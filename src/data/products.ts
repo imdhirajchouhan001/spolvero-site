@@ -69,11 +69,9 @@ const allProducts: Product[] = [
     playUrl: "https://play.google.com/store/apps/details?id=design.spolvero.unspend",
     framed: false,
     screenshots: [
-      { src: "/products/unspend/01.webp", alt: "Home screen showing a monthly spend of 8,450 rupees and upcoming renewals", caption: "Your real monthly total" },
-      { src: "/products/unspend/02.webp", alt: "Insights screen with a donut chart of spending by category", caption: "Where the money goes" },
-      { src: "/products/unspend/03.webp", alt: "Add subscription screen listing Netflix, Amazon Prime and other services with prices", caption: "Common services, ready to add" },
-      { src: "/products/unspend/04.webp", alt: "Lock screen notification: Netflix renews in 7 days", caption: "A heads-up before the charge" },
-      { src: "/products/unspend/05.webp", alt: "People screen showing who owes what for shared subscriptions", caption: "Who pays what" },
+      { src: "/products/unspend/01.webp", alt: "Home screen showing 6,000 rupees due this month across 11 active subscriptions, a monthly limit of 8,000 and a chart of upcoming payments", caption: "What you actually pay this month" },
+      { src: "/products/unspend/02.webp", alt: "Insights screen with a donut chart of 7,000 rupees a month split by category, and a monthly limit bar beneath it", caption: "Where the money goes" },
+      { src: "/products/unspend/03.webp", alt: "Payment methods screen listing an HDFC card, UPI, PayPal and Google Pay with what each one charges per month", caption: "Which card is charging you" },
     ],
     features: [
       { icon: "wallet", title: "See what you actually pay", body: "Real monthly and yearly totals, with breakdowns by category, by person, and by rolling versus locked-in spending." },
@@ -232,12 +230,11 @@ const allProducts: Product[] = [
     icon: "/products/enough/icon.webp",
     framed: false,
     screenshots: [
-      { src: "/products/enough/01.webp", alt: "Today screen showing 1.19 L logged of a 1.50 L target, with one-tap vessels below", caption: "One honest number" },
-      { src: "/products/enough/02.webp", alt: "Explainer for the 2.4 L ceiling, headed \"More water is not better water\"", caption: "An upper bound, not a push" },
-      { src: "/products/enough/03.webp", alt: "Where your number comes from: 2.0 L total water, minus 25% from food, leaving a 1.5 L drink target", caption: "Your number as arithmetic" },
-      { src: "/products/enough/04.webp", alt: "Log a drink screen with glass, bottle, coffee and tea, each one tap", caption: "A glass logged in a second" },
-      { src: "/products/enough/05.webp", alt: "Weekly history chart marking days goal met, below goal and mostly logged late", caption: "Late logs count, and are marked" },
-      { src: "/products/enough/06.webp", alt: "Health Connect screen listing which app holds your activity data, read on device", caption: "Nothing leaves your phone" },
+      { src: "/products/enough/01.webp", alt: "Today screen showing 1.19 L logged of a 1.50 L target in a progress ring, with glass, bottle, coffee and tea below as one-tap vessels", caption: "One honest number" },
+      { src: "/products/enough/02.webp", alt: "Setup screen reading \"Your drinking target is 1.50 L a day\", showing 2.0 L total water less 25% that comes from food", caption: "Your target, and the arithmetic" },
+      { src: "/products/enough/03.webp", alt: "Where your number comes from: 2.0 L total water, minus 25% from food, leaving a 1.5 L drink target, with the EFSA and IOM sources listed", caption: "Every figure has a source" },
+      { src: "/products/enough/04.webp", alt: "Weekly history chart marking days goal met, below goal and mostly logged late", caption: "Late logs count, and are marked" },
+      { src: "/products/enough/05.webp", alt: "Health Connect screen with separate toggles for hydration, exercise, active calories, body temperature, weight and sleep", caption: "Each toggle is yours" },
     ],
     features: [
       { icon: "book", title: "A number with a source", body: "Your target is worked out from published standards (EFSA, US IOM and ICMR-NIN) and every step is shown on screen." },
@@ -477,7 +474,11 @@ const allProducts: Product[] = [
     tint: "#fff1e4",
     icon: "/products/gst/icon.webp",
     framed: false,
-    screenshots: [],
+    screenshots: [
+      { src: "/products/gst/01.webp", alt: "Calculator keypad with a row of add-GST rates above a row for extracting GST from a total, and a running grand total of four items", caption: "Add GST, or pull it back out" },
+      { src: "/products/gst/02.webp", alt: "The same calculator in a second colour theme, teal and gold instead of blue and orange", caption: "Pick a theme that suits your eyes" },
+      { src: "/products/gst/03.webp", alt: "History sheet listing the last 25 calculations, each showing the sum that produced it and a tap-to-reload action", caption: "The last 25, ready to reload" },
+    ],
     features: [
       { icon: "calculator", title: "Add or remove GST", body: "Add GST to a price or pull it back out of a total. Splits CGST and SGST within a state, IGST across state lines." },
       { icon: "percent", title: "Every current slab", body: "0%, 5%, 18% and 40%, plus 3%, 0.25% and the composition rates, with four rate keys you set once." },
