@@ -1,7 +1,11 @@
 @import "tailwindcss";
+/* Headings are Bricolage Grotesque, body copy is BioRhyme, both variable so the
+   whole weight range costs one file each. Inter stays loaded as the UI face —
+   buttons, labels, badges, table headers and the tool panels — because BioRhyme
+   is a display slab and does not hold up at 12-14px in a control. */
 @import "@fontsource-variable/inter";
-/* Headings use a rounded geometric face; Inter stays for body and UI. */
-@import "@fontsource-variable/figtree";
+@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource-variable/biorhyme";
 @import "./theme.css";
 @import "./typography.css";
 @import "tw-animate-css";
@@ -17,8 +21,10 @@
 
 /* Spolvero brand: the Untitled UI brand scale rebuilt around the logo ink (#101057 = brand-800). */
 @theme {
-  --font-body: "Inter Variable", "Inter", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  --font-display: "Figtree Variable", "Figtree", "Inter Variable", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-body: "BioRhyme Variable", "BioRhyme", Georgia, "Times New Roman", serif;
+  --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", "Inter Variable", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  /* The UI face. Everything that is a control rather than prose stays on it. */
+  --font-ui: "Inter Variable", "Inter", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 
   /* ------------------------------------------------------------------
      Warm neutrals.
@@ -94,7 +100,23 @@
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-feature-settings: "cv11", "ss01";
+  }
+  /* BioRhyme is wide and heavy by default. Body copy is pinned to its lightest
+     weight and given more leading than a sans needs, or a paragraph of it reads
+     as a wall. */
+  p, li, dd, blockquote {
+    font-variation-settings: "wght" 300;
+    line-height: 1.7;
+  }
+  /* Controls stay on the UI face. A display slab at 12-14px inside a button is
+     unreadable, and there are a lot of those.
+     Scoped to elements that are genuinely controls rather than to size classes:
+     the first attempt matched [class*="text-sm"], which caught every small
+     paragraph on the site and quietly put the body copy back on Inter. Badges
+     and buttons carry `font-ui` on the components themselves. */
+  button, input, select, textarea, label, kbd, th, nav {
+    font-family: var(--font-ui);
+    font-variation-settings: normal;
   }
   html { scroll-behavior: smooth; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
@@ -135,7 +157,7 @@
 @theme inline {
   /* shadcn components read --font-sans; the site's own faces stay in charge. */
   --font-sans: "Inter Variable", "Inter", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  --font-heading: "Figtree Variable", "Figtree", var(--font-sans);
+  --font-heading: "Bricolage Grotesque Variable", "Bricolage Grotesque", var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);

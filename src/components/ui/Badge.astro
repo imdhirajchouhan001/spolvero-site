@@ -13,7 +13,7 @@ interface Props {
 const { variant = "secondary", size = "md", class: className } = Astro.props;
 
 const base =
-  "inline-flex w-fit shrink-0 items-center justify-center gap-1.5 rounded-sm border border-transparent font-semibold whitespace-nowrap [&>svg]:size-3";
+  "inline-flex w-fit shrink-0 items-center justify-center gap-1.5 rounded-sm border border-transparent font-ui font-semibold whitespace-nowrap [&>svg]:size-3";
 
 // Named variables rather than bg-primary etc, for the same reason as Button.astro.
 const variants: Record<Variant, string> = {

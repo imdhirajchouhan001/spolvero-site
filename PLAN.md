@@ -110,6 +110,19 @@ zero links does not help. Revisit at ~50K monthly visits, not before.
 fine across varied clusters — calculator.net and 10015.io both do. The dominant
 factors are age, links and per-page quality, in that order.
 
+**Three faces: Bricolage Grotesque, BioRhyme, Inter.** Set 19 September 2026.
+Headings are Bricolage Grotesque, body copy is BioRhyme, and Inter stays as the
+UI face for anything that is a control rather than prose — buttons, inputs,
+labels, table headers, the menu, and the Badge and Button components, which carry
+`font-ui` themselves.
+
+Two things to know before touching this. BioRhyme is a display slab: body copy is
+pinned to `wght 300` with 1.7 line-height, or a paragraph of it reads as a wall,
+and the tool pages carry 870 to 1,200 visible words each. And the first attempt
+scoped the UI face with `[class*="text-sm"]`, which matched every small paragraph
+on the site and silently put the body back on Inter — scope that rule to elements
+that are genuinely controls, never to size classes.
+
 **A tile's glyph takes its own accent, darkened until it reads.** Added 19
 September 2026. Each tool carries a pale `tint` and a saturated `accent`, but the
 glyph was drawn in one flat navy on every tile, so peach, mint and yellow cards
