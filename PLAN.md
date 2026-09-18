@@ -12,16 +12,16 @@ Facts, not estimates. Check them again rather than trusting this list once it ag
 | | |
 | --- | --- |
 | Domain created | **24 August 2026** — it was 24 days old when this plan was written |
-| Pages live | 66 built |
+| Pages live | 84 built |
 | Backlinks | **Zero** |
 | AdSense | Site status "Getting ready" — **not approved, so revenue is £0** |
 | Ad units | 5 created and wired; they return `unfilled` until approval |
 | Capacity | ~20 hrs/week |
 
 Tools live: webcam test (+8 long-tail variants), mic (+6), speaker (+4),
-keyboard (+4), dead pixel (+4) · classroom, speech, exam clock, interval,
-Tabata, debate timers · voice recorder. 13 guides, each linked from the tools
-it is about and back again.
+keyboard (+4), dead pixel (+4) · classroom (+4), speech (+4), exam clock (+2),
+interval (+4), Tabata (+1), debate (+3) timers · voice recorder. 13 guides,
+each linked from the tools it is about and back again.
 Apps: Unspend live on Play; Exact, Enough, GST Calculator and Flash in progress.
 
 ---
@@ -192,6 +192,10 @@ A one-year horizon before meaningful revenue is the correct expectation.
 - [ ] Start the weekly two hours: Toastmasters clubs, debate leagues, r/Teachers
 - [ ] List on AlternativeTo and Product Hunt
 - [ ] Decide whether anyone else can do the community posting
+- [ ] Build a generic countdown timer, then hang the duration pages off it —
+      `5 minute timer`, `10 minute timer`, `1 hour timer` and the rest are the
+      highest-volume timer queries there are, and none of the six existing
+      timers is the right parent for them
 - [ ] Write the GST and water-tracker guides — both need facts confirmed first
 - [ ] Recorder follow-ups: live transcript, silence removal, loudness normalise,
       and the format pages (WhatsApp to MP3, iPhone ringtone, remove silence)

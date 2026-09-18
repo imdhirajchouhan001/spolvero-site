@@ -11,14 +11,32 @@ import Icon from "@/components/Icon.astro";
 import AdSlot from "@/components/AdSlot.astro";
 import Button from "@/components/ui/Button.astro";
 import Badge from "@/components/ui/Badge.astro";
-import { howToSteps, timers, type Timer as TimerType } from "@/data/timers";
+import { howToSteps, timerVariants, timers, type Timer as TimerType, type TimerVariant } from "@/data/timers";
 
 interface Props {
   timer: TimerType;
+  /** Set on a long-tail page: its copy replaces the head page's where present. */
+  variant?: TimerVariant;
 }
-const { timer } = Astro.props;
-const p = timer.page!;
+const { timer, variant } = Astro.props;
+const head = timer.page!;
+// The variant supplies everything except the presets, which it may leave to the
+// head page where it has nothing better to offer.
+const p = variant
+  ? {
+      ...head,
+      h1: variant.h1,
+      intro: variant.intro,
+      answer: variant.answer,
+      tips: variant.tips,
+      faqs: variant.faqs,
+      presets: variant.presets ?? head.presets,
+      defaultSeconds: variant.defaultSeconds ?? head.defaultSeconds,
+    }
+  : head;
+const base = `/tools/timers/${timer.slug}/`;
 const siblings = timers.filter((t) => t.slug !== timer.slug);
+const others = (timerVariants[timer.slug] ?? []).filter((v) => v.slug !== variant?.slug);
 ---
 
 <!-- Hero and tool, above the fold -->
@@ -29,7 +47,15 @@ const siblings = timers.filter((t) => t.slug !== timer.slug);
       <span aria-hidden="true">/</span>
       <a href="/tools/timers/" class="hover:text-tertiary_hover">Timers</a>
       <span aria-hidden="true">/</span>
-      <span class="text-brand-secondary">{timer.name}</span>
+      {variant ? (
+        <>
+          <a href={base} class="hover:text-tertiary_hover">{timer.name}</a>
+          <span aria-hidden="true">/</span>
+          <span class="text-brand-secondary">{variant.label}</span>
+        </>
+      ) : (
+        <span class="text-brand-secondary">{timer.name}</span>
+      )}
     </nav>
 
     <h1 class="mt-4 max-w-4xl text-display-sm font-semibold text-primary md:text-display-md">{p.h1}</h1>
@@ -37,7 +63,7 @@ const siblings = timers.filter((t) => t.slug !== timer.slug);
   </div>
 
   <div class="mt-6 md:mt-8">
-    <Timer mode={timer.mode} presets={p.presets} defaultSeconds={p.defaultSeconds} slug={timer.slug} accent={timer.accent} />
+    <Timer mode={timer.mode} presets={p.presets} defaultSeconds={p.defaultSeconds} slug={variant ? `${timer.slug}-${variant.slug}` : timer.slug} accent={timer.accent} />
   </div>
 
   <div class="container-page mt-10 max-w-5xl md:mt-12">
@@ -160,6 +186,32 @@ const siblings = timers.filter((t) => t.slug !== timer.slug);
     </div>
   </div>
 </section>
+
+{(others.length > 0 || variant) && (
+  <section class="bg-secondary pb-14 md:pb-20">
+    <div class="container-page">
+      <h2 class="text-display-xs font-semibold text-primary" data-reveal>Time something specific</h2>
+      <ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {others.map((v) => (
+          <li data-reveal>
+            <a href={`${base}${v.slug}/`} class="flex items-center justify-between gap-3 rounded-2xl bg-primary p-4 shadow-xs ring-1 ring-secondary transition hover:bg-primary_hover">
+              <span class="text-md font-semibold text-primary">{v.label}</span>
+              <Icon name="arrow" class="size-5 text-fg-quaternary" />
+            </a>
+          </li>
+        ))}
+        {variant && (
+          <li data-reveal>
+            <a href={base} class="flex items-center justify-between gap-3 rounded-2xl bg-primary p-4 shadow-xs ring-1 ring-secondary transition hover:bg-primary_hover">
+              <span class="text-md font-semibold text-primary">General {timer.name.toLowerCase()}</span>
+              <Icon name="arrow" class="size-5 text-fg-quaternary" />
+            </a>
+          </li>
+        )}
+      </ul>
+    </div>
+  </section>
+)}
 
 <RelatedGuides tool={`/tools/timers/${timer.slug}/`} />
 

@@ -1,0 +1,38 @@
+---
+// Long-tail timer pages: same engine and the same body, with their own H1,
+// presets, tips and FAQ. Data lives in `timerVariants`, keyed by timer slug.
+import Base from "@/layouts/Base.astro";
+import TimerPage from "@/components/timers/TimerPage.astro";
+import { timerJsonLd } from "@/components/timers/schema";
+import { timerVariants, timers, type Timer, type TimerVariant } from "@/data/timers";
+
+export function getStaticPaths() {
+  return timers
+    .filter((t) => t.status === "live" && t.page)
+    .flatMap((timer) =>
+      (timerVariants[timer.slug] ?? []).map((variant) => ({
+        params: { timer: timer.slug, variant: variant.slug },
+        props: { timer, variant },
+      })),
+    );
+}
+
+const { timer, variant: v } = Astro.props as { timer: Timer; variant: TimerVariant };
+const site = Astro.site!.toString();
+const url = new URL(`/tools/timers/${timer.slug}/${v.slug}/`, site).toString();
+const jsonLd = timerJsonLd({
+  url, site,
+  name: `Spolvero ${timer.name} — ${v.label}`,
+  description: v.description,
+  faqs: v.faqs,
+  crumb: v.label,
+  parent: { name: timer.name, url: new URL(`/tools/timers/${timer.slug}/`, site).toString() },
+});
+---
+
+<Base title={v.title} description={v.description} headerCta={{ label: "All timers", href: "/tools/timers/" }}
+  headerLabel={`${timer.name} · ${v.label}`}
+  headerLabelHref={`/tools/timers/${timer.slug}/${v.slug}/`}>
+  <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+  <TimerPage timer={timer} variant={v} />
+</Base>

@@ -3,6 +3,8 @@ import { howToSteps, type Faq } from "@/data/timers";
 
 export const timerJsonLd = (opts: {
   url: string; name: string; description: string; faqs: Faq[]; site: string; crumb: string;
+  /** Set on a variant page, so the head timer keeps its place in the trail. */
+  parent?: { name: string; url: string };
 }) => [
   {
     "@context": "https://schema.org",
@@ -11,7 +13,12 @@ export const timerJsonLd = (opts: {
       { "@type": "ListItem", position: 1, name: "Home", item: opts.site },
       { "@type": "ListItem", position: 2, name: "Tools", item: new URL("/tools/", opts.site).toString() },
       { "@type": "ListItem", position: 3, name: "Timers", item: new URL("/tools/timers/", opts.site).toString() },
-      { "@type": "ListItem", position: 4, name: opts.crumb, item: opts.url },
+      ...(opts.parent
+        ? [
+            { "@type": "ListItem", position: 4, name: opts.parent.name, item: opts.parent.url },
+            { "@type": "ListItem", position: 5, name: opts.crumb, item: opts.url },
+          ]
+        : [{ "@type": "ListItem", position: 4, name: opts.crumb, item: opts.url }]),
     ],
   },
   {
