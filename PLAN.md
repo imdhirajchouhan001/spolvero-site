@@ -147,6 +147,22 @@ into the tools and left each tool page a dead end. App pages follow the same rul
 `[slug]/index.astro` ranks declared articles above `readingTags` matches, because a
 tag match put an unrelated photo guide above Unspend's own.
 
+**WCAG 2.2 Level AA is the bar, and it is checked per breakpoint.** Conformance is
+per-page and all-or-nothing, so a single failure anywhere means the page does not
+conform. Three things were found and fixed on 18 September 2026:
+`--color-fg-success-primary` and `--color-fg-warning-primary` were the 600 steps of
+their scales, measuring 2.95 and 2.73 on their own 100-step backgrounds where 1.4.3
+asks for 4.5 and 1.4.11 asks for 3.0 on the tick icons drawn in them; the
+`overflow-x-auto` table wrappers held no focusable child and so could not be scrolled
+by keyboard at all, which fails 2.1.1 at Level A; and the contact form's file input
+had a `<label>` with no `for`, so it had no accessible name (4.1.2). Footer links were
+19.5px tall and failed 2.5.8 at tablet widths only — which is why breakpoints get
+tested separately rather than once at desktop. The phone mockups on the home and app
+pages carry unreadable text on purpose and are exempt under 1.4.3's picture exception;
+they also sit inside `aria-hidden="true"`. Re-check with axe after any token change,
+and force `[data-reveal]` visible first or the scan silently skips everything below
+the fold.
+
 **No audio of unverified provenance.** `public/sounds/` ships empty with a README
 naming licences safe for commercial use. The timer falls back to synthesis.
 

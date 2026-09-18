@@ -116,7 +116,7 @@ export default function ContactForm({ apps }: Props) {
       <TextArea name="message" label="Message" placeholder="Leave us a message..." rows={6} isRequired />
 
       <div className="flex flex-col gap-1.5">
-        <Label>Screenshot or file</Label>
+        <Label htmlFor="attachment">Screenshot or file</Label>
         <input
           id="attachment"
           name="attachment"
