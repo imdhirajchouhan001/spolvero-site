@@ -42,7 +42,9 @@ const parts: string[] = title.split("*");
   {eyebrow && (
     <span
       class:list={[
-        "inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium",
+        // w-fit, because a flex column stretches its children and a left-aligned
+        // header would otherwise render the pill the full width of the column.
+        "inline-flex w-fit items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-medium",
         onBrand
           ? "border-white/20 bg-white/10 text-secondary_on-brand"
           : "border-[var(--border)] bg-[var(--card)] text-secondary shadow-xs",
