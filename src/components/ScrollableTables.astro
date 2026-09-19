@@ -1,0 +1,52 @@
+---
+// Makes prose tables that scroll sideways reachable by keyboard.
+//
+// Markdown tables come out of the content pipeline as bare <table>, and the page
+// makes them `block; overflow-x-auto` so a wide one scrolls instead of breaking
+// the layout. A scroll container with no focusable child cannot be scrolled
+// without a mouse, which fails 2.1.1 at Level A: a keyboard user simply cannot
+// read the right-hand columns.
+//
+// The hand-written tables elsewhere on the site got `tabindex` and a label in
+// their markup. These cannot, because nobody writes the wrapper — so it is done
+// here, and only for the tables that actually overflow, so a narrow table does
+// not collect a pointless tab stop.
+//
+// It runs again on resize because whether a table overflows depends on the
+// viewport, and it re-checks once the fonts land: this only surfaced when the
+// body face changed to Helvetica, which is wider than what came before and
+// pushed tables over the line that had previously fitted.
+---
+
+<script>
+  const label = (t: HTMLTableElement) => {
+    const caption = t.querySelector("caption")?.textContent?.trim();
+    if (caption) return `${caption}, scroll sideways`;
+    const heads = [...t.querySelectorAll("thead th")].map((h) => h.textContent?.trim()).filter(Boolean);
+    return heads.length ? `Table: ${heads.join(", ")}. Scroll sideways` : "Table, scroll sideways";
+  };
+
+  const sync = () => {
+    document.querySelectorAll<HTMLTableElement>(".prose table").forEach((t) => {
+      const scrolls = t.scrollWidth > t.clientWidth + 1;
+      if (scrolls) {
+        if (t.tabIndex !== 0) {
+          t.tabIndex = 0;
+          t.setAttribute("role", "region");
+          t.setAttribute("aria-label", label(t));
+        }
+      } else if (t.getAttribute("role") === "region") {
+        t.removeAttribute("tabindex");
+        t.removeAttribute("role");
+        t.removeAttribute("aria-label");
+      }
+    });
+  };
+
+  const run = () => { sync(); document.fonts?.ready.then(sync); };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);
+  else run();
+
+  let t: number | undefined;
+  addEventListener("resize", () => { clearTimeout(t); t = window.setTimeout(sync, 150); }, { passive: true });
+</script>

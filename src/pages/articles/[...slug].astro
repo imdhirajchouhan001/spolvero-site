@@ -6,6 +6,7 @@ import AdSlot from "@/components/AdSlot.astro";
 import Button from "@/components/ui/Button.astro";
 import Badge from "@/components/ui/Badge.astro";
 import { getIcon } from "@/lib/icons";
+import ScrollableTables from "@/components/ScrollableTables.astro";
 
 export async function getStaticPaths() {
   const articles = await getCollection("articles");
@@ -146,4 +147,5 @@ const readable = (iso: string) =>
       </ul>
     </div>
   </section>
+  <ScrollableTables />
 </Base>

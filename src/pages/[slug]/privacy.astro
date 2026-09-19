@@ -3,6 +3,7 @@ import { getCollection, render } from "astro:content";
 import Base from "@/layouts/Base.astro";
 import AppIcon from "@/components/AppIcon.astro";
 import { products } from "@/data/products";
+import ScrollableTables from "@/components/ScrollableTables.astro";
 
 export async function getStaticPaths() {
   const policies = await getCollection("policies");
@@ -41,4 +42,5 @@ const privacyTitle = (() => {
       </article>
     </div>
   </section>
+  <ScrollableTables />
 </Base>
