@@ -1,0 +1,29 @@
+---
+// A tool's mark: its tinted tile with its icon in its own accent.
+//
+// The same treatment the hub cards already use, packaged so the smaller lists —
+// "Other device tests", "Other timers", the whole-list rows, the homepage chips —
+// stop being plain text. The glyph colour comes from inkOn, so it always clears
+// 3.5:1 on the tile whatever the tool's accent is. See src/lib/ink.ts.
+import Icon from "@/components/Icon.astro";
+import { inkOn } from "@/lib/ink";
+
+interface Props {
+  icon: string;
+  tint: string;
+  accent: string;
+  size?: "xs" | "sm" | "md";
+  class?: string;
+}
+const { icon, tint, accent, size = "md", class: className } = Astro.props;
+const box = { xs: "size-6", sm: "size-9", md: "size-11" }[size];
+const glyph = { xs: "size-3.5", sm: "size-4", md: "size-5" }[size];
+---
+
+<span
+  class:list={["grid shrink-0 place-items-center rounded-2xl", box, className]}
+  style={`background:${tint};color:${inkOn(accent, tint)}`}
+  aria-hidden="true"
+>
+  <Icon name={icon} class={glyph} />
+</span>

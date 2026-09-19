@@ -14,6 +14,7 @@ import Badge from "@/components/ui/Badge.astro";
 import { voiceRecorder as v, formatGuide, loudnessTargets, recorderHowTo } from "@/data/audio";
 import { tools, toolHref } from "@/data/tools";
 import { bandCycle } from "@/lib/bands";
+import ToolMark from "@/components/ToolMark.astro";
 
 const site = Astro.site!.toString();
 const url = new URL("/tools/audio/voice-recorder/", site).toString();
@@ -279,9 +280,7 @@ const jsonLd = [
         {related.map((t) => (
           <li data-reveal>
             <a href={toolHref(t)} class="group flex h-full flex-col rounded-3xl bg-primary p-5 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
-              <span class="grid size-11 place-items-center rounded-2xl text-neutral-900" style={`background:${t.tint}`} aria-hidden="true">
-                <Icon name={t.icon} class="size-5" />
-              </span>
+              <ToolMark icon={t.icon} tint={t.tint} accent={t.accent} />
               <p class="mt-4 text-md font-semibold text-primary">{t.name}</p>
               <p class="mt-1 text-sm text-tertiary">{t.tagline}</p>
             </a>

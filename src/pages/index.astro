@@ -27,6 +27,7 @@ import { timers } from "@/data/timers";
 import { pillars } from "@/data/home";
 import { getCollection } from "astro:content";
 import ArticleThumb from "@/components/ArticleThumb.astro";
+import ToolMark from "@/components/ToolMark.astro";
 
 const live = products.filter((p) => p.status === "live");
 const liveDevice = deviceTests.filter((t) => t.status === "live");
@@ -193,7 +194,10 @@ const toolSets = [
       <ul class="mx-auto mt-10 flex max-w-3xl flex-wrap justify-center gap-2" data-reveal>
         {[...liveDevice, ...liveAudio].map((t) => (
           <li>
-            <a href={toolHref(t)} class="inline-flex rounded-sm bg-primary px-4 py-2 text-sm font-semibold text-secondary ring-1 ring-secondary transition hover:bg-primary_hover">{t.name}</a>
+            <a href={toolHref(t)} class="inline-flex items-center gap-2 rounded-sm bg-primary py-1.5 pr-4 pl-1.5 text-sm font-semibold text-secondary ring-1 ring-secondary transition hover:bg-primary_hover">
+              <ToolMark icon={t.icon} tint={t.tint} accent={t.accent} size="xs" />
+              {t.name}
+            </a>
           </li>
         ))}
       </ul>

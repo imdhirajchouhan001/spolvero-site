@@ -11,6 +11,7 @@ import SectionHeader from "@/components/SectionHeader.astro";
 import Badge from "@/components/ui/Badge.astro";
 import { deviceTests, audioTools, toolHref } from "@/data/tools";
 import { timers } from "@/data/timers";
+import ToolMark from "@/components/ToolMark.astro";
 
 const liveDevice = deviceTests.filter((t) => t.status === "live");
 const liveTimers = timers.filter((t) => t.status === "live");
@@ -127,13 +128,14 @@ const jsonLd = [
       <SectionHeader eyebrow="Every tool" icon="layers" title="The *whole list*" lede="If you already know what you want, it is here." />
       <ul class="mx-auto mt-10 grid max-w-4xl gap-2 md:mt-12 sm:grid-cols-2">
         {[
-          ...liveDevice.map((t) => ({ name: t.name, href: toolHref(t), kind: t.kind })),
-          ...liveAudio.map((t) => ({ name: t.name, href: toolHref(t), kind: t.kind })),
-          ...liveTimers.map((t) => ({ name: t.name, href: `/tools/timers/${t.slug}/`, kind: t.kind })),
+          ...liveDevice.map((t) => ({ name: t.name, href: toolHref(t), kind: t.kind, icon: t.icon, tint: t.tint, accent: t.accent })),
+          ...liveAudio.map((t) => ({ name: t.name, href: toolHref(t), kind: t.kind, icon: t.icon, tint: t.tint, accent: t.accent })),
+          ...liveTimers.map((t) => ({ name: t.name, href: `/tools/timers/${t.slug}/`, kind: t.kind, icon: t.icon, tint: t.tint, accent: t.accent })),
         ].map((t) => (
           <li>
             <a href={t.href} class="flex items-center justify-between gap-3 rounded-xl bg-primary px-4 py-3 ring-1 ring-secondary transition hover:shadow-md focus-visible:outline-2 focus-visible:outline-focus-ring">
-              <span class="min-w-0">
+              <ToolMark icon={t.icon} tint={t.tint} accent={t.accent} size="sm" />
+              <span class="min-w-0 flex-1">
                 <span class="block truncate text-md font-semibold text-primary">{t.name}</span>
                 <span class="block truncate text-sm text-tertiary">{t.kind}</span>
               </span>

@@ -17,7 +17,8 @@ import Badge from "@/components/ui/Badge.astro";
 import { FeaturedIcon } from "@/components/foundations/featured-icon/featured-icon";
 import { getIcon } from "@/lib/icons";
 import { bandCycle } from "@/lib/bands";
-import { appRequirements, howToSteps, tools, webcamVariants, type Faq as FaqItem, type Tip } from "@/data/tools";
+import { appRequirements, howToSteps, tools, webcamVariants, toolHref, type Faq as FaqItem, type Tip } from "@/data/tools";
+import ToolMark from "@/components/ToolMark.astro";
 
 interface Props {
   h1: string;
@@ -37,7 +38,8 @@ const { h1, answer, intro, tips, faqs, crumb, highlight, variantSlug } = Astro.p
 const stepColours = ["var(--color-giallo)", "var(--color-verde)", "var(--color-rosa)"];
 const tipTints = ["var(--color-arancio-tint)", "var(--color-cielo-tint)", "var(--color-verde-tint)", "var(--color-giallo-tint)"];
 
-const siblings = tools.filter((t) => t.slug !== "webcam-test");
+// Only device tests, to match the "More device tests" heading they sit under.
+const siblings = tools.filter((t) => t.slug !== "webcam-test" && t.category === "device-test");
 const otherVariants = webcamVariants.filter((v) => v.slug !== variantSlug);
 
 // Section surfaces — see src/lib/bands.ts. Every section below the tool used to be
@@ -281,17 +283,28 @@ const band = bandCycle(["answer", "tips", "fix", "reference", "photo", "privacy"
       )}
     </ul>
 
+    {/* This block was written when the webcam test was the only tool, and it kept
+        saying "In design now" and "Coming soon" — without links — after the mic,
+        speaker, keyboard and dead pixel tests and the recorder had all shipped.
+        It now reads status from the data, so it cannot go stale that way again. */}
     <h2 class="mt-14 text-display-xs font-semibold text-primary md:mt-16" data-reveal>More device tests</h2>
-    <p class="mt-2 text-md text-tertiary" data-reveal>Same idea, same privacy. In design now.</p>
+    <p class="mt-2 text-md text-tertiary" data-reveal>Same idea, same privacy. Nothing you test leaves your device.</p>
     <ul class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {siblings.map((t) => (
-        <li class="flex flex-col rounded-2xl bg-primary p-5 shadow-xs ring-1 ring-secondary" data-reveal>
-          <div class="flex items-start justify-between gap-3">
-            <FeaturedIcon icon={getIcon(t.icon)} size="md" color="gray" theme="modern" />
-            <Badge variant="secondary" size="sm">Coming soon</Badge>
-          </div>
-          <p class="mt-4 text-md font-semibold text-primary">{t.name}</p>
-          <p class="mt-1 text-sm text-tertiary">{t.tagline}</p>
+        <li data-reveal>
+          <a
+            href={t.status === "live" ? toolHref(t) : "/tools/device-tests/"}
+            class="group flex h-full flex-col rounded-3xl bg-primary p-5 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring"
+          >
+            <div class="flex items-start justify-between gap-3">
+              <ToolMark icon={t.icon} tint={t.tint} accent={t.accent} />
+              {t.status === "live"
+                ? <Badge variant="success" size="sm">Live</Badge>
+                : <Badge variant="secondary" size="sm">Coming soon</Badge>}
+            </div>
+            <p class="mt-4 text-md font-semibold text-primary">{t.name}</p>
+            <p class="mt-1 text-sm text-tertiary">{t.tagline}</p>
+          </a>
         </li>
       ))}
     </ul>
