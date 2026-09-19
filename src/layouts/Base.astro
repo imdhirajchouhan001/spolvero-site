@@ -104,24 +104,49 @@ const siteJsonLd = [
       gtag("config", "G-WS3JP0LJ3M");
     </script>
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-WS3JP0LJ3M"></script>
-    <!-- Microsoft Clarity. Visitors whose timezone is in Europe get no Clarity cookies (Consent API v2); typed text is masked by Clarity by default. -->
-    <script is:inline>
-      (function (c, l, a, r, i, t, y) {
-        c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
-        var eu = /^(Europe|Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe))\//.test(Intl.DateTimeFormat().resolvedOptions().timeZone || "");
-        c[a]("consentv2", { ad_Storage: "denied", analytics_Storage: eu ? "denied" : "granted" });
-        t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
-        y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
-      })(window, document, "clarity", "script", "yjjrmtb5mx");
+    <!-- Third-party scripts wait for the visitor. Clarity and AdSense set third-party
+         cookies and pull ~250 KB of script, so they load on the first scroll, tap, key
+         or pointer move rather than during page load. A visitor who never touches the
+         page never gets their cookies, and the page paints without them in the way.
+         Ads only fill once scrolled near anyway, so nothing is lost. -->
+    <script is:inline define:vars={{ adClient: adsenseClient || "" }}>
+      (function () {
+        var done = false;
+        var events = ["scroll", "pointerdown", "pointermove", "keydown", "touchstart", "wheel"];
+        function load() {
+          if (done) return;
+          done = true;
+          events.forEach(function (e) { removeEventListener(e, load, { passive: true }); });
+
+          // Microsoft Clarity. Visitors whose timezone is in Europe get no Clarity cookies
+          // (Consent API v2); typed text is masked by Clarity by default.
+          (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+            var eu = /^(Europe|Atlantic\/(Reykjavik|Canary|Madeira|Azores|Faroe))\//.test(Intl.DateTimeFormat().resolvedOptions().timeZone || "");
+            c[a]("consentv2", { ad_Storage: "denied", analytics_Storage: eu ? "denied" : "granted" });
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+          })(window, document, "clarity", "script", "yjjrmtb5mx");
+
+          // AdSense. Units pushed onto window.adsbygoogle before this arrives are
+          // queued, and the library fills them when it loads.
+          if (adClient) {
+            var s = document.createElement("script");
+            s.async = true;
+            s.crossOrigin = "anonymous";
+            s.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=" + adClient;
+            document.head.appendChild(s);
+          }
+        }
+        events.forEach(function (e) { addEventListener(e, load, { passive: true, once: true }); });
+        // An ad unit that is about to be seen loads them straight away.
+        window.spolveroLoadThirdParty = load;
+      })();
     </script>
     {adsenseClient && (
       <>
-        <script
-          is:inline
-          async
-          crossorigin="anonymous"
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
-        ></script>
+        <!-- Site ownership for AdSense, now that the library is not in the initial HTML. -->
+        <meta name="google-adsense-account" content={adsenseClient} />
         <!-- Lazy fill: a unit only requests an ad near the viewport, and the unit under the
              tool waits for a finished test. An unfilled or blocked unit collapses to nothing. -->
         <script is:inline>
@@ -131,6 +156,7 @@ const siteJsonLd = [
             function fill(el) {
               if (el.dataset.adFilled !== undefined) return;
               el.dataset.adFilled = "";
+              if (window.spolveroLoadThirdParty) window.spolveroLoadThirdParty();
               try {
                 (window.adsbygoogle = window.adsbygoogle || []).push({});
               } catch (e) {
@@ -140,8 +166,12 @@ const siteJsonLd = [
               var ins = el.querySelector("ins.adsbygoogle");
               if (!ins) return;
               // Only give the slot its height once an ad is genuinely in it.
+              // The library may still be downloading, so wait for AdSense to report a
+              // status before deciding, and give up after ten seconds.
+              var tries = 0;
               var settle = function () {
                 var status = ins.getAttribute("data-ad-status");
+                if (!status && ++tries < 10) return setTimeout(settle, 1000);
                 if (status === "filled" && ins.firstElementChild) el.dataset.adFilledOk = "";
                 else el.dataset.adEmpty = "";
               };

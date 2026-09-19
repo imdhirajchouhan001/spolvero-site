@@ -141,6 +141,7 @@ const showInterstitial = monetised && adsInterstitial && (adsPreview || Boolean(
       var fill = function (el) {
         if (preview || el.dataset.adFilled !== undefined) return;
         el.dataset.adFilled = "";
+        if (window.spolveroLoadThirdParty) window.spolveroLoadThirdParty();
         try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {}
       };
 

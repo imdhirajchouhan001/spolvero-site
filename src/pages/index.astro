@@ -84,6 +84,11 @@ const toolSets = [
   title="Spolvero — Small Apps, Free Web Tools and Design Studio"
   description="Spolvero is an independent studio: private-by-default Android apps, free browser tools that never upload your data, and UI/UX design work for others."
 >
+  <!-- The hero fan is the largest paint. Its screenshots sit inside an SVG <image>,
+       which the preload scanner cannot see, so they are announced here. -->
+  {fan.map(({ p, i }) => (
+    <link slot="head" rel="preload" as="image" type="image/webp" href={p.screenshots[i].src} fetchpriority="high" />
+  ))}
   <!-- Hero -->
   <section class="relative overflow-hidden bg-primary pt-16 md:pt-24">
     <BackgroundPattern pattern="grid" size="lg" className="absolute top-0 left-1/2 hidden -translate-x-1/2 text-border-secondary opacity-70 md:block" />
