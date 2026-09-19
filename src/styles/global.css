@@ -24,8 +24,10 @@
 @theme {
   --font-body: "Helvetica Neue", Helvetica, "Inter Variable", Arial, sans-serif;
   --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", "Inter Variable", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  /* The UI face. Everything that is a control rather than prose stays on it. */
-  --font-ui: "Inter Variable", "Inter", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  /* The UI face — buttons, badges, the menu. Same Helvetica stack as the body
+     since 19 September 2026; kept as its own token so controls can diverge again
+     without touching prose. Inter is only the Windows fallback now. */
+  --font-ui: "Helvetica Neue", Helvetica, "Inter Variable", Arial, sans-serif;
 
   /* ------------------------------------------------------------------
      Warm neutrals.
@@ -150,7 +152,7 @@
 
 @theme inline {
   /* shadcn components read --font-sans; the site's own faces stay in charge. */
-  --font-sans: "Inter Variable", "Inter", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-sans: "Helvetica Neue", Helvetica, "Inter Variable", Arial, sans-serif;
   --font-heading: "Bricolage Grotesque Variable", "Bricolage Grotesque", var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);

@@ -110,7 +110,9 @@ zero links does not help. Revisit at ~50K monthly visits, not before.
 fine across varied clusters — calculator.net and 10015.io both do. The dominant
 factors are age, links and per-page quality, in that order.
 
-**Three faces: Bricolage Grotesque, Helvetica, Inter.** Set 19 September 2026.
+**Two faces: Bricolage Grotesque for headings, Helvetica for everything else.**
+Buttons, badges and the menu moved to Helvetica too on 19 September 2026; Inter
+is now only the Windows fallback in both stacks. The notes below predate that. Set 19 September 2026.
 Headings are Bricolage Grotesque, loaded as a variable face. Body copy is
 Helvetica, which ships with the operating system and costs no download; Windows
 has none, so the stack falls to Inter and then Arial there. Inter stays as the UI
