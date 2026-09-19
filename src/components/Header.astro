@@ -175,8 +175,13 @@ const { cta = { label: "Contact us", href: "/contact/" }, label, labelHref } = A
     });
 
     // Focus leaving the panel closes it, so keyboard users are not trapped.
+    // Only when focus lands somewhere else, though. Safari (and every iPhone
+    // browser) does not focus a link on tap, so tapping one blurs the focused link
+    // with no relatedTarget. Closing then hides the panel before the click fires,
+    // and the tap never reaches the link.
     panel.addEventListener("focusout", (e) => {
-      if (!panel.contains(e.relatedTarget as Node) && e.relatedTarget !== button) setOpen(false);
+      const next = e.relatedTarget as Node | null;
+      if (next && !panel.contains(next) && next !== button) setOpen(false);
     });
   }
 </script>
