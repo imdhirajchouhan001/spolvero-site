@@ -7,6 +7,8 @@ import Button from "@/components/ui/Button.astro";
 import Badge from "@/components/ui/Badge.astro";
 import { getIcon } from "@/lib/icons";
 import ScrollableTables from "@/components/ScrollableTables.astro";
+import ArticleThumb from "@/components/ArticleThumb.astro";
+import { articlePhoto, photoSrc } from "@/data/photos";
 
 export async function getStaticPaths() {
   const articles = await getCollection("articles");
@@ -16,6 +18,7 @@ export async function getStaticPaths() {
 const { entry, all } = Astro.props;
 const { Content } = await render(entry);
 const a = entry.data;
+const photo = articlePhoto(a);
 const url = new URL(`/articles/${entry.id}/`, Astro.site).toString();
 const site = Astro.site!.toString();
 
@@ -56,7 +59,7 @@ const readable = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 ---
 
-<Base title={`${a.seoTitle ?? a.title} — Spolvero`} description={a.description} headerCta={{ label: a.toolCta, href: a.tool }}
+<Base title={`${a.seoTitle ?? a.title} — Spolvero`} description={a.description} image={photoSrc(photo, 1200, 630).replace("fm=webp", "fm=jpg")} headerCta={{ label: a.toolCta, href: a.tool }}
   headerLabel="Guides"
   headerLabelHref="/articles/">
   <script is:inline type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
@@ -82,6 +85,30 @@ const readable = (iso: string) =>
         </div>
       </div>
     </header>
+
+    <!-- The photograph. Wider than the text column so it reads as a break
+         between the headline and the article, not as another block of it. It
+         belongs to the tool the article is about; the credit is shown although
+         the Unsplash licence does not require it. -->
+    <figure class="bg-secondary pb-10 md:pb-12">
+      <div class="container-page mx-auto max-w-5xl">
+        <div class="aspect-[16/9] overflow-hidden rounded-3xl bg-[var(--muted)]">
+          <img
+            src={photoSrc(photo, 1600)}
+            srcset={[640, 960, 1280, 1600].map((w) => `${photoSrc(photo, w)} ${w}w`).join(", ")}
+            sizes="(min-width: 1024px) 1024px, 100vw"
+            alt={photo.alt}
+            width="1600"
+            height="900"
+            fetchpriority="high"
+            class="size-full object-cover"
+          />
+        </div>
+        <figcaption class="mt-3 text-sm text-tertiary">
+          Photo by <a href={photo.creditUrl} rel="noopener" class="underline hover:text-secondary">{photo.credit}</a>{" on "}<a href={photo.unsplashUrl} rel="noopener" class="underline hover:text-secondary">Unsplash</a>
+        </figcaption>
+      </div>
+    </figure>
 
     <!-- The short answer, first thing on the page -->
     <div class="bg-secondary pb-12 md:pb-16">
@@ -134,7 +161,8 @@ const readable = (iso: string) =>
       <ul class="mt-6 grid gap-6 md:grid-cols-3">
         {others.map((o) => (
           <li data-reveal>
-            <a href={`/articles/${o.id}/`} class="group flex h-full flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
+            <a href={`/articles/${o.id}/`} class="group flex h-full flex-col overflow-hidden rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
+              <ArticleThumb article={o.data} />
               <p class="text-sm font-semibold text-brand-secondary">{o.data.tags[0] ?? "Guide"}</p>
               <h3 class="mt-2 text-lg font-semibold text-primary">{o.data.title}</h3>
               <p class="mt-2 text-md text-tertiary">{o.data.description}</p>

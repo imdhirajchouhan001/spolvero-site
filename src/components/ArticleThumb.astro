@@ -1,0 +1,38 @@
+---
+// The photograph at the top of an article card.
+//
+// It bleeds to the card's edges by cancelling the card's own padding, so every
+// card on the site takes it without restructuring: drop it in as the first child
+// of a `p-6` card that has `overflow-hidden`.
+//
+// alt is empty on purpose. The card is a link whose name is the article title
+// right below; describing the stock photo as well would make a screen reader say
+// "someone on a video call holding a mug" before every guide, which tells the
+// listener nothing about the guide. The photo is decoration here — the article
+// page, where it is the hero, carries the real alt text and the credit.
+import { articlePhoto, photoSrc } from "@/data/photos";
+
+interface Props {
+  article: { tool: string; image?: string };
+  /** Tailwind aspect class. Cards are 16:9; the featured card goes taller. */
+  aspect?: string;
+  class?: string;
+}
+const { article, aspect = "aspect-[16/9]", class: className } = Astro.props;
+const photo = articlePhoto(article);
+const srcset = [480, 720, 960].map((w) => `${photoSrc(photo, w)} ${w}w`).join(", ");
+---
+
+<div class:list={["-mx-6 -mt-6 mb-5 overflow-hidden bg-[var(--muted)]", aspect, className]}>
+  <img
+    src={photoSrc(photo, 720)}
+    srcset={srcset}
+    sizes="(min-width: 1024px) 380px, (min-width: 768px) 45vw, 100vw"
+    alt=""
+    width="720"
+    height="405"
+    loading="lazy"
+    decoding="async"
+    class="size-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+  />
+</div>

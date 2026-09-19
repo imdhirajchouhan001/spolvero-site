@@ -103,3 +103,25 @@ export const photos: Record<string, Photo> = {
 };
 
 export const getPhoto = (key: string): Photo | undefined => photos[key];
+
+/**
+ * The photograph for a page path. Articles have no photographs of their own; they
+ * borrow the one belonging to the tool or app they send the reader to, which is
+ * also what the article is about.
+ */
+export const photoKeyForPath = (path: string): string => {
+  if (path.includes("/webcam-test")) return "webcam-test";
+  if (path.includes("/tools/audio/") || path.includes("/mic-test") || path.includes("/speaker-test")) return "audio";
+  if (path.includes("/tools/timers/")) return "timers";
+  const app = path.split("/").filter(Boolean)[0];
+  if (app && photos[app]) return app;
+  return "studio";
+};
+
+/** An article's photograph: its own `image` key if it names one, else its tool's. */
+export const articlePhoto = (a: { tool: string; image?: string }): Photo =>
+  photos[a.image ?? ""] ?? photos[photoKeyForPath(a.tool)] ?? photos.studio;
+
+/** An Unsplash CDN URL at a given width, cropped to fill. */
+export const photoSrc = (p: Photo, w: number, h?: number) =>
+  `${p.url}?w=${w}${h ? `&h=${h}` : ""}&q=75&fm=webp&fit=crop`;

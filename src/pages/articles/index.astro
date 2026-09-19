@@ -5,6 +5,8 @@ import Icon from "@/components/Icon.astro";
 import Button from "@/components/ui/Button.astro";
 import Badge from "@/components/ui/Badge.astro";
 import { getIcon } from "@/lib/icons";
+import ArticleThumb from "@/components/ArticleThumb.astro";
+import { articlePhoto, photoSrc } from "@/data/photos";
 
 const articles = (await getCollection("articles")).sort(
   (a, b) => new Date(b.data.published).getTime() - new Date(a.data.published).getTime(),
@@ -42,6 +44,7 @@ const jsonLd = [
 
 const readable = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+const featuredPhoto = articlePhoto(featured ? featured.data : { tool: "" });
 ---
 
 <Base title={title} description={description} headerCta={{ label: "All tools", href: "/tools/" }}
@@ -85,11 +88,20 @@ const readable = (iso: string) =>
               Read the guide <Icon name="arrow" class="size-5 transition-transform group-hover:translate-x-0.5" />
             </span>
           </div>
-          <div class="relative hidden items-center justify-center bg-arancio-tint p-10 lg:flex">
-            <p class="relative max-w-sm text-lg text-neutral-900">
-              <span class="block text-sm font-semibold text-neutral-700">The short answer</span>
-              <span class="mt-2 block">{featured.data.answer}</span>
-            </p>
+          {/* The photograph sits first in source order so it leads on a phone, and
+              moves to the right-hand column from lg up. It replaces a panel that
+              repeated the article's short answer, which the article opens with
+              anyway. */}
+          <div class="relative order-first min-h-56 overflow-hidden bg-[var(--muted)] lg:order-last lg:min-h-full">
+            <img
+              src={photoSrc(featuredPhoto, 1200)}
+              srcset={[600, 900, 1200].map((w) => `${photoSrc(featuredPhoto, w)} ${w}w`).join(", ")}
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              alt=""
+              width="1200"
+              height="800"
+              class="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            />
           </div>
         </a>
       )}
@@ -98,7 +110,8 @@ const readable = (iso: string) =>
       <ul class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {rest.map((a) => (
           <li data-reveal>
-            <a href={`/articles/${a.id}/`} class="group flex h-full flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
+            <a href={`/articles/${a.id}/`} class="group flex h-full flex-col overflow-hidden rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
+              <ArticleThumb article={a.data} />
               <div class="flex flex-wrap gap-2">
                 {a.data.tags.map((t) => <Badge variant="secondary" size="sm">{t}</Badge>)}
               </div>

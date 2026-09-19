@@ -34,6 +34,9 @@ const articles = defineCollection({
     tags: z.array(z.string()).default([]),
     /** Rough read time in minutes. */
     minutes: z.number(),
+    /** A key from src/data/photos.ts, to override the photograph borrowed from
+     *  the article's tool. Use it once a guide has a better picture of its own. */
+    image: z.string().optional(),
   }),
 });
 

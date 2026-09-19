@@ -110,6 +110,15 @@ zero links does not help. Revisit at ~50K monthly visits, not before.
 fine across varied clusters — calculator.net and 10015.io both do. The dominant
 factors are age, links and per-page quality, in that order.
 
+**Articles borrow their tool's photograph.** Added 19 September 2026. Every
+article card — on /articles/, the homepage, tool pages, app pages, the audio hub
+and "Keep reading" — carries a photo, and each article opens with it as a hero
+with credit, and uses it as the social share image. There are no per-article
+photos: `articlePhoto` in `src/data/photos.ts` picks the one belonging to the
+article's `tool:`. With 9 photos and 7 webcam guides, cards repeat — the webcam
+photo appears seven times and the Unspend one four. The fix is more photos, not
+code: add one to `photos.ts` and set `image:` in the article's front matter.
+
 **Two faces: Bricolage Grotesque for headings, Helvetica for everything else.**
 Buttons, badges and the menu moved to Helvetica too on 19 September 2026; Inter
 is now only the Windows fallback in both stacks. The notes below predate that. Set 19 September 2026.

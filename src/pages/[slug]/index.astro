@@ -19,6 +19,7 @@ import PhotoCard from "@/components/sections/PhotoCard.astro";
 import { getPhoto } from "@/data/photos";
 import { bandCycle } from "@/lib/bands";
 import { getCollection } from "astro:content";
+import ArticleThumb from "@/components/ArticleThumb.astro";
 
 export function getStaticPaths() {
   return products.map((product) => ({ params: { slug: product.slug }, props: { product } }));
@@ -448,7 +449,8 @@ const pageJsonLd = [
         <ul class="mx-auto mt-12 grid max-w-5xl gap-6 md:mt-16 md:grid-cols-3">
           {related.map((a) => (
             <li data-reveal>
-              <a href={`/articles/${a.id}/`} class="group flex h-full flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
+              <a href={`/articles/${a.id}/`} class="group flex h-full flex-col overflow-hidden rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
+              <ArticleThumb article={a.data} />
                 <Badge variant="secondary" size="sm">{a.data.tags[0]}</Badge>
                 <h3 class="mt-3 text-lg font-semibold text-primary">{a.data.title}</h3>
                 <p class="mt-2 text-md text-tertiary">{a.data.description}</p>

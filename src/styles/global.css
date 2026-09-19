@@ -279,3 +279,11 @@
   --sidebar-border: #ffffff1a;
   --sidebar-ring: #a8a8ea;
 }
+/* Inline code in articles is mostly URLs and settings paths —
+   play.google.com/store/account/subscriptions, for one — which have no spaces
+   and so no place to wrap. At 375px that one pushed the whole page sideways,
+   which fails 1.4.10 reflow. `anywhere` lets them break mid-token; code blocks
+   are excluded because they scroll inside their own box instead. */
+.prose :not(pre) > code {
+  overflow-wrap: anywhere;
+}

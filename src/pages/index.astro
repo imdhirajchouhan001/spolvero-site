@@ -26,6 +26,7 @@ import { deviceTests, audioTools, toolHref } from "@/data/tools";
 import { timers } from "@/data/timers";
 import { pillars } from "@/data/home";
 import { getCollection } from "astro:content";
+import ArticleThumb from "@/components/ArticleThumb.astro";
 
 const live = products.filter((p) => p.status === "live");
 const liveDevice = deviceTests.filter((t) => t.status === "live");
@@ -241,7 +242,8 @@ const toolSets = [
       <ul class="mt-12 grid gap-6 md:mt-16 md:grid-cols-3">
         {latestArticles.map((a) => (
           <li data-reveal>
-            <a href={`/articles/${a.id}/`} class="group flex h-full flex-col rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
+            <a href={`/articles/${a.id}/`} class="group flex h-full flex-col overflow-hidden rounded-3xl bg-primary p-6 shadow-xs ring-1 ring-secondary transition hover:shadow-lg focus-visible:outline-2 focus-visible:outline-focus-ring">
+              <ArticleThumb article={a.data} />
               <p class="text-sm font-semibold text-brand-secondary">{a.data.tags[0] ?? "Guide"}</p>
               <h2 class="mt-2 text-lg font-semibold text-primary">{a.data.title}</h2>
               <p class="mt-2 text-md text-tertiary">{a.data.description}</p>
