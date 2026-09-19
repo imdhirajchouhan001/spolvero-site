@@ -10,6 +10,7 @@ tools: ["/tools/device-tests/webcam-test/", "/tools/device-tests/mic-test/", "/t
 toolCta: "Run the check now"
 tags: ["Interviews", "Checklist"]
 minutes: 5
+image: "webcam-test"
 ---
 
 Interviews are the worst time for a technical problem and the most common time to have one, because it is usually the first call you have made on that platform.

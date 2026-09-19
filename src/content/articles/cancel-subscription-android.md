@@ -10,6 +10,7 @@ tools: ["/unspend/"]
 toolCta: "See Unspend"
 tags: ["Money", "Android"]
 minutes: 6
+image: "article-android-phone"
 ---
 
 Most of the frustration around cancelling a subscription on Android comes from one wrong assumption: that the app you installed and the subscription you pay for are the same thing. They are not. The app is on your phone. The subscription is a billing arrangement held by Google, or by the company, or occasionally by both.

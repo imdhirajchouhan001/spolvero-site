@@ -10,6 +10,7 @@ tools: ["/tools/audio/voice-recorder/", "/tools/device-tests/mic-test/"]
 toolCta: "Open the voice recorder"
 tags: ["Audio", "Recording"]
 minutes: 7
+image: "audio"
 ---
 
 People assume bad audio means a bad microphone. Usually it means a good-enough microphone being used at the wrong distance, in the wrong room, at the wrong level. Here is what to change first, in the order that gives you most per minute of effort.

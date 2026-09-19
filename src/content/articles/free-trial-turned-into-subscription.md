@@ -10,6 +10,7 @@ tools: ["/unspend/"]
 toolCta: "See Unspend"
 tags: ["Money", "Free trials"]
 minutes: 6
+image: "unspend"
 ---
 
 A free trial that required a card is not a trial with a purchase at the end. It is a subscription with a discount at the start. The billing arrangement is already in place; the only thing standing between you and the charge is a date.

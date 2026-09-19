@@ -10,6 +10,7 @@ tools: ["/tools/device-tests/webcam-test/"]
 toolCta: "See what your camera sees"
 tags: ["Privacy", "Security"]
 minutes: 6
+image: "article-camera-hacked"
 ---
 
 It is a reasonable thing to wonder, and the honest answer has two halves: this is much rarer than the coverage implies, and it is not impossible. Both halves matter — panic is not useful, and neither is dismissal.

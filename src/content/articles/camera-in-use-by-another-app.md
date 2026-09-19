@@ -10,6 +10,7 @@ tools: ["/tools/device-tests/webcam-test/", "/tools/device-tests/mic-test/"]
 toolCta: "Check the camera is free"
 tags: ["Troubleshooting", "Windows", "macOS"]
 minutes: 5
+image: "article-camera-in-use"
 ---
 
 The message varies by app — "Camera is being used by another application", "Cannot start video", "Device in use", `NotReadableError` — but the cause is the same. Something else got to the camera first.

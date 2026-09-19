@@ -10,6 +10,7 @@ tools: ["/tools/timers/classroom-timer/"]
 toolCta: "Open the classroom timer"
 tags: ["Teaching", "Classroom"]
 minutes: 6
+image: "timers"
 ---
 
 Most timings in a lesson plan are guesses that hardened into habit. Here are durations that tend to work, and — more usefully — the reasoning, so you can adapt them rather than follow them.

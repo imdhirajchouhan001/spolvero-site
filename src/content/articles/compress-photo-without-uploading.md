@@ -10,6 +10,7 @@ tools: ["/exact/"]
 toolCta: "See Exact Photo"
 tags: ["Privacy", "Photos"]
 minutes: 7
+image: "exact"
 ---
 
 You need a photo under 2MB for a form that will not budge. The first search result is a website with a big upload button. Before you use it, it is worth knowing what that button does — and that you almost certainly do not need it.

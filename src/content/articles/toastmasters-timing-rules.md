@@ -10,6 +10,7 @@ tools: ["/tools/timers/speech-timer/", "/tools/timers/debate-timer/"]
 toolCta: "Open the speech timer"
 tags: ["Toastmasters", "Public speaking"]
 minutes: 6
+image: "article-public-speaking"
 ---
 
 The timing lights are the part of a Toastmasters meeting that confuses new members most, partly because the signal is deliberately silent and partly because the numbers differ by speech type. Here is the whole system in one place.

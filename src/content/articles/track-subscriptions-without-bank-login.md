@@ -10,6 +10,7 @@ tools: ["/unspend/"]
 toolCta: "See Unspend"
 tags: ["Privacy", "Money"]
 minutes: 7
+image: "article-budget"
 ---
 
 Every subscription tracker has the same first screen: connect your bank. It is presented as the convenient option, and it is — for them. It is worth understanding what you are agreeing to before you tap it, and what the alternative actually costs you in effort.

@@ -10,6 +10,7 @@ tools: ["/tools/device-tests/webcam-test/", "/tools/device-tests/mic-test/"]
 toolCta: "Test your camera"
 tags: ["Chrome", "Troubleshooting"]
 minutes: 6
+image: "article-camera-not-working"
 ---
 
 A camera that works in one app and not in Chrome is almost never broken hardware. There are several independent layers between the lens and the web page — the operating system's privacy settings, whichever app grabbed the camera first, Chrome's own per-site permission, and the camera driver — and any one of them can quietly say no.

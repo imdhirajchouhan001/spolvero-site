@@ -10,6 +10,7 @@ tools: ["/tools/device-tests/webcam-test/"]
 toolCta: "Check your picture quality"
 tags: ["Image quality", "Lighting"]
 minutes: 7
+image: "article-camera-lens"
 ---
 
 People replace webcams that were never the problem. Before you spend anything, it is worth understanding why a camera that looks fine in a shop looks grainy at your desk — because once you know, the fix is usually free.

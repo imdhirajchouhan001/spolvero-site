@@ -10,6 +10,7 @@ tools: ["/tools/device-tests/webcam-test/", "/tools/device-tests/webcam-test/fps
 toolCta: "Check what yours delivers"
 tags: ["Buying advice", "Resolution"]
 minutes: 6
+image: "article-webcam-resolution"
 ---
 
 Webcam listings compete on resolution because it is the easiest number to print. It is also the number that matters least, past a fairly low threshold.

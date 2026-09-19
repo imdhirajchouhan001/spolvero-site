@@ -10,6 +10,7 @@ tools: ["/tools/audio/voice-recorder/"]
 toolCta: "Record and export"
 tags: ["Audio", "Formats"]
 minutes: 6
+image: "article-headphones"
 ---
 
 Most format decisions come down to one question: **is this file finished, or is something going to be done to it?** Finished files should be small and universal. Working files should keep everything.

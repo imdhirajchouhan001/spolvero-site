@@ -10,6 +10,7 @@ tools: ["/tools/device-tests/webcam-test/", "/tools/device-tests/webcam-test/zoo
 toolCta: "See how you look now"
 tags: ["Lighting", "Zoom"]
 minutes: 6
+image: "article-ring-light"
 ---
 
 The people who look best on video calls are not usually the ones with the best equipment. They are the ones sitting in front of a window.

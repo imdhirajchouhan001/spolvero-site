@@ -10,6 +10,7 @@ tools: ["/unspend/"]
 toolCta: "See Unspend"
 tags: ["Money", "Households"]
 minutes: 6
+image: "article-household"
 ---
 
 Shared subscriptions go wrong in a predictable order. Somebody pays for everything on one card, everyone agrees to settle up, nobody writes down what the actual total is, and four months later there is a conversation about whether the music one was ever included.
